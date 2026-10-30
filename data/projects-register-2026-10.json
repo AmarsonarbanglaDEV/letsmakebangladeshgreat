@@ -8,9 +8,9 @@
       "source": "https://rthd.gov.bd/pages/approved-projects",
       "sourceTitle": "Road Transport and Highways Division — Approved Projects",
       "portalDisplayedTotal": 73,
-      "importedRecords": 9,
-      "note": "Nine records from the first page of the official list have been transcribed into this pilot register. The portal reports 73 approved-project entries in total; the remaining 64 entries have not been imported. This dataset is not a complete national project register.",
-      "pageCoverage": "Rows 1–10 of the first page, excluding no project records; the mega-project Line-6 record is held separately from the 73-entry approved-project list."
+      "importedRecords": 10,
+      "note": "Ten entries from the first page of the official list have been transcribed into this pilot register. The portal reports 73 approved-project entries in total; the remaining 63 entries have not been imported. This is not a complete national project register.",
+      "pageCoverage": "All ten entries displayed on page 1 of the 73-entry official register are represented; the separate MRT-6 mega-project record is maintained outside this approved-project list."
     },
     "rthdMegaProjectRegister": {
       "source": "https://eservices.rthd.gov.bd/mega_project.php",
