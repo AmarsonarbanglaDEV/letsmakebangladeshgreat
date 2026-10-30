@@ -844,6 +844,7 @@ async function ensureLeaflet(){
         if(interactive){
           path.on("click",event=>{
             if(event.originalEvent)L.DomEvent.stopPropagation(event.originalEvent);
+            if(activeProjectSpotId&&handleProjectSpotMapClick(event.latlng))return;
             selectAdministrativeArea(r,true);
           });
           path.on("mouseover",()=>path.setStyle({color:"#d9ed8e",weight:3.2,fillOpacity:.12}));
@@ -1184,21 +1185,23 @@ async function ensureLeaflet(){
     });
   }
   map.on("zoomend",refreshAreaLabels);
+  function handleProjectSpotMapClick(point){
+    if(!activeProjectSpotId)return false;
+    const projectId=activeProjectSpotId;
+    if(!pointMatchesProjectDistrict(projectId,point)){
+      setStatus("That point is outside the project's source-listed district area, or its district boundary could not be matched. Choose a point inside the highlighted project district.",true);
+      return true;
+    }
+    activeProjectSpotId=null;
+    projectSpotPoints[projectId]={lat:point.lat,lng:point.lng};
+    setPoint(point,"Visitor-selected imagery point for "+projectId);
+    if(document.body.classList.contains("sidebar-collapsed"))toggleRecordsPanel();
+    window.setTimeout(()=>loadProjectTimeLapse(projectId,point),320);
+    return true;
+  }
   map.on("click",event=>{
     if(!bounds.contains(event.latlng))return;
-    if(activeProjectSpotId){
-      const projectId=activeProjectSpotId;
-      if(!pointMatchesProjectDistrict(projectId,event.latlng)){
-        setStatus("That point is outside the project's source-listed district area, or its district boundary could not be matched. Choose a point inside the highlighted project district.",true);
-        return;
-      }
-      activeProjectSpotId=null;
-      projectSpotPoints[projectId]={lat:event.latlng.lat,lng:event.latlng.lng};
-      setPoint(event.latlng,"Visitor-selected imagery point for "+projectId);
-      if(document.body.classList.contains("sidebar-collapsed"))toggleRecordsPanel();
-      window.setTimeout(()=>loadProjectTimeLapse(projectId,event.latlng),320);
-      return;
-    }
+    if(handleProjectSpotMapClick(event.latlng))return;
     setPoint(event.latlng);
     renderSidePanel(activePanel);
   });
