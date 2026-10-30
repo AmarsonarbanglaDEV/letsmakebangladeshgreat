@@ -846,31 +846,66 @@ async function ensureLeaflet(){
     return [];
   }
 
-  // Hisaab's map renderer uses the map camera to clip the whole rendered canvas
-  // to a country silhouette. This 2D Leaflet adaptation projects the same source
-  // rings into container pixels and applies the path to the map container.
+  // Hisaab's renderer clips the country silhouette in screen/camera space
+  // before writing its CSS path. This 2D Leaflet adaptation clips each projected
+  // ring to the viewport first, avoiding giant off-screen paths when zoomed in.
+  function clipScreenRing(points,width,height){
+    const planes=[
+      point=>point.x,
+      point=>width-point.x,
+      point=>point.y,
+      point=>height-point.y
+    ];
+    let clipped=points;
+    for(const distance of planes){
+      if(!clipped.length)break;
+      const next=[];
+      let previous=clipped[clipped.length-1];
+      let a=distance(previous);
+      for(const current of clipped){
+        const b=distance(current);
+        if((a>=0)!==(b>=0)){
+          const t=a/(a-b);
+          next.push({
+            x:previous.x+t*(current.x-previous.x),
+            y:previous.y+t*(current.y-previous.y)
+          });
+        }
+        if(b>=0)next.push(current);
+        previous=current;
+        a=b;
+      }
+      clipped=next;
+    }
+    return clipped;
+  }
+
   function countryScreenPath(data){
     const paths=[];
+    const size=map.getSize();
     (data.features||[]).forEach(feature=>{
       polygonRings(feature.geometry).forEach(ring=>{
-        const points=[];
+        const projected=ring.map(coord=>map.latLngToContainerPoint([coord[1],coord[0]]))
+          .filter(point=>Number.isFinite(point.x)&&Number.isFinite(point.y));
+        if(projected.length<3)return;
+        const points=clipScreenRing(projected,size.x,size.y);
+        if(points.length<3)return;
+        const simplified=[];
         let previous=null;
-        ring.forEach(coord=>{
-          const point=map.latLngToContainerPoint([coord[1],coord[0]]);
-          if(!Number.isFinite(point.x)||!Number.isFinite(point.y))return;
+        points.forEach(point=>{
           if(!previous||Math.hypot(point.x-previous.x,point.y-previous.y)>=.65){
-            points.push(point);
+            simplified.push(point);
             previous=point;
           }
         });
-        if(points.length<3)return;
-        const commands=points.map((point,index)=>
+        if(simplified.length<3)return;
+        const commands=simplified.map((point,index)=>
           (index?"L":"M")+point.x.toFixed(1)+" "+point.y.toFixed(1)
         );
         paths.push(commands.join("")+"Z");
       });
     });
-    if(!paths.length)throw new Error("No usable country boundary rings were found.");
+    if(!paths.length)throw new Error("The current view does not intersect the Bangladesh boundary.");
     return 'path(evenodd, "'+paths.join("")+'")';
   }
 
