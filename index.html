@@ -425,6 +425,7 @@ async function ensureLeaflet(){
   const cache={};
   const searchCache=new Map();
   let language="en",activeLevel="district",currentLayer=null,countryMask=null,countryOutline=null,loadingCover=null;
+  let fallbackDivisionLayer=null;
   let satellite=null,historicalLayer=null,outlineMode=false,lastPoint=null,pointMarker=null;
   let waybackCore=null,waybackItems=[],waybackIndex=0,playTimer=null,lastSearchAt=0;
   let geocodeResults=[];
@@ -681,6 +682,10 @@ async function ensureLeaflet(){
       const built=await loadLevel(level);
       currentLayer=built.layer;
       currentLayer.addTo(map);
+      if(fallbackDivisionLayer&&map.hasLayer(fallbackDivisionLayer)){
+        map.removeLayer(fallbackDivisionLayer);
+        fallbackDivisionLayer=null;
+      }
       styleCurrentLayer();
       refreshAreaLabels();
       el("mapStatus").classList.remove("error");
@@ -725,15 +730,15 @@ async function ensureLeaflet(){
       [0,55],[0,125],[40,125],[40,55],[0,55]
     ];
     countryMask=L.polygon([outside].concat(holes),{
-      pane:"maskPane",renderer:maskRenderer,noClip:true,smoothFactor:1.5,
+      pane:"maskPane",renderer:maskRenderer,smoothFactor:1.5,
       stroke:false,fill:true,fillColor:"#f3f3ed",fillOpacity:1,
       interactive:false,fillRule:"evenodd"
     }).addTo(map);
     if(countryOutline&&map.hasLayer(countryOutline))map.removeLayer(countryOutline);
-    countryOutline=L.polyline(holes,{
-      pane:"countryPane",renderer:countryRenderer,noClip:true,smoothFactor:1.5,
-      color:"#ddf2b2",weight:3.5,opacity:1,fill:false,
-      interactive:false
+    countryOutline=L.geoJSON(data,{
+      pane:"countryPane",renderer:countryRenderer,interactive:false,
+      smoothFactor:1.5,
+      style:{color:"#ddf2b2",weight:3.5,opacity:1,fill:false}
     }).addTo(map);
     const countryBounds=countryOutline.getBounds();
     if(countryBounds.isValid())map.fitBounds(countryBounds.pad(.11),{padding:[25,25]});
@@ -749,8 +754,6 @@ async function ensureLeaflet(){
         :"Bangladesh national outline loaded · BBS ADM0");
       return true;
     }catch(error){
-      // Division polygons are separate adjacent areas, not a dissolved
-      // national outline. Never treat them as overlapping mask holes.
       console.error("Bangladesh national outline failed:",error);
       if(loadingCover&&map.hasLayer(loadingCover))map.removeLayer(loadingCover);
       if(satellite&&map.hasLayer(satellite))map.removeLayer(satellite);
@@ -759,9 +762,24 @@ async function ensureLeaflet(){
       el("satelliteToggle").disabled=true;
       el("satelliteToggle").title="Satellite imagery is disabled until a verified national boundary is available.";
       el("outlineToggle").classList.add("active");
-      map.fitBounds(bounds,{padding:[25,25]});
-      setStatus("The national boundary could not be verified. Satellite imagery is disabled to keep surrounding countries hidden. "+error.message,true);
-      return false;
+      try{
+        // Show division polygons as a real map layer, not as national mask holes.
+        // This keeps a useful Bangladesh outline visible without exposing nearby
+        // countries when the country-level service is unavailable.
+        const divisions=await fetchLayer("division");
+        const fallback=makeRecordsAndLayer(divisions,"division",false);
+        fallbackDivisionLayer=fallback.layer;
+        fallbackDivisionLayer.addTo(map);
+        const divisionBounds=fallbackDivisionLayer.getBounds();
+        if(divisionBounds.isValid())map.fitBounds(divisionBounds.pad(.11),{padding:[25,25]});
+        setStatus("National boundary unavailable. Showing division outlines; satellite is safely disabled. "+error.message,true);
+        return false;
+      }catch(divisionError){
+        console.error("Division outline fallback also failed:",divisionError);
+        map.fitBounds(bounds,{padding:[25,25]});
+        setStatus("Boundary data is unavailable, so the outline map could not be drawn. "+divisionError.message,true);
+        return false;
+      }
     }
   }
 
