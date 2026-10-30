@@ -1162,7 +1162,7 @@ async function ensureLeaflet(){
     const selected=el("selectedAreaName").textContent;
     let html='<h2>'+module.title+'</h2><p class="side-intro">'+module.intro+'</p>';
     html+='<div class="data-status"><span class="status-icon">i</span><span>Prototype status: verified records for this section are not connected yet. Values will remain blank until sourced and reviewed.</span></div>';
-    if(activePanel!=="overview")html+='<div class="data-card"><strong>Map context: '+selected+'</strong><p>Records shown here must have a documented relationship to this geography. National or ministry-level figures will not be presented as local spending.</p></div>';
+    if(activePanel!=="overview")html+='<div class="data-card"><strong>Map context: '+escapeHtml(selected)+'</strong><p>Records shown here must have a documented relationship to this geography. National or ministry-level figures will not be presented as local spending.</p></div>';
     (module.cards||[]).forEach(card=>{
       html+='<div class="data-card"><strong>'+card[0]+'</strong><p>'+card[1]+'</p><p><b style="color:#916b26">No reviewed records published yet</b></p></div>';
     });
