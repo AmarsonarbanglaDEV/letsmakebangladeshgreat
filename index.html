@@ -767,7 +767,14 @@
     const upazila=getField(p,["adm3_en","upazila","upazila_name"]);
     const unionName=getField(p,["adm4_en","union_","union","union_name"]);
     const ward=getField(p,["ward_name","ward","adm5_en"]);
-    const code=getField(p,["adm1_pcode","adm2_pcode","adm3_pcode","adm4_pcode","adm5_pcode","geocode","pcode","objectid","fid"]);
+    const codeFields={
+      division:["adm1_pcode","pcode","objectid","fid"],
+      district:["adm2_pcode","pcode","objectid","fid"],
+      upazila:["adm3_pcode","geocode","pcode","objectid","fid"],
+      union:["adm4_pcode","pcode","objectid","fid"],
+      ward:["adm5_pcode","organisationunitid_wd","pcode","objectid","fid"]
+    };
+    const code=getField(p,codeFields[level]||["pcode","objectid","fid"]);
     const bnName=getField(p,["name_bn","adm1_bn","adm2_bn","adm3_bn","adm4_bn","adm5_bn","division_bn","district_bn","upazila_bn","union_bn","ward_bn"]);
     const parent=getField(p,parentNames[level]||[]);
     const ancestors=[division,district,upazila,unionName,ward].filter(Boolean);
