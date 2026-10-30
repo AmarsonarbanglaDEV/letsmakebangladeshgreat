@@ -372,6 +372,78 @@
       .sidebar,.topbar,.atlas-rail,.map-pill,.map-control{transition:none!important}
     }
 
+
+    /* Source-linked national budget, project, procurement and district panels. */
+    .atlas-snapshot-status{line-height:1.6}
+    .atlas-kpi-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0 18px}
+    .atlas-kpi{min-width:0;padding:12px;border:1px solid #dce5ef;border-radius:13px;background:#f0f4fa}
+    .atlas-kpi small{display:block;color:#5a6f85;font-size:9px;line-height:1.5}
+    .atlas-kpi strong{display:block;color:#18354f;font-size:18px;letter-spacing:-.04em;margin:4px 0;overflow-wrap:anywhere}
+    .atlas-sector-row{padding:11px 0;border-bottom:1px solid #e1e8ef}
+    .atlas-sector-row>div:first-child{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+    .atlas-sector-row strong{font-size:11px;color:#18354f}
+    .atlas-sector-row span{font-size:10px;color:#49647d;text-align:right}
+    .atlas-sector-row small,.atlas-small-note{display:block;margin-top:5px;font-size:9px;color:#63788e;line-height:1.6}
+    .atlas-progress-track{height:8px;overflow:hidden;border-radius:99px;background:#dce5ed;margin:7px 0}
+    .atlas-progress-track>i{height:100%;display:block;border-radius:99px;background:linear-gradient(90deg,#2967ff,#5bb5d8)}
+    .atlas-data-card{padding:13px;margin:11px 0;border:1px solid #d7e2ef;border-radius:14px;background:#f0f5fb;color:#36516c}
+    .atlas-data-card strong{display:block;font-size:12px;color:#18354f}
+    .atlas-data-card b{display:block;margin:6px 0;font-size:22px;color:#2967ff}
+    .atlas-data-card p{font-size:10px;line-height:1.65;margin-top:7px}
+    .atlas-compact-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:3px 8px;padding:10px 0;border-bottom:1px solid #e2e9f0}
+    .atlas-compact-row span{font-size:10px;color:#29445d}
+    .atlas-compact-row strong{font-size:11px;color:#18354f;text-align:right}
+    .atlas-compact-row small{grid-column:1/-1;font-size:9px;color:#708399}
+    .atlas-directory-heading{display:flex;justify-content:space-between;gap:8px;align-items:baseline;margin:18px 0 8px}
+    .atlas-directory-heading h3{margin:0;color:#173550}
+    .atlas-directory-heading span{font-size:9px;color:#61768d;text-align:right}
+    .atlas-filter-input{width:100%;padding:11px 12px;margin:8px 0 12px;border:1px solid #d4dfeb;border-radius:11px;background:#fff;color:#18354f;font-size:11px}
+    .atlas-district-directory{max-height:420px;overflow:auto;padding-right:4px}
+    .atlas-division-group{padding:8px 0 10px;border-bottom:1px solid #e0e8ef}
+    .atlas-division-group h4{font-size:11px;margin:0 0 7px;color:#2967ff}
+    .atlas-division-group h4 small{font-size:9px;color:#698097;font-weight:500;margin-left:5px}
+    .atlas-district-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+    .atlas-district-row{display:flex;flex-direction:column;text-align:left;min-width:0;padding:8px;border:1px solid #e0e8ef;border-radius:9px;background:#fff;color:#24435d}
+    .atlas-district-row span{font-size:10px;font-weight:750}
+    .atlas-district-row small{font-family:"Noto Sans Bengali",sans-serif;font-size:9px;color:#6f8296;margin-top:3px}
+    .atlas-location-chips{display:flex;flex-wrap:wrap;gap:6px;margin:7px 0}
+    .atlas-location-chip{padding:6px 9px;border:1px solid #cbd8e7;border-radius:20px;background:#eef4fb;color:#24537a;font-size:9px;font-weight:750}
+    .atlas-location-chip.is-context{color:#64778a;background:#f7f9fb}
+    .atlas-project-card,.atlas-contract-card{padding:14px;margin:14px 0;border:1px solid #d7e2ee;border-radius:16px;background:#fff;box-shadow:0 5px 18px rgba(18,43,70,.06)}
+    .atlas-project-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .atlas-project-kind{color:#2967ff;font-size:8px;font-weight:900;letter-spacing:.12em}
+    .atlas-project-id{font-size:8px;color:#8493a2}
+    .atlas-project-card h3{font-size:13px;line-height:1.55;color:#163550;margin:8px 0}
+    .atlas-project-meta,.atlas-project-card p{font-size:9px;line-height:1.6;color:#62788d}
+    .atlas-project-money{display:flex;flex-direction:column;padding:10px;margin:10px 0;border-radius:11px;background:#eff4fb}
+    .atlas-project-money small{font-size:9px;color:#698097}
+    .atlas-project-money strong{font-size:19px;color:#173c5c;margin:4px 0}
+    .atlas-model-wrap{margin:10px 0;padding:10px;border-radius:13px;background:linear-gradient(150deg,#102c40,#1c4b63);overflow:hidden}
+    .atlas-model-label{font-size:8px;letter-spacing:.13em;color:#a8c8d9;font-weight:900}
+    .atlas-model-svg{display:block;width:100%;height:auto;margin:5px 0}
+    .atlas-model-foot{font-size:8px;line-height:1.55;color:#bdcfd7}
+    .atlas-progress-block{padding:9px 0;border-bottom:1px solid #e3eaf0}
+    .atlas-progress-head{display:flex;justify-content:space-between;gap:8px;font-size:10px;color:#244560}
+    .atlas-progress-head strong{font-size:12px;color:#174d8b}
+    .atlas-progress-block p,.atlas-progress-block small{display:block;margin-top:5px;font-size:8px;line-height:1.5;color:#687e93}
+    .atlas-progress-block .atlas-warning-text,.atlas-warning-text{color:#94621e}
+    .atlas-project-area-label{font-size:9px;font-weight:800;color:#5f7489;margin:10px 0 5px}
+    .atlas-project-foot,.atlas-contract-foot{display:flex;justify-content:space-between;align-items:center;gap:9px;border-top:1px solid #e5ebf1;padding-top:9px;margin-top:10px;font-size:8px;color:#76889a}
+    .atlas-source-inline{display:inline-block;color:#2967ff;font-size:9px;font-weight:800;text-decoration:none;margin-top:6px}
+    .atlas-contract-card>small{display:block;color:#72869a;font-size:8px;line-height:1.5}
+    .atlas-contract-card h3{font-size:13px;color:#153955;margin:7px 0}
+    .atlas-contract-card p{font-size:9px;line-height:1.6;color:#5f758b}
+    .atlas-contract-card>strong{display:block;color:#173f64;font-size:17px;margin:8px 0}
+    .atlas-contract-foot{font-size:8px}
+    .atlas-empty-note{padding:12px;border:1px dashed #d0dce8;border-radius:12px;color:#64798d;font-size:10px;line-height:1.7}
+    @media(max-width:560px){
+      .atlas-kpi-grid{gap:6px}
+      .atlas-kpi{padding:10px}
+      .atlas-kpi strong{font-size:16px}
+      .atlas-district-directory{max-height:46vh}
+      .atlas-project-card,.atlas-contract-card{padding:12px}
+    }
+
   </style>
 </head>
 <body>
@@ -1461,6 +1533,229 @@ async function ensureLeaflet(){
     }
   };
   let activePanel="overview";
+
+  // Source-linked public datasets (kept separate by evidence type and accounting level).
+  let atlasData={budget:null,projects:null,contracts:null,districts:null};
+  let atlasDataPromise=null;
+  function loadAtlasData(){
+    if(atlasDataPromise)return atlasDataPromise;
+    atlasDataPromise=Promise.all([
+      ["budget","data/budget-fy2026-27.json"],
+      ["projects","data/projects-register-2026-10.json"],
+      ["contracts","data/road-contract-awards-2026-10.json"],
+      ["districts","data/bangladesh-districts-2026-09.json"]
+    ].map(async([key,url])=>{
+      const response=await fetch(url,{cache:"force-cache"});
+      if(!response.ok)throw new Error("Could not load "+url+" (HTTP "+response.status+")");
+      atlasData[key]=await response.json();
+    })).then(()=>atlasData).catch(error=>{
+      console.error("Atlas public-data files could not all be loaded:",error);
+      setStatus("Some public-data panels could not load: "+error.message,true);
+      return atlasData;
+    });
+    return atlasDataPromise;
+  }
+  function fmtAtlasNumber(value,digits=2){
+    if(value===null||value===undefined||value==="")return "Not separately itemized";
+    return Number(value).toLocaleString("en-IN",{maximumFractionDigits:digits});
+  }
+  function croreFromLakh(value){return Number(value)/100;}
+  function croreFromBdt(value){return Number(value)/10000000;}
+  function atlasMoney(value,unit="crore"){
+    if(value===null||value===undefined)return "Not published";
+    return "৳ "+fmtAtlasNumber(value)+" "+unit;
+  }
+  function progressBarHtml(progress){
+    const value=Math.max(0,Math.min(100,Number(progress.percent)||0));
+    return '<div class="atlas-progress-block">'+
+      '<div class="atlas-progress-head"><span>'+escapeHtml(progress.label||progress.metric)+'</span><strong>'+value.toFixed(2)+'%</strong></div>'+
+      '<div class="atlas-progress-track" role="img" aria-label="'+value.toFixed(2)+' percent '+escapeHtml(progress.metric)+' progress"><i style="width:'+value+'%"></i></div>'+
+      '<p>'+escapeHtml(progress.metric==="financial"?"Financial progress":"Physical progress")+' · reported '+escapeHtml(progress.reportedAt||"date unavailable")+'</p>'+
+      (progress.scope?'<small>'+escapeHtml(progress.scope)+'</small>':"")+
+      (progress.currentness?'<small class="atlas-warning-text">'+escapeHtml(progress.currentness)+'</small>':"")+
+      (progress.source?'<a class="atlas-source-inline" href="'+escapeHtml(progress.source)+'" target="_blank" rel="noopener">Open original progress source ↗</a>':"")+
+    '</div>';
+  }
+  function projectModelHtml(project){
+    if(project.modelType==="elevated_metro"){
+      return '<div class="atlas-model-wrap">'+
+        '<div class="atlas-model-label">3D CONCEPT VIEW · ELEVATED METRO</div>'+
+        '<svg class="atlas-model-svg" viewBox="0 0 520 190" role="img" aria-label="Conceptual elevated metro viaduct and train schematic">'+
+          '<defs><linearGradient id="metroTrain" x1="0" x2="1"><stop offset="0" stop-color="#e8f1f7"/><stop offset="1" stop-color="#b9d1df"/></linearGradient></defs>'+
+          '<path d="M0 160 L240 88 L520 145 L278 190 Z" fill="#dae5e8" opacity=".45"/>'+
+          '<path d="M8 149 L274 75 L506 125" stroke="#8ba1aa" stroke-width="3" fill="none"/>'+
+          '<path d="M8 157 L274 83 L506 133" stroke="#f1f5f5" stroke-width="3" fill="none"/>'+
+          '<path d="M92 134 L92 175 M173 111 L173 153 M266 84 L266 126 M360 104 L360 145 M451 123 L451 164" stroke="#607f8d" stroke-width="9" stroke-linecap="round"/>'+
+          '<path d="M80 128 L80 139 M160 102 L160 113 M254 76 L254 87 M348 97 L348 108 M439 116 L439 127" stroke="#9eb2bb" stroke-width="3"/>'+
+          '<g transform="translate(190 43) skewY(-16)"><rect x="0" y="0" width="144" height="34" rx="8" fill="url(#metroTrain)" stroke="#688999" stroke-width="2"/><path d="M14 6 H126" stroke="#266b91" stroke-width="5"/><rect x="18" y="12" width="26" height="11" rx="2" fill="#4d7f98"/><rect x="51" y="12" width="26" height="11" rx="2" fill="#4d7f98"/><rect x="84" y="12" width="26" height="11" rx="2" fill="#4d7f98"/><circle cx="30" cy="34" r="4" fill="#344e5c"/><circle cx="112" cy="34" r="4" fill="#344e5c"/></g>'+
+          '<path d="M28 161 L75 148 M400 159 L477 138" stroke="#f8fbfb" stroke-width="2" stroke-dasharray="5 7"/>'+
+          '<text x="20" y="25" fill="#dceaf0" font-size="11">Uttara North</text><text x="397" y="177" fill="#dceaf0" font-size="11">Kamalapur</text>'+
+        '</svg>'+
+        '<div class="atlas-model-foot">Schematic of an elevated rail corridor, not the official track alignment or an as-built engineering model.</div>'+
+      '</div>';
+    }
+    return '<div class="atlas-model-wrap">'+
+      '<div class="atlas-model-label">3D CONCEPT VIEW · ROAD / BRIDGE</div>'+
+      '<svg class="atlas-model-svg" viewBox="0 0 520 190" role="img" aria-label="Conceptual elevated highway and bridge schematic">'+
+        '<path d="M24 143 L256 62 L495 122 L264 188 Z" fill="#dce5e7" opacity=".42"/>'+
+        '<path d="M10 130 L260 45 L510 112 L260 195 Z" fill="#495e69"/>'+
+        '<path d="M10 130 L260 45 L510 112" stroke="#dbe5e8" stroke-width="3" fill="none"/>'+
+        '<path d="M260 195 L260 45" stroke="#f2df9d" stroke-width="3" stroke-dasharray="13 10"/>'+
+        '<path d="M92 158 L92 112 M159 177 L159 90 M350 165 L350 70 M420 145 L420 89" stroke="#9eb0b9" stroke-width="10"/>'+
+        '<path d="M80 118 L260 57 L448 107" stroke="#f7f4dd" stroke-width="2" fill="none"/>'+
+        '<path d="M38 144 L260 68 L480 127" stroke="#f7f4dd" stroke-width="2" fill="none"/>'+
+        '<g fill="#c8d6d9"><rect x="34" y="35" width="47" height="51" rx="2"/><rect x="84" y="49" width="28" height="37" rx="2"/><rect x="420" y="27" width="48" height="63" rx="2"/></g>'+
+        '<text x="24" y="22" fill="#dceaf0" font-size="11">Conceptual road section</text>'+
+      '</svg>'+
+      '<div class="atlas-model-foot">'+escapeHtml(project.modelNotice||"Conceptual model only; not an engineering or as-built drawing.")+'</div>'+
+    '</div>';
+  }
+  function districtButtonsHtml(areas){
+    return (areas||[]).filter(a=>a.type==="district").map(a=>
+      '<button class="atlas-location-chip" type="button" data-district="'+escapeHtml(a.name)+'">'+escapeHtml(a.name)+' ↗</button>'
+    ).join("");
+  }
+  function renderDistrictDirectory(){
+    const d=atlasData.districts;
+    if(!d||!Array.isArray(d.districts))return '<p class="atlas-empty-note">District directory is not available. The map's district boundary selector remains available.</p>';
+    let html='<div class="atlas-directory-heading"><h3>All 64 districts</h3><span>8 divisions · official portal directory</span></div>';
+    html+='<input class="atlas-filter-input" type="search" data-district-filter placeholder="Filter districts by English or Bangla name…" aria-label="Filter all districts">';
+    html+='<div class="atlas-district-directory">';
+    d.divisions.forEach(division=>{
+      html+='<section class="atlas-division-group"><h4>'+escapeHtml(division.name)+' <small>'+escapeHtml(division.name_bn)+'</small></h4><div class="atlas-district-grid">';
+      d.districts.filter(x=>x.division===division.name).forEach(item=>{
+        html+='<button class="atlas-district-row" type="button" data-district="'+escapeHtml(item.name)+'"><span>'+escapeHtml(item.name)+'</span><small>'+escapeHtml(item.name_bn)+'</small></button>';
+      });
+      html+='</div></section>';
+    });
+    html+='</div><p class="atlas-small-note">Selecting a district focuses its administrative polygon. This does not assert that a listed project is located at the district centre.</p>';
+    return html;
+  }
+  function renderBudgetPanel(){
+    const d=atlasData.budget;
+    if(!d)return '<p class="atlas-empty-note">Budget data file unavailable.</p>';
+    const h=d.headline;
+    let html='<div class="atlas-kpi-grid">'+
+      '<div class="atlas-kpi"><small>Total budget · FY2026–27</small><strong>'+atlasMoney(h.totalExpenditure.budgetFY2026_27)+'</strong></div>'+
+      '<div class="atlas-kpi"><small>Revenue income</small><strong>'+atlasMoney(h.totalRevenueIncome.budgetFY2026_27)+'</strong></div>'+
+      '<div class="atlas-kpi"><small>Budget deficit</small><strong>'+atlasMoney(h.budgetDeficit.budgetFY2026_27)+'</strong></div>'+
+      '<div class="atlas-kpi"><small>Development expenditure</small><strong>'+atlasMoney(h.developmentExpenditure.budgetFY2026_27)+'</strong></div>'+
+    '</div>';
+    html+='<h3>Overall sector allocation</h3><p class="atlas-small-note">Budget speech Table 4 · BDT crore. Bars show shares of the proposed national budget, not outcomes.</p>';
+    d.overallSectorBudget.forEach(row=>{
+      html+='<div class="atlas-sector-row"><div><strong>'+escapeHtml(row.name)+'</strong><span>'+atlasMoney(row.budgetFY2026_27)+' · '+Number(row.sharePct).toFixed(2)+'%</span></div><div class="atlas-progress-track"><i style="width:'+Math.max(0,Math.min(100,row.sharePct))+'%"></i></div><small>FY2024–25 actual in Table 4: '+atlasMoney(row.actualFY2024_25)+'</small></div>';
+    });
+    html+='<h3>Defence allocation</h3><div class="atlas-data-card"><strong>Ministry of Defence</strong><b>'+atlasMoney(42497)+'</b><p>Armed Forces Division: '+atlasMoney(44)+'. Arithmetic sum of the two separate budget lines: '+atlasMoney(42541)+' (~4.54% of total budget).</p><p>'+escapeHtml(d.defenceOutcomeNote||"An allocation is not evidence of delivery or operational outcomes.")+'</p></div>';
+    html+='<h3>Selected ministry allocations</h3>';
+    (d.selectedComparisons||[]).filter(x=>!String(x.name).startsWith("Defence portfolio")).forEach(row=>{
+      html+='<div class="atlas-compact-row"><span>'+escapeHtml(row.name)+'</span><strong>'+atlasMoney(row.budgetFY2026_27)+'</strong><small>FY2024–25 actual: '+(row.actualFY2024_25==null?"Not separately itemized":atlasMoney(row.actualFY2024_25))+'</small></div>';
+    });
+    html+='<h3>ADP sectors</h3>';
+    d.adpSectorBudget.forEach(row=>{
+      html+='<div class="atlas-compact-row"><span>'+escapeHtml(row.name)+'</span><strong>'+atlasMoney(row.budgetFY2026_27)+'</strong><small>FY2024–25 actual: '+atlasMoney(row.actualFY2024_25)+'</small></div>';
+    });
+    const snap=(d.adpImplementation||[])[0];
+    if(snap)html+='<div class="atlas-data-card"><strong>ADP implementation · July–September 2026</strong><b>'+Number(snap.financialImplementationPct).toFixed(2)+'%</b><p>Reported expenditure: '+atlasMoney(snap.reportedExpenditureCrore)+' against implementation denominator '+atlasMoney(snap.implementationDenominatorCrore)+'. This is a national aggregate, not individual project progress.</p><a class="atlas-source-inline" href="'+escapeHtml(snap.source)+'" target="_blank" rel="noopener">Open IMED source ↗</a></div>';
+    html+='<p class="atlas-small-note">Table 2 lists FY2026–27 ADP at Tk 300,000 crore. The separate IMED-reported implementation denominator is Tk 308,924.86 crore. These published bases are preserved separately pending reconciliation.</p>';
+    return html;
+  }
+  function renderMinistriesPanel(){
+    const d=atlasData.budget;
+    if(!d)return '<p class="atlas-empty-note">Ministry budget data file unavailable.</p>';
+    let html='<div class="atlas-directory-heading"><h3>62 ministry / division lines</h3><span>Budget speech Table 5 · BDT crore</span></div>';
+    html+='<input class="atlas-filter-input" type="search" data-ministry-filter placeholder="Filter by ministry or division…" aria-label="Filter ministry budget lines">';
+    html+='<div class="atlas-ministry-table"><div class="atlas-ministry-head"><span>Ministry / division</span><span>FY26–27</span><span>FY25–26 revised</span></div>';
+    d.ministryBudget.forEach(row=>{
+      html+='<div class="atlas-ministry-row"><span><small>'+row.code+'</small>'+escapeHtml(row.name)+'</span><strong>'+fmtAtlasNumber(row.budgetFY2026_27)+'</strong><small>'+fmtAtlasNumber(row.revisedFY2025_26)+'</small></div>';
+    });
+    html+='</div><p class="atlas-small-note">A missing FY2024–25 actual means Table 4 does not itemize that line separately; it is not zero. Full ministry-level audited actuals are not yet imported.</p>';
+    return html;
+  }
+  function renderProjectCard(project){
+    const isMega=project.kind==="mega";
+    const cost=isMega?croreFromLakh(project.approval.latestRevisedTotalLakh):croreFromLakh(project.approvedProjectCostLakh);
+    const title=project.name;
+    let html='<article class="atlas-project-card"><div class="atlas-project-top"><span class="atlas-project-kind">'+(isMega?"MEGA PROJECT":"APPROVED ROAD PROJECT · RTHD")+'</span><span class="atlas-project-id">'+escapeHtml(project.id)+'</span></div>';
+    html+='<h3>'+escapeHtml(title)+'</h3><p class="atlas-project-meta">'+escapeHtml(project.implementingAgency||"Implementing agency not in imported row")+' · '+(isMega?"RTHD mega-project progress PDF":"RTHD approved-project list")+'</p>';
+    html+='<div class="atlas-project-money"><small>'+(isMega?"Third revised project total":"Approved estimate")+'</small><strong>'+atlasMoney(cost)+'</strong><small>Original unit: '+(isMega?"lakh taka converted to crore":"lakh taka converted to crore")+'</small></div>';
+    if(isMega)html+=projectModelHtml(project);
+    else html+=projectModelHtml(project);
+    if(isMega){
+      (project.progress||[]).forEach(progress=>html+=progressBarHtml(progress));
+      html+='<p class="atlas-small-note">Progress snapshot: '+escapeHtml(project.approval.sourceDate)+' · physical and financial measures are separate. The RTHD index has a newer report dated 12 Oct 2026 which is not yet transcribed.</p>';
+      html+='<p class="atlas-small-note">Revised total includes GoB '+atlasMoney(croreFromLakh(project.approval.latestGoBShareLakh))+' and project aid '+atlasMoney(croreFromLakh(project.approval.latestProjectAidShareLakh))+'.</p>';
+    }else{
+      html+='<p class="atlas-warning-text">No project-level progress percentage, release or expenditure was provided in the imported approved-project listing. Progress is not assumed to be 0%.</p>';
+    }
+    html+='<p class="atlas-project-area-label">Officially listed area:</p><div class="atlas-location-chips">'+(project.administrativeAreas||[]).map(a=>a.type==="district"?'<button class="atlas-location-chip" type="button" data-district="'+escapeHtml(a.name)+'">'+escapeHtml(a.name)+' ↗</button>':'<span class="atlas-location-chip is-context">'+escapeHtml(a.name)+'</span>').join("")+'</div>';
+    html+='<div class="atlas-project-foot"><span>Source date: '+escapeHtml(project.sourceUpdatedAt||project.lastChecked||"not supplied")+'</span><a class="atlas-source-inline" href="'+escapeHtml(project.source||project.approval?.source||"#")+'" target="_blank" rel="noopener">Original record ↗</a></div>';
+    html+='</article>';
+    return html;
+  }
+  function renderProjectsPanel(){
+    const d=atlasData.projects;
+    if(!d)return '<p class="atlas-empty-note">Project data file unavailable.</p>';
+    let html='<div class="atlas-kpi-grid">'+
+      '<div class="atlas-kpi"><small>RTHD approved list</small><strong>73</strong><small>portal entries</small></div>'+
+      '<div class="atlas-kpi"><small>Imported approved rows</small><strong>'+d.coverage.rthdApprovedProjectRegister.importedRecords+'</strong><small>first page only</small></div>'+
+      '<div class="atlas-kpi"><small>Mega-project records</small><strong>'+d.coverage.rthdMegaProjectRegister.importedRecords+'</strong><small>quantified snapshot</small></div>'+
+    '</div><p class="atlas-small-note">'+escapeHtml(d.coverage.rthdApprovedProjectRegister.note)+'</p>';
+    d.projects.forEach(project=>html+=renderProjectCard(project));
+    return html;
+  }
+  function renderProcurementPanel(){
+    const d=atlasData.contracts;
+    if(!d)return '<p class="atlas-empty-note">Contract award data file unavailable.</p>';
+    let html='<div class="atlas-kpi-grid"><div class="atlas-kpi"><small>Road awards in pilot</small><strong>'+d.records.length+'</strong></div><div class="atlas-kpi"><small>Detail cross-checks</small><strong>'+d.records.filter(x=>x.sourceStatus==="cross_checked_with_BPPA_detail").length+'</strong></div></div>';
+    html+='<p class="atlas-small-note">'+escapeHtml(d.coverage.note)+'</p>';
+    d.records.forEach(record=>{
+      html+='<article class="atlas-contract-card"><small>'+escapeHtml(record.reference)+' · Award '+escapeHtml(record.awardDate)+'</small><h3>'+escapeHtml(record.supplierNameAsPublished)+'</h3><p>'+escapeHtml(record.packageTitle)+'</p><strong>'+atlasMoney(croreFromBdt(record.contractValueBDT))+'</strong><small>Procuring entity: '+escapeHtml(record.procuringEntity||"not separately shown")+' · Works area: '+escapeHtml(record.projectArea?.map(a=>a.name).join(", ")||record.projectAreaNote||"not geocoded")+'</small><div class="atlas-contract-foot"><span>'+escapeHtml(record.sourceStatus||"transcribed")+'</span><a class="atlas-source-inline" href="'+escapeHtml(record.sourceDetail||record.source)+'" target="_blank" rel="noopener">BPPA award record ↗</a></div></article>';
+    });
+    return html;
+  }
+  function renderLiveDataPanel(key){
+    if(key==="overview")return renderDistrictDirectory();
+    if(key==="budget")return renderBudgetPanel();
+    if(key==="ministries")return renderMinistriesPanel();
+    if(key==="projects")return renderProjectsPanel();
+    if(key==="procurement")return renderProcurementPanel();
+    return "";
+  }
+  function attachAtlasPanelDelegates(){
+    const panel=el("sideContent");
+    panel.addEventListener("input",event=>{
+      const target=event.target;
+      if(target.matches("[data-district-filter]")){
+        const q=normalise(target.value);
+        panel.querySelectorAll(".atlas-district-row").forEach(row=>{
+          row.style.display=(!q||normalise(row.textContent).includes(q))?"":"none";
+        });
+      }
+      if(target.matches("[data-ministry-filter]")){
+        const q=normalise(target.value);
+        panel.querySelectorAll(".atlas-ministry-row").forEach(row=>{
+          row.style.display=(!q||normalise(row.textContent).includes(q))?"":"none";
+        });
+      }
+    });
+    panel.addEventListener("click",async event=>{
+      const button=event.target.closest("[data-district]");
+      if(!button)return;
+      const district=button.getAttribute("data-district");
+      try{
+        if(activeLevel!=="district"||!cache.district)await switchLevel("district");
+        const record=(cache.district?.records||[]).find(item=>normalise(item.name)===normalise(district));
+        if(!record){
+          setStatus("Could not match "+district+" to the loaded official district boundary. Use the map search to inspect the source name.",true);
+          return;
+        }
+        selectAdministrativeArea(record,true);
+      }catch(error){
+        setStatus("District boundary could not be selected: "+error.message,true);
+      }
+    });
+  }
+
   function renderSidePanel(key){
     activePanel=modules[key]?key:"overview";
     document.querySelectorAll(".sidebar-tab").forEach(button=>
@@ -1469,11 +1764,13 @@ async function ensureLeaflet(){
     const module=modules[activePanel];
     const selected=el("selectedAreaName").textContent;
     let html='<h2>'+module.title+'</h2><p class="side-intro">'+module.intro+'</p>';
-    html+='<div class="data-status"><span class="status-icon">i</span><span>Prototype status: verified records for this section are not connected yet. Values will remain blank until sourced and reviewed.</span></div>';
+    html+='<div class="data-status atlas-snapshot-status"><span class="status-icon">i</span><span>Research snapshot: 30 Oct 2026 · source-linked pilot records; national and project-level coverage is still incomplete. Allocations, awards, payments and outcomes are shown separately.</span></div>';
     if(activePanel!=="overview")html+='<div class="data-card"><strong>Map context: '+escapeHtml(selected)+'</strong><p>Records shown here must have a documented relationship to this geography. National or ministry-level figures will not be presented as local spending.</p></div>';
-    (module.cards||[]).forEach(card=>{
-      html+='<div class="data-card"><strong>'+card[0]+'</strong><p>'+card[1]+'</p><p><b style="color:#916b26">No reviewed records published yet</b></p></div>';
-    });
+    if(!["budget","ministries","projects","procurement","overview"].includes(activePanel)){
+      (module.cards||[]).forEach(card=>{
+        html+='<div class="data-card"><strong>'+card[0]+'</strong><p>'+card[1]+'</p><p><b style="color:#916b26">No source-reviewed dataset connected for this section yet</b></p></div>';
+      });
+    }
     if(module.sources&&module.sources.length){
       html+='<h3>Original public sources</h3><div class="data-source-list">';
       module.sources.forEach(source=>{
@@ -1481,6 +1778,7 @@ async function ensureLeaflet(){
       });
       html+='</div>';
     }
+    html+=renderLiveDataPanel(activePanel);
     html+='<div class="method-note">'+module.note+'</div>';
     el("sideContent").innerHTML=html;
   }
