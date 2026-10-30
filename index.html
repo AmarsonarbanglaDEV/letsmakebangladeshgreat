@@ -494,28 +494,47 @@ async function ensureLeaflet(){
     return data;
   }
   async function fetchArcGISLayer(layerUrl){
-    const metadata=await requestJson(layerUrl+"?f=pjson");
-    const oid=idField(metadata);
-    const pageSize=Math.min(1500,Math.max(250,Number(metadata.maxRecordCount)||1500));
+    const entry=Object.entries(levelInfo).find(([,info])=>info.url===layerUrl);
+    if(!entry)throw new Error("This map layer is not in the approved boundary list.");
+    const level=entry[0];
     const features=[];
-    let offset=0,pages=0;
-    while(pages<24){
-      const params=new URLSearchParams({
-        where:"1=1",outFields:"*",returnGeometry:"true",outSR:"4326",f:"geojson",
-        resultOffset:String(offset),resultRecordCount:String(pageSize)
-      });
-      if(oid)params.set("orderByFields",oid+" ASC");
-      const data=await requestJson(layerUrl+"/query?"+params.toString());
-      if(!Array.isArray(data.features))throw new Error("The GIS query did not return a feature list.");
+    let offset=0,pages=0,sourceLabel="Bangladesh map-data service",fallbackReason="";
+    while(pages<100){
+      const endpoint="/api/map?level="+encodeURIComponent(level)+
+        "&offset="+offset+"&limit=700";
+      let response,data;
+      try{
+        response=await fetch(endpoint,{
+          method:"GET",headers:{Accept:"application/geo+json, application/json"},
+          credentials:"same-origin",cache:"force-cache"
+        });
+        data=await response.json();
+      }catch(error){
+        throw new Error("The site's map-data endpoint could not be reached. Make sure the Cloudflare Pages Functions deployment is active. "+error.message);
+      }
+      if(!response.ok){
+        throw new Error((data&&data.error)||("Map-data endpoint returned HTTP "+response.status));
+      }
+      if(!data||!Array.isArray(data.features)){
+        throw new Error("The map-data endpoint returned an invalid boundary response.");
+      }
       features.push.apply(features,data.features);
+      sourceLabel=data.sourceLabel||sourceLabel;
+      fallbackReason=data.fallbackReason||fallbackReason;
       pages++;
-      if(data.features.length<pageSize&&!data.exceededTransferLimit)break;
-      if(!data.features.length)break;
-      offset+=data.features.length;
+      if(!data.hasMore)break;
+      const nextOffset=Number(data.nextOffset);
+      if(!Number.isSafeInteger(nextOffset)||nextOffset<=offset){
+        throw new Error("The map-data endpoint returned an invalid pagination cursor.");
+      }
+      offset=nextOffset;
     }
-    if(pages>=24)throw new Error("This layer returned too many pages for one browser session.");
-    if(!features.length)throw new Error("No boundary features were returned.");
-    return {type:"FeatureCollection",features:features,source:layerUrl,sourceLabel:"Official ArcGIS boundary service"};
+    if(pages>=100)throw new Error("This boundary layer is too large to load in one session.");
+    if(!features.length)throw new Error("No boundary features were returned by the map-data endpoint.");
+    return {
+      type:"FeatureCollection",features:features,source:layerUrl,
+      sourceLabel:sourceLabel,fallbackReason:fallbackReason
+    };
   }
   async function fetchGeoBoundariesFallback(adm){
     const metadata=await requestJson("https://www.geoboundaries.org/api/current/gbOpen/BGD/ADM"+adm+"/");
@@ -530,17 +549,8 @@ async function ensureLeaflet(){
   }
   async function fetchLayer(level){
     const info=levelInfo[level];
-    try{
-      return await fetchArcGISLayer(info.url);
-    }catch(primaryError){
-      try{
-        const fallback=await fetchGeoBoundariesFallback(info.adm);
-        fallback.fallbackReason=primaryError.message;
-        return fallback;
-      }catch(fallbackError){
-        throw new Error(primaryError.message+"; fallback: "+fallbackError.message);
-      }
-    }
+    if(!info)throw new Error("Unknown administrative map level.");
+    return fetchArcGISLayer(info.url);
   }
   function makeRecordsAndLayer(data,level,interactive){
     const records=recordsForGeoJSON(data,level);
@@ -689,31 +699,27 @@ async function ensureLeaflet(){
     try{
       const data=await fetchArcGISLayer(levelInfo.country.url);
       installBangladeshMask(data);
-      setStatus("Bangladesh national outline loaded · BBS ADM0");
+      setStatus(data.fallbackReason
+        ?"Bangladesh outline loaded · geoBoundaries backup source"
+        :"Bangladesh national outline loaded · BBS ADM0");
       return true;
     }catch(error){
-      console.warn("Official Bangladesh country outline unavailable; trying open boundary fallback.",error);
+      console.warn("National outline service failed; deriving the mask from the eight division polygons.",error);
       try{
-        const fallback=await fetchGeoBoundariesFallback(0);
-        installBangladeshMask(fallback);
-        setStatus("Bangladesh outline loaded · geoBoundaries open fallback");
+        const divisions=await fetchLayer("division");
+        installBangladeshMask(divisions);
+        setStatus("Bangladesh mask derived from the official division boundaries.");
         return true;
-      }catch(fallbackError){
-        console.warn("Country boundary fallback failed; trying to derive the mask from division polygons.",fallbackError);
-        try{
-          const divisions=await fetchLayer("division");
-          installBangladeshMask(divisions);
-          setStatus("Bangladesh mask derived from the eight division polygons.");
-          return true;
-        }catch(divisionError){
-          console.error("Bangladesh outline failed:",divisionError);
-          if(satellite&&map.hasLayer(satellite))map.removeLayer(satellite);
-          outlineMode=true;
-          el("satelliteToggle").classList.remove("active");
-          el("outlineToggle").classList.add("active");
-          setStatus("Bangladesh boundary sources are unavailable. Satellite imagery is disabled so the map will not show neighbouring countries as Bangladesh.",true);
-          return false;
-        }
+      }catch(divisionError){
+        console.error("Bangladesh outline failed:",divisionError);
+        if(loadingCover&&map.hasLayer(loadingCover))map.removeLayer(loadingCover);
+        if(satellite&&map.hasLayer(satellite))map.removeLayer(satellite);
+        outlineMode=true;
+        el("satelliteToggle").classList.remove("active");
+        el("outlineToggle").classList.add("active");
+        map.fitBounds(bounds,{padding:[25,25]});
+        setStatus("Bangladesh boundary data could not load. Satellite is turned off to avoid displaying surrounding countries. "+divisionError.message,true);
+        return false;
       }
     }
   }
