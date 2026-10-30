@@ -35,3 +35,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 Hisaab's map renderer uses Mapbox GL JS and a Mapbox access token. This project does not include or reuse any Hisaab credentials or India-specific boundary data.
+
+
+## Hisaab — map-first interface design reference
+
+The redesigned public atlas also adapts the map-first interaction structure documented in Hisaab: a full-screen map, floating navigation, contextual information surfaces, and compact map-control rails. The Bangladesh version uses original HTML and CSS adapted to this site's existing Leaflet map, public datasets and navigation. No Hisaab application components, India geography, map provider credentials, datasets, photographs or fonts were imported.
+
+Hisaab repository: https://github.com/theadiram/Hisaab
+
+The upstream MIT copyright and license notice above applies to any Hisaab source material that may be reused in the future; third-party datasets, maps and assets retain their own terms.
