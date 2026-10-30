@@ -31,6 +31,21 @@ const LAYERS = {
   }
 };
 
+async function fetchWithTimeout(url, options = {}, label = "GIS service") {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 7000);
+  try {
+    return await fetch(url, { ...options, signal: controller.signal });
+  } catch (error) {
+    if (error && error.name === "AbortError") {
+      throw new Error(label + " timed out after 7 seconds");
+    }
+    throw error;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 function jsonResponse(data, status = 200, extraHeaders = {}) {
   return new Response(JSON.stringify(data), {
     status,
@@ -68,10 +83,10 @@ function objectIdField(metadata) {
 async function fetchGeoBoundariesFallback(adm) {
   const metadataUrl =
     "https://www.geoboundaries.org/api/current/gbOpen/BGD/ADM" + adm + "/";
-  const metadataResponse = await fetch(metadataUrl, {
+  const metadataResponse = await fetchWithTimeout(metadataUrl, {
     headers: { Accept: "application/json" },
     cf: { cacheTtl: 3600, cacheEverything: true }
-  });
+  }, "geoBoundaries metadata");
   const metadata = await readJson(metadataResponse, "geoBoundaries metadata");
   const item = Array.isArray(metadata) ? metadata[0] : metadata;
   const downloadUrl = item &&
@@ -82,10 +97,10 @@ async function fetchGeoBoundariesFallback(adm) {
     throw new Error("geoBoundaries did not provide a GeoJSON download URL");
   }
 
-  const geometryResponse = await fetch(downloadUrl, {
+  const geometryResponse = await fetchWithTimeout(downloadUrl, {
     headers: { Accept: "application/geo+json, application/json" },
     cf: { cacheTtl: 3600, cacheEverything: true }
-  });
+  }, "geoBoundaries geometry");
   const geojson = await readJson(geometryResponse, "geoBoundaries geometry");
   if (!Array.isArray(geojson.features) || !geojson.features.length) {
     throw new Error("geoBoundaries returned no boundary features");
@@ -95,10 +110,10 @@ async function fetchGeoBoundariesFallback(adm) {
 
 async function fetchArcGisPage(config, offset, requestedLimit) {
   const metadataUrl = config.url + "?f=pjson";
-  const metadataResponse = await fetch(metadataUrl, {
+  const metadataResponse = await fetchWithTimeout(metadataUrl, {
     headers: { Accept: "application/json" },
     cf: { cacheTtl: 1800, cacheEverything: true }
-  });
+  }, "ArcGIS layer metadata");
   const metadata = await readJson(metadataResponse, "ArcGIS layer metadata");
   const oid = objectIdField(metadata);
   const serviceLimit = Number(metadata.maxRecordCount) || 1000;
@@ -116,10 +131,10 @@ async function fetchArcGisPage(config, offset, requestedLimit) {
   if (oid) params.set("orderByFields", oid + " ASC");
 
   const queryUrl = config.url + "/query?" + params.toString();
-  const queryResponse = await fetch(queryUrl, {
+  const queryResponse = await fetchWithTimeout(queryUrl, {
     headers: { Accept: "application/geo+json, application/json" },
     cf: { cacheTtl: 300, cacheEverything: true }
-  });
+  }, "ArcGIS feature query");
   const geojson = await readJson(queryResponse, "ArcGIS feature query");
 
   if (!Array.isArray(geojson.features)) {
