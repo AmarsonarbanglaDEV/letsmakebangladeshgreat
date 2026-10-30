@@ -100,6 +100,42 @@
           "sourcePage": "Printed page 4",
           "scope": "Financial progress reported by RTHD against the third revised allocation; not physical completion.",
           "currentness": "Older snapshot; newer October 2026 RTHD report is indexed but not yet transcribed."
+        },
+        {
+          "metric": "physical",
+          "label": "CP-05 · 3.195 km viaduct and 3 elevated stations · Agargaon–Karwan Bazar",
+          "percent": 100,
+          "reportedAt": "2026-02-28",
+          "source": "https://eservices.rthd.gov.bd/admin/docs/news/rthd_13.pdf",
+          "sourcePage": "Printed page 4",
+          "scope": "RTHD reports the civil-works package as 100% physically complete. This is a package-level measure, not the whole MRT-6 project."
+        },
+        {
+          "metric": "physical",
+          "label": "CP-06 · 4.922 km viaduct and 4 stations · Karwan Bazar–Motijheel",
+          "percent": 100,
+          "reportedAt": "2026-02-28",
+          "source": "https://eservices.rthd.gov.bd/admin/docs/news/rthd_13.pdf",
+          "sourcePage": "Printed page 4",
+          "scope": "RTHD reports the civil-works package as 100% physically complete. This is a package-level measure, not the whole MRT-6 project."
+        },
+        {
+          "metric": "physical",
+          "label": "CP-07 · Electrical and mechanical systems procurement",
+          "percent": 99.87,
+          "reportedAt": "2026-02-28",
+          "source": "https://eservices.rthd.gov.bd/admin/docs/news/rthd_13.pdf",
+          "sourcePage": "Printed page 4",
+          "scope": "Physical progress reported for the electrical and mechanical systems package."
+        },
+        {
+          "metric": "physical",
+          "label": "CP-08 · Rolling stock and depot equipment procurement",
+          "percent": 98.21,
+          "reportedAt": "2026-02-28",
+          "source": "https://eservices.rthd.gov.bd/admin/docs/news/rthd_13.pdf",
+          "sourcePage": "Printed page 4",
+          "scope": "Physical progress reported for rolling stock and depot equipment; not passenger-service outcome or independent verification."
         }
       ],
       "annualFinanceUnit": "BDT lakh",
@@ -187,7 +223,8 @@
         "Physical and financial progress percentages are separate and dated 28 February 2026.",
         "The partial FY2025-26 expenditure is not a full-year actual.",
         "Passenger ridership, journey-time, farebox, safety and emissions outcomes are not extracted from this progress report.",
-        "RTHD's mega-project index lists a Line-6 report dated 12 October 2026. This dataset's quantified physical and financial progress still comes from the February 2026 PDF and needs replacement after extracting the October report."
+        "RTHD's mega-project index lists a Line-6 report dated 12 October 2026. This dataset's quantified physical and financial progress still comes from the February 2026 PDF and needs replacement after extracting the October report.",
+        "Additional package-level progress bars (CP-05 to CP-08) are transcribed from printed page 4 of the February 2026 report. These are separate package measures and must not be averaged into one overall completion figure."
       ]
     },
     {
