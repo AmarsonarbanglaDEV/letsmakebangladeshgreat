@@ -760,6 +760,14 @@ async function ensureLeaflet(){
   }
   function setPoint(latlng,label){
     lastPoint=latlng;
+    stopPlayback();
+    waybackItems=[];
+    timelineSlider.min="0";timelineSlider.max="0";timelineSlider.value="0";
+    timelineSlider.disabled=true;timelinePlay.disabled=true;
+    el("timelineDate").textContent="Select a point, then load history";
+    el("timelineStart").textContent="2014 archive";
+    el("timelineEnd").textContent="Latest available";
+    updateTimelineProgress();
     if(historicalLayer&&map.hasLayer(historicalLayer))map.removeLayer(historicalLayer);
     if(!outlineMode&&satellite&&!map.hasLayer(satellite))satellite.addTo(map);
     if(pointMarker&&map.hasLayer(pointMarker))map.removeLayer(pointMarker);
@@ -805,11 +813,12 @@ async function ensureLeaflet(){
   }
   function renderDirectorySearch(query){
     const q=String(query||"").trim();
-    if(!q||!currentLayer||q.length<2)return;
+    if(!q||!currentLayer||q.length<2){closeSearchResults();return;}
     const key=normalise(q);
     const matches=currentLayer._atlasRecords
       ?currentLayer._atlasRecords.filter(r=>normalise(r.name).includes(key))
       :[];
+    if(!matches.length){closeSearchResults();return;}
     if(matches.length){
       searchResultsEl.innerHTML="";
       matches.slice(0,8).forEach(record=>{
