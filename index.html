@@ -985,7 +985,406 @@
       .sidebar,.sidebar-tab,.sidebar-close,.atlas-rail button{transition:none!important}
     }
 
-  </style>
+  
+    /* Bangladesh edition · Hisaab-inspired map-first evidence workspace */
+    :root{
+      --bd-green:#006a4e;
+      --bd-green-deep:#064b39;
+      --bd-green-soft:#e7f0e9;
+      --bd-red:#f42a41;
+      --bd-ink:#18372b;
+      --bd-muted:#6b7e72;
+      --bd-paper:#f7f6ef;
+      --bd-card:#fffef9;
+      --bd-line:#e1e7dc;
+      --bd-water:#bcd8dc;
+      --bd-shadow:0 18px 60px rgba(19,45,31,.16);
+    }
+    html,body{background:var(--bd-paper)}
+    body{font-family:"DM Sans","Noto Sans Bengali",system-ui,sans-serif;color:var(--bd-ink);background:#e8eee6}
+    .topbar{
+      position:absolute;z-index:1250;top:16px;left:20px;right:20px;
+      height:64px;padding:0 14px 0 13px;display:grid;
+      grid-template-columns:auto auto minmax(180px,1fr) auto;gap:13px;
+      border:1px solid rgba(255,255,248,.86);border-radius:19px;
+      background:rgba(250,251,246,.94);color:var(--bd-ink);
+      box-shadow:0 9px 32px rgba(13,38,25,.13);
+      backdrop-filter:blur(22px) saturate(135%);-webkit-backdrop-filter:blur(22px) saturate(135%);
+    }
+    .brand-area{gap:9px;min-width:0}
+    .sidebar-menu-toggle{
+      width:38px;height:38px;border-radius:12px;background:#edf3ec;
+      border:1px solid #dce7dc;color:var(--bd-green);font-size:18px;
+    }
+    .sidebar-menu-toggle:hover{background:#e1eee3;border-color:#bfd5c4}
+    .brand{gap:9px;color:var(--bd-green);min-width:0}
+    .brand-symbol{
+      position:relative;width:37px;height:37px;border-radius:12px;
+      background:var(--bd-green);color:#fff;font-size:19px;box-shadow:none;
+    }
+    .brand-symbol:after{
+      content:"";position:absolute;right:4px;top:4px;width:8px;height:8px;
+      border-radius:50%;background:var(--bd-red);border:2px solid #fff;
+    }
+    .brand-name{color:#173e2d;font-size:10px;letter-spacing:.08em;font-weight:900}
+    .brand-name small{color:#728479;font-size:8px;letter-spacing:.13em}
+    .atlas-primary-nav{display:flex;align-items:center;gap:3px;min-width:0;white-space:nowrap}
+    .top-nav-button{
+      min-height:36px;padding:0 11px;border-radius:11px;color:#607568;
+      font-size:10px;font-weight:800;transition:background .15s,color .15s,box-shadow .15s;
+    }
+    .top-nav-button:hover{background:#edf3ec;color:var(--bd-green)}
+    .top-nav-button.nav-active{
+      background:var(--bd-green);color:#fff;box-shadow:0 4px 12px rgba(0,106,78,.18);
+    }
+    .search-area{max-width:none;justify-self:stretch;min-width:0}
+    .search-form{
+      height:41px;padding:4px 5px 4px 12px;gap:8px;border-radius:12px;
+      background:#f0f4ed;border:1px solid #e0e8df;box-shadow:none;
+    }
+    .search-form:focus-within{background:#fff;border-color:#8db49a;box-shadow:0 0 0 3px rgba(0,106,78,.09)}
+    #mapSearch{font-size:11px;color:var(--bd-ink)}
+    #mapSearch::placeholder{color:#829287}
+    .search-symbol{color:var(--bd-green);font-size:17px}
+    .search-submit{background:var(--bd-green);color:#fff;border-radius:9px;min-width:34px;height:31px}
+    .search-submit:hover{background:#07513d}
+    .top-actions{gap:7px}
+    .about-data-button{
+      height:35px;display:flex;align-items:center;gap:6px;padding:0 10px;
+      border:1px solid #e0e8df;border-radius:10px;background:#fffef9;
+      color:#527061;font-size:9px;font-weight:800;white-space:nowrap;
+    }
+    .about-data-button:hover{background:#edf4ed;border-color:#c7d9ca;color:var(--bd-green)}
+    .about-data-button>span:first-child{font-size:14px;color:var(--bd-green)}
+    .lang-btn{
+      height:35px;padding:0 11px;border-radius:10px;border:1px solid #dce7dc;
+      background:#eef4ec;color:var(--bd-green);font-size:10px;font-weight:850;
+    }
+    .lang-btn:hover{background:#e2eee2}
+    .workspace{height:100dvh;width:100%;position:absolute;inset:0;display:block;overflow:hidden}
+    .map-area{position:absolute;inset:0;min-width:0;min-height:0;background:#dce7dd;overflow:hidden}
+    #map{background:#dce7dd}
+    .sidebar{
+      top:96px;left:20px;bottom:20px;width:min(388px,calc(100vw - 40px));
+      max-height:none;border:1px solid rgba(255,255,248,.9);border-radius:24px;
+      background:rgba(250,251,246,.97);box-shadow:var(--bd-shadow);
+      backdrop-filter:blur(26px) saturate(125%);-webkit-backdrop-filter:blur(26px) saturate(125%);
+      overflow:hidden;z-index:940;
+    }
+    body.sidebar-collapsed .sidebar{
+      width:min(388px,calc(100vw - 40px));
+      transform:translate3d(calc(-100% - 34px),0,0);opacity:0;pointer-events:none;
+    }
+    .sidebar-head{
+      flex:none;position:relative;padding:19px 57px 16px 20px;border:0;
+      background:
+        radial-gradient(circle at 92% 0%,rgba(244,42,65,.15),transparent 32%),
+        linear-gradient(135deg,#fdfdf7 0%,#f2f6ed 100%);
+      color:var(--bd-ink);
+    }
+    .sidebar-head:after{
+      content:"";position:absolute;left:20px;right:20px;bottom:0;height:1px;
+      background:linear-gradient(90deg,#b9d3bf,transparent);
+    }
+    .sidebar-head .eyebrow{color:var(--bd-green);font-size:8px;letter-spacing:.17em}
+    .sidebar-head h1{
+      color:#153d2c;font-size:23px;line-height:1.08;letter-spacing:-.055em;
+      margin:8px 0 6px;font-weight:850;
+    }
+    .sidebar-head p{max-width:290px;color:#63786a;font-size:10px;line-height:1.6}
+    .sidebar-close{
+      top:15px;right:15px;width:33px;height:33px;border-radius:11px;
+      border:1px solid #dce7dc;background:#fffef9;color:#597265;font-size:22px;
+      box-shadow:0 3px 10px rgba(21,57,36,.06);
+    }
+    .sidebar-close:hover{background:#edf4ec;border-color:#bed4c2;color:var(--bd-green);transform:none}
+    .selected-area{
+      position:relative;flex:none;margin:12px 13px 9px;padding:10px 12px 10px 14px;
+      border:1px solid #dce8dd;border-radius:14px;background:#fffef9;
+      box-shadow:0 3px 12px rgba(19,57,34,.04);
+    }
+    .selected-area:before{
+      content:"";position:absolute;left:0;top:11px;bottom:11px;width:3px;
+      border-radius:0 4px 4px 0;background:var(--bd-green);
+    }
+    .selected-top small{color:#829286;font-size:8px;letter-spacing:.14em}
+    .selected-dot{background:var(--bd-red);box-shadow:0 0 0 4px rgba(244,42,65,.12)}
+    #selectedAreaName{margin-top:4px;color:#183d2d;font-size:15px;letter-spacing:-.035em}
+    #selectedAreaBn{color:var(--bd-green);font-size:10px}
+    #selectedPath{color:#819086;font-size:9px}
+    .sidebar-tabs{
+      flex:none;display:flex;flex-direction:column;gap:9px;
+      max-height:42%;min-height:0;overflow-y:auto;overflow-x:hidden;
+      padding:4px 13px 12px;border:0;background:transparent;
+      scrollbar-width:thin;scrollbar-color:#cad8c9 transparent;
+    }
+    .sidebar-nav-group{display:grid;gap:6px}
+    .sidebar-nav-label{padding:3px 4px 1px;margin:0;color:#829287;font-size:8px;font-weight:900;letter-spacing:.16em}
+    .sidebar-nav-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+    .sidebar-tab{
+      min-width:0;min-height:37px;display:flex;align-items:center;gap:8px;
+      padding:6px 8px;border:1px solid transparent;border-radius:10px;
+      background:transparent;color:#607468;font-size:9px;font-weight:800;
+      box-shadow:none;transform:none;transition:background .15s,border-color .15s,color .15s;
+    }
+    .sidebar-tab:hover{background:#edf4ec;border-color:#e0e9df;color:var(--bd-green);transform:none}
+    .sidebar-tab.active{
+      border-color:#c7ddcb;background:#e7f1e8;color:#07573f;
+      box-shadow:inset 3px 0 var(--bd-green),0 2px 8px rgba(0,106,78,.05);
+    }
+    .sidebar-tab-icon{
+      flex:none;width:24px;height:24px;display:grid;place-items:center;
+      border:1px solid #e8eee5;border-radius:8px;background:#fffef9;
+      color:#6a8673;font-size:12px;font-weight:850;
+    }
+    .sidebar-tab.active .sidebar-tab-icon{border-color:#cce0d0;background:#d8eada;color:var(--bd-green)}
+    .national-report-tab{
+      width:100%;min-height:54px;padding:8px 10px;border:1px solid #d0e2d2;
+      border-radius:13px;background:linear-gradient(110deg,#e8f2e8,#f8faf3);
+      color:#1d5439;box-shadow:0 4px 11px rgba(0,106,78,.055);
+    }
+    .national-report-tab:hover{background:#e1efe2;border-color:#b9d5be}
+    .national-report-tab.active{
+      background:linear-gradient(110deg,#006a4e,#07503b);border-color:#07503b;
+      color:#fff;box-shadow:0 7px 18px rgba(0,86,60,.18);
+    }
+    .national-report-icon{
+      flex:none;width:32px;height:32px;display:grid;place-items:center;
+      border-radius:10px;background:#d5e8d8;color:var(--bd-green);font-size:16px;font-weight:900;
+    }
+    .national-report-tab.active .national-report-icon{background:rgba(255,255,255,.17);color:#fff}
+    .national-report-copy{display:grid;gap:3px;min-width:0;flex:1}
+    .national-report-copy strong{font-size:10px;font-weight:900}
+    .national-report-copy small{color:#718578;font-size:8px;font-weight:600}
+    .national-report-tab.active .national-report-copy small{color:#d5e9dc}
+    .national-report-arrow{color:#6e8d78;font-size:14px}
+    .national-report-tab.active .national-report-arrow{color:#e5f2e9}
+    .side-content{
+      flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;
+      padding:15px 16px 22px;border-top:1px solid #e3eadf;
+      background:linear-gradient(180deg,#f3f6ee 0%,#fafbf6 46px);
+      color:var(--bd-ink);scrollbar-width:thin;scrollbar-color:#cad8c9 transparent;
+    }
+    .side-content h2{font-size:19px;color:#1a4632;letter-spacing:-.04em}
+    .side-content h3{color:#26563d}
+    .side-intro{color:#6e8074}
+    .sidebar-foot{flex:none;padding:9px 14px;border-top:1px solid #e3eadf;background:#f4f7ef;color:#819085;font-size:8px}
+    .atlas-rail{
+      left:20px;top:50%;transform:translateY(-50%);gap:6px;padding:7px;
+      border:1px solid rgba(255,255,248,.9);border-radius:16px;
+      background:rgba(250,251,246,.92);backdrop-filter:blur(22px) saturate(130%);
+      box-shadow:0 10px 32px rgba(16,46,28,.17);
+    }
+    .atlas-rail button{
+      width:40px;height:40px;border-radius:11px;color:#315f45;
+      border:1px solid transparent;font-size:18px;
+    }
+    .atlas-rail button:hover{background:#e4f0e5;color:var(--bd-green);border-color:#cfe0d0}
+    #sidebarRailToggle{background:#e6f0e6;border-color:#d0e1d1;color:var(--bd-green)}
+    body:not(.sidebar-collapsed) #sidebarRailToggle{opacity:0;pointer-events:none}
+    body:not(.sidebar-collapsed) .map-levels{left:430px;max-width:calc(100% - 520px)}
+    body:not(.sidebar-collapsed) .map-status{left:430px;max-width:min(440px,calc(100% - 550px))}
+    .map-levels{
+      top:96px;left:78px;max-width:calc(100% - 430px);
+      padding:5px;border:1px solid rgba(255,255,248,.88);border-radius:14px;
+      background:rgba(250,251,246,.94);backdrop-filter:blur(20px);
+      box-shadow:0 8px 24px rgba(20,47,30,.12);
+    }
+    .level-btn{padding:8px 11px;border-radius:9px;color:#66796c;font-size:9px}
+    .level-btn:hover{background:#edf4ec;color:var(--bd-green)}
+    .level-btn.active{background:var(--bd-green);color:#fff}
+    .map-top-controls{top:96px;right:20px;gap:6px}
+    .map-pill{
+      height:36px;padding:0 12px;border-radius:11px;
+      background:rgba(250,251,246,.95);color:#315c43;
+      border:1px solid rgba(255,255,248,.9);font-size:9px;
+      box-shadow:0 7px 20px rgba(20,47,30,.12);
+    }
+    .map-pill:hover{background:#e9f2e8}
+    .map-pill.active{background:#07563f;color:#fff;border-color:#07563f}
+    .map-controls{
+      right:20px;top:50%;transform:translateY(-50%);
+      display:grid;gap:4px;padding:6px;border:1px solid rgba(255,255,248,.9);
+      border-radius:16px;background:rgba(250,251,246,.94);
+      backdrop-filter:blur(22px);box-shadow:0 9px 28px rgba(20,47,30,.16);
+    }
+    .map-control{width:39px;height:39px;border:0;border-radius:10px;background:transparent;color:#315a43;box-shadow:none}
+    .map-control:hover{background:#e6f0e5;color:var(--bd-green)}
+    .map-status{
+      top:auto;left:78px;bottom:22px;max-width:min(430px,calc(100% - 600px));
+      padding:9px 13px;border:1px solid rgba(255,255,248,.18);border-radius:12px;
+      background:rgba(10,42,30,.83);color:#eff6ec;box-shadow:0 8px 24px rgba(8,39,25,.2);
+      backdrop-filter:blur(14px);font-size:9px;
+    }
+    .map-status.error{background:#fff3e8;border-color:#f1d5bb;color:#815421}
+    .project-map-legend{
+      left:auto;right:20px;bottom:18px;display:flex;align-items:center;gap:8px;
+      border:1px solid rgba(255,255,248,.82);border-radius:13px;
+      background:rgba(250,251,246,.94);color:#526d5b;
+      box-shadow:0 7px 20px rgba(20,47,30,.11);font-size:9px;
+      backdrop-filter:blur(16px);
+    }
+    .project-map-dot{background:#f08a36;box-shadow:0 0 0 3px rgba(240,138,54,.16)}
+    .map-attribution{
+      right:auto;left:20px;bottom:3px;padding:5px 7px;border-radius:7px;
+      background:rgba(250,251,246,.86);color:#536b59;font-size:8px;
+      text-shadow:none;box-shadow:none;
+    }
+    .map-attribution a{color:#075c43}
+    .search-results{top:48px;border:1px solid #dce7db;border-radius:14px;background:#fffef9;box-shadow:0 15px 42px rgba(19,49,31,.16)}
+    .search-result:hover{background:#edf4ec}
+    .result-icon{background:#e5f0e5;color:var(--bd-green)}
+    .search-help{color:#718276}
+    .atlas-welcome{
+      position:absolute;left:50%;bottom:72px;transform:translateX(-50%);
+      z-index:705;display:flex;flex-direction:column;align-items:center;gap:5px;
+      width:min(410px,calc(100% - 44px));padding:17px 20px 15px;
+      border:1px solid rgba(255,255,248,.9);border-radius:19px;
+      background:rgba(250,251,246,.93);color:var(--bd-ink);
+      box-shadow:0 12px 34px rgba(16,46,28,.14);
+      backdrop-filter:blur(22px);text-align:center;
+      transition:opacity .18s,transform .18s;
+    }
+    .atlas-welcome:hover{background:#fffef9;transform:translateX(-50%) translateY(-2px)}
+    .atlas-welcome-kicker{font-size:8px;font-weight:900;letter-spacing:.18em;color:var(--bd-green)}
+    .atlas-welcome>strong{font-size:18px;letter-spacing:-.04em;color:#153d2c}
+    .atlas-welcome>small{font-size:10px;color:#6b7e72}
+    .atlas-welcome>i{
+      display:flex;align-items:center;gap:8px;margin-top:5px;padding:8px 14px;
+      border-radius:20px;background:var(--bd-green);color:#fff;font-size:10px;font-style:normal;font-weight:850;
+    }
+    .atlas-welcome>i b{color:#ffcbd1;font-size:14px}
+    body:not(.sidebar-collapsed) .atlas-welcome{opacity:0;pointer-events:none;transform:translate(-50%,8px)}
+    .atlas-data-health{
+      border-color:#d8e5d7;background:#f0f6ed;color:#3b5c44;
+      align-items:flex-start;
+    }
+    .atlas-data-health strong{color:#295239}
+    .atlas-data-health small{color:#738374}
+    .atlas-data-health button{border-color:#cbdcc9;background:#fffef9;color:var(--bd-green)}
+    .atlas-data-health button:hover{background:#e8f2e7}
+    .atlas-data-health-row>.is-ready{color:#16744c}
+    .atlas-data-health-row>.is-failed{color:#c63b4a}
+    .data-card,.atlas-kpi,.atlas-project-card,.atlas-contract-card,.atlas-report-cover,
+    .atlas-data-card,.atlas-person-card,.atlas-profile-section,.atlas-project-timelapse{
+      border-color:#e0e8dd;
+    }
+    .atlas-kpi,.atlas-data-card{background:#fffef9}
+    .atlas-kpi small,.atlas-project-meta,.atlas-small-note{color:#6b7d70}
+    .atlas-project-card,.atlas-contract-card{background:#fffef9;box-shadow:0 4px 16px rgba(19,49,31,.045)}
+    .atlas-project-kind{color:var(--bd-green)}
+    .atlas-project-money strong,.atlas-report-cover>strong{color:var(--bd-green)}
+    .atlas-progress-track{background:#e6eee5}
+    .atlas-progress-track>i{background:var(--bd-green)}
+    .atlas-location-chip{border-color:#d7e4d6;background:#edf4eb;color:#28613f}
+    .atlas-location-chip:hover{background:#deeddf;border-color:#bcd5c1}
+    .atlas-filter-input{border-color:#dce7dc;background:#fffef9;color:var(--bd-ink)}
+    .atlas-filter-input:focus{border-color:#7eaa8a;box-shadow:0 0 0 3px rgba(0,106,78,.08)}
+    .atlas-source-inline{color:var(--bd-green)}
+    .atlas-warning-text{color:#a4483f}
+    .atlas-empty-note{color:#758477}
+    .atlas-profile-section h4{color:#204e36}
+    .atlas-data-status,.data-status{border-color:#dce8d8;background:#f0f6ed;color:#5f7562}
+    .method-note{border-left-color:#91b69a;background:#eef4eb;color:#6d7f6e}
+    .atlas-report-caveat{border-color:#f1d5d6;background:#fff5f4;color:#81535a}
+    .atlas-report-implementation{background:#edf5ec;border-color:#d8e5d7}
+    .atlas-report-implementation>div>strong{color:var(--bd-green)}
+    .atlas-sector-row .atlas-progress-track i{background:var(--bd-green)}
+    .atlas-sector-row>div>strong{color:#234b35}
+    .atlas-source-inline:hover{color:#a52135}
+    .atlas-data-health-row>i{font-weight:900}
+    .sidebar-backdrop{z-index:930}
+    body:not(.sidebar-collapsed) .map-levels{left:430px}
+    @media(max-width:1100px){
+      .topbar{grid-template-columns:auto minmax(190px,1fr) auto;gap:9px;left:12px;right:12px}
+      .atlas-primary-nav{display:none}
+      .about-data-button{height:33px;padding:0 8px}
+      .brand-name{font-size:9px}
+      .map-levels{max-width:calc(100% - 155px)}
+      body:not(.sidebar-collapsed) .map-levels{left:9px;max-width:calc(100% - 150px)}
+      body:not(.sidebar-collapsed) .map-status{left:9px;max-width:calc(100% - 20px)}
+    }
+    @media(max-width:900px){
+      .topbar{
+        top:9px;left:9px;right:9px;height:55px;padding:0 7px;
+        grid-template-columns:auto minmax(0,1fr) auto;gap:7px;border-radius:15px;
+      }
+      .brand-area{gap:6px}
+      .sidebar-menu-toggle{width:33px;height:33px}
+      .brand-symbol{width:30px;height:30px;font-size:15px}
+      .brand-name{display:none}
+      .about-data-button{width:34px;justify-content:center;padding:0}
+      .about-data-button>span:last-child{display:none}
+      .lang-btn{height:32px;padding:0 8px;font-size:9px}
+      .search-form{height:36px;padding-left:8px;gap:4px}
+      #mapSearch{font-size:10px}
+      .search-submit{height:28px;min-width:29px;font-size:10px}
+      .sidebar{top:74px;left:9px;bottom:9px;width:min(390px,calc(100vw - 18px));max-height:none;border-radius:21px}
+      body.sidebar-collapsed .sidebar{width:min(390px,calc(100vw - 18px));transform:translate3d(calc(-100% - 25px),0,0)}
+      .sidebar-head{padding:15px 50px 13px 15px}
+      .sidebar-head h1{font-size:19px}
+      .selected-area{margin:9px 10px 7px;padding:9px 11px}
+      .sidebar-tabs{max-height:40%;gap:7px;padding:3px 10px 10px}
+      .sidebar-nav-grid{gap:5px}
+      .sidebar-tab{min-height:34px;padding:5px 7px;font-size:9px}
+      .sidebar-tab-icon{width:22px;height:22px}
+      .side-content{padding:12px 12px 18px}
+      .atlas-rail{left:9px;top:auto;bottom:185px;transform:none}
+      .atlas-rail button{width:39px;height:39px}
+      .map-levels{top:73px;left:9px;max-width:calc(100% - 108px);padding:3px}
+      .map-top-controls{top:73px;right:9px}
+      .map-pill{height:31px;padding:0 8px;font-size:8px}
+      .map-controls{right:9px;top:auto;bottom:185px;transform:none;padding:5px}
+      .map-control{width:35px;height:35px}
+      .map-status{left:9px;top:auto;bottom:135px;max-width:calc(100% - 18px);font-size:8px}
+      .project-map-legend{right:9px;left:auto;bottom:11px;max-width:calc(100% - 18px)}
+      .map-attribution{left:9px;right:auto;bottom:1px;font-size:7px}
+      .atlas-welcome{bottom:76px;padding:14px 14px 12px;width:min(350px,calc(100% - 90px))}
+    }
+    @media(max-width:560px){
+      .topbar{height:54px;padding:0 6px;gap:5px}
+      .brand-area{gap:5px}
+      .sidebar-menu-toggle{width:31px;height:31px}
+      .brand-symbol{width:28px;height:28px}
+      .search-form{height:34px;padding-left:7px}
+      #mapSearch{font-size:9px}
+      .search-symbol{font-size:13px}
+      .search-submit{height:27px;min-width:27px}
+      .about-data-button{width:30px;height:30px}
+      .lang-btn{height:30px;padding:0 7px}
+      .sidebar{top:68px;left:7px;bottom:7px;width:calc(100vw - 14px);border-radius:19px}
+      body.sidebar-collapsed .sidebar{width:calc(100vw - 14px)}
+      .sidebar-head{padding:13px 47px 11px 13px}
+      .sidebar-head h1{font-size:17px}
+      .sidebar-head p{font-size:9px}
+      .selected-area{margin:7px 9px 6px;padding:8px 10px}
+      .sidebar-tabs{max-height:38%;gap:6px}
+      .sidebar-nav-label{font-size:7px}
+      .sidebar-tab{min-height:32px;padding:5px 6px;gap:6px;font-size:8px}
+      .sidebar-tab-icon{width:20px;height:20px;font-size:11px}
+      .national-report-tab{min-height:47px;padding:6px 8px}
+      .national-report-icon{width:28px;height:28px}
+      .side-content{padding:10px 10px 16px}
+      .atlas-rail{bottom:178px;padding:5px}
+      .atlas-rail button{width:36px;height:36px}
+      .map-controls{bottom:178px}
+      .map-levels{max-width:calc(100% - 96px);gap:1px}
+      .level-btn{padding:6px 6px;font-size:7px}
+      .map-top-controls{top:72px}
+      .map-pill{height:29px;padding:0 6px;font-size:7px}
+      .map-status{bottom:133px}
+      .project-map-legend{bottom:9px;padding:6px 7px}
+      .project-map-legend small{display:none}
+      .map-attribution{font-size:6px}
+      .atlas-welcome{left:50%;bottom:69px;padding:12px 10px;width:min(310px,calc(100% - 86px))}
+      .atlas-welcome>strong{font-size:15px}
+      .atlas-welcome>small{font-size:8px}
+    }
+    @media(prefers-reduced-motion:reduce){
+      .atlas-welcome,.top-nav-button,.atlas-rail button,.map-pill,.map-control,.sidebar{transition:none!important}
+    }
+
+</style>
 </head>
 <body>
 <header class="topbar">
@@ -993,20 +1392,28 @@
     <button class="icon-btn sidebar-menu-toggle" id="sidebarToggle" type="button"
       aria-controls="sidebar" aria-expanded="false" aria-label="Open navigation panel"
       title="Open navigation panel"><span aria-hidden="true">☰</span></button>
-    <a class="brand" href="#map" aria-label="Let's Make Bangladesh Great">
+    <a class="brand" href="#map" aria-label="Bangladesh Public Atlas">
       <span class="brand-symbol">৳</span>
-      <span class="brand-name">LET'S MAKE BANGLADESH GREAT<small>PUBLIC MONEY · PUBLIC KNOWLEDGE</small></span>
+      <span class="brand-name">BANGLADESH ATLAS<small>PUBLIC MONEY · PUBLIC KNOWLEDGE</small></span>
     </a>
   </div>
+  <nav class="atlas-primary-nav" aria-label="Primary atlas navigation">
+    <button class="top-nav-button nav-active" data-panel="overview" type="button">Explore</button>
+    <button class="top-nav-button" data-panel="national" type="button">National</button>
+    <button class="top-nav-button" data-panel="budget" type="button">Spending</button>
+    <button class="top-nav-button" data-panel="projects" type="button">Projects</button>
+    <button class="top-nav-button" data-panel="audit" type="button">Oversight</button>
+  </nav>
   <div class="search-area">
     <form class="search-form" id="searchForm" role="search">
       <span class="search-symbol" aria-hidden="true">⌕</span>
-      <input id="mapSearch" type="search" autocomplete="off" placeholder="Search a place, road, market or area in Bangladesh…" aria-label="Search a location in Bangladesh">
+      <input id="mapSearch" type="search" autocomplete="off" placeholder="Search a district, project or place…" aria-label="Search a location in Bangladesh">
       <button class="search-submit" id="searchSubmit" type="submit" aria-label="Search map">↵</button>
     </form>
     <div class="search-results" id="searchResults" role="listbox" aria-label="Map search results"></div>
   </div>
   <div class="top-actions">
+    <button class="about-data-button" data-panel="sources" type="button"><span aria-hidden="true">ⓘ</span><span>About data</span></button>
     <button class="lang-btn" id="languageToggle" type="button">বাংলা</button>
   </div>
 </header>
@@ -1015,9 +1422,9 @@
   <aside class="sidebar" id="sidebar" aria-label="Government information sidebar" aria-hidden="true" inert>
     <div class="sidebar-head">
       <button class="sidebar-close" id="sidebarClose" type="button" aria-label="Close navigation panel" title="Close panel"><span aria-hidden="true">×</span></button>
-      <div class="eyebrow" data-en="Bangladesh public atlas" data-bn="বাংলাদেশ পাবলিক অ্যাটলাস">BANGLADESH ATLAS</div>
-      <h1 data-en="One country. Public records." data-bn="এক দেশ। জনগণের নথি।">One country. Public records.</h1>
-      <p data-en="Explore places, follow public money and track development with source-linked records." data-bn="স্থান অনুসন্ধান করুন, সরকারি অর্থের হিসাব দেখুন এবং উৎস-সংযুক্ত নথিতে উন্নয়ন পর্যবেক্ষণ করুন।">Explore places, follow public money and track development with source-linked records.</p>
+      <div class="eyebrow" data-en="Bangladesh · public development atlas" data-bn="বাংলাদেশ · পাবলিক ডেভেলপমেন্ট অ্যাটলাস">BANGLADESH · PUBLIC DEVELOPMENT ATLAS</div>
+      <h1 data-en="Follow the public money." data-bn="জনগণের অর্থের হিসাব রাখুন।">Follow the public money.</h1>
+      <p data-en="Budgets, projects and original public records — connected to the places they describe." data-bn="বাজেট, প্রকল্প এবং মূল সরকারি নথি — সংশ্লিষ্ট এলাকার সঙ্গে সংযুক্ত।">Budgets, projects and original public records — connected to the places they describe.</p>
     </div>
 
     <div class="selected-area">
@@ -1084,6 +1491,12 @@
 
   <section class="map-area" id="mapArea" aria-label="Bangladesh interactive map">
     <div id="map" role="application" aria-label="Satellite map of Bangladesh with administrative boundaries"></div>
+    <button class="atlas-welcome" id="exploreWelcome" type="button" aria-controls="sidebar">
+      <span class="atlas-welcome-kicker">BANGLADESH · PUBLIC RECORDS</span>
+      <strong>Where does the public money go?</strong>
+      <small>Explore the map, follow projects and open the evidence.</small>
+      <i>Open the atlas <b aria-hidden="true">↗</b></i>
+    </button>
 
     <nav class="atlas-rail rail-left" aria-label="Atlas navigation">
       <button id="sidebarRailToggle" type="button" aria-controls="sidebar" aria-expanded="false"
@@ -2809,9 +3222,10 @@ async function ensureLeaflet(){
   function renderSidePanel(key){
     activePanel=modules[key]?key:"overview";
     if(activePanel!=="projects")stopProjectTimeLapsePlayback();
-    document.querySelectorAll(".sidebar-tab[data-panel]").forEach(button=>{
+    document.querySelectorAll(".sidebar-tab[data-panel], .atlas-primary-nav [data-panel]").forEach(button=>{
       const active=button.dataset.panel===activePanel;
       button.classList.toggle("active",active);
+      button.classList.toggle("nav-active",active&&button.closest(".atlas-primary-nav"));
       if(active)button.setAttribute("aria-current","page");
       else button.removeAttribute("aria-current");
     });
@@ -2837,8 +3251,13 @@ async function ensureLeaflet(){
     html+='<div class="method-note">'+module.note+'</div>';
     el("sideContent").innerHTML=html;
   }
-  document.querySelectorAll(".sidebar-tab, .national-report-tab").forEach(button=>{
-    button.addEventListener("click",()=>renderSidePanel(button.dataset.panel));
+  document.querySelectorAll(".sidebar-tab[data-panel], .national-report-tab, .atlas-primary-nav [data-panel], .about-data-button[data-panel]").forEach(button=>{
+    button.addEventListener("click",()=>{
+      renderSidePanel(button.dataset.panel);
+      if(button.closest(".atlas-primary-nav")||button.classList.contains("about-data-button")){
+        setSidebarOpen(true,sidebarToggle,false);
+      }
+    });
   });
 
   // The map stays the landing view. Sidebar state is explicit and shared by every control.
@@ -2900,6 +3319,7 @@ async function ensureLeaflet(){
   syncSidebarState(false);
   sidebarToggle.addEventListener("click",toggleRecordsPanel);
   sidebarRailToggle.addEventListener("click",toggleRecordsPanel);
+  el("exploreWelcome").addEventListener("click",()=>setSidebarOpen(true,sidebarToggle,false));
   sidebarClose.addEventListener("click",()=>setSidebarOpen(false,lastSidebarTrigger,true));
   sidebarBackdrop.addEventListener("click",()=>setSidebarOpen(false,sidebarToggle,true));
 
