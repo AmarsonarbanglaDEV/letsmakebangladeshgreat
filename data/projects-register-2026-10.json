@@ -563,18 +563,20 @@
         {
           "type": "district",
           "name": "Munshiganj",
-          "precision": "district"
+          "precision": "raw RTHD page-one area field; conflict with Keraniganj entry"
         },
         {
           "type": "upazila",
           "name": "Keraniganj",
-          "precision": "upazila"
+          "precision": "raw RTHD page-one area field; parent-district conflict"
         }
       ],
       "mapDisplay": {
-        "mode": "administrative_area_highlight",
+        "mode": "not_geocoded_pending_area_reconciliation",
         "exactCoordinatesAvailable": false,
-        "routeGeometryAvailable": false
+        "routeGeometryAvailable": false,
+        "areaConflict": true,
+        "note": "The RTHD register row pairs Munshiganj with Keraniganj. These do not form a consistent district/upazila hierarchy; do not highlight or pin either until the source record is reconciled."
       },
       "plannedOutputs": [
         "Develop the Ramerkanda–Laksharchar (Rohitpur Bazar) link road."
@@ -602,7 +604,8 @@
       "dataLimitations": [
         "This approval-list row provides estimated approved cost, duration, approval date and area. It does not provide a current payment ledger, latest physical progress, or supplier award.",
         "A passed planned completion date does not independently establish that the project is delayed, complete or abandoned.",
-        "The portal's project-area field supports administrative area highlighting only. No exact route geometry or point has been imported."
+        "The portal's project-area field supports administrative area highlighting only. No exact route geometry or point has been imported.",
+        "Location warning: the published row pairs Munshiganj with Keraniganj, which do not form a consistent parent/child administrative pairing. The map deliberately does not geocode this row pending source reconciliation."
       ]
     },
     {
