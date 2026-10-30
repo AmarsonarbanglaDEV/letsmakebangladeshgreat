@@ -581,6 +581,7 @@
     setStatus("Loading "+levelInfo[level].label.toLowerCase()+" outlines…");
     const data=await fetchLayer(level);
     const built=makeRecordsAndLayer(data,level,true);
+    built.layer._atlasRecords=built.records;
     cache[level]=built;
     return built;
   }
@@ -1117,7 +1118,6 @@
     button.addEventListener("click",()=>switchLevel(button.dataset.level))
   );
 
-  let language="en";
   el("languageToggle").addEventListener("click",()=>{
     language=language==="en"?"bn":"en";
     document.documentElement.lang=language;
