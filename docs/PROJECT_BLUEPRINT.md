@@ -11,12 +11,12 @@ The platform is an information and research tool. It does not determine guilt, a
 The public experience has three principal exploration screens:
 
 ### A. Bangladesh Atlas
-- National map with standard and, where licensed, satellite basemaps.
-- Division and district boundaries from documented geographic sources.
+- A Bangladesh-only administrative map showing the country outline and eight division polygons; do not show surrounding countries or a global basemap in this view.
+- Division boundaries from the DGHS GIS Feature Service using the BBS ADM1 administrative-boundary dataset; district boundaries may be added later from a documented Bangladesh source.
 - Optional upazila and union layers when data quality permits.
 - Separate toggles for funding facts, projects, public assets, historical locations, audit observations and environment records.
 - Search by project, administrative area, ministry, agency and source.
-- Map features must identify their geometry source, date, precision and limitations.
+- Map features must identify their geometry source, dataset date, precision and limitations. The initial map is restricted to Bangladesh and uses no world basemap.
 
 A location marker is not proof that money was spent at that point. Transfers, budget allocations and project expenditure must not be conflated.
 
@@ -189,20 +189,8 @@ Public detail panels may contain programme evidence, documented roles, sources, 
 
 Private case tracking, confidential notes, personal details and restricted originals belong only in the protected owner console.
 
-## 12. We Have a Plan
+## 12. Current implementation boundary
 
-Create a bilingual share-card generator for:
-- Plan versus documented progress
-- Original versus revised deadline
-- Budget allocation versus reported expenditure
-- Tree planting versus verified survival
-- Bangladesh international indicators
-- What is known versus what remains unknown
-
-Cards should include source, reference period, record ID and date. Use original artwork and avoid copyrighted memes or misleading claims. The slogan is: "WE HAVE A PLAN. SHOW US THE RECEIPTS." and "PLAN ≠ PROGRESS."
-
-## 13. Current implementation boundary
-
-The current site is a static prototype. Map division markers are approximate divisional-headquarters reference points, not administrative boundaries or project coordinates. The project, funding, tree, global-indicator and audit sections intentionally show no published records until a verified dataset exists.
+The current site is a static prototype. The Bangladesh map draws administrative division polygons from the DGHS GIS Feature Service (BBS ADM1 dataset); these boundaries are geographic reference data, not project locations or evidence of expenditure. The project, funding, tree, global-indicator and audit sections intentionally show no published records until a verified dataset exists.
 
 A private owner console, authenticated submissions, database, evidence storage and publication system are future work and must not be represented as operational until implemented and tested.
