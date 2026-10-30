@@ -1781,6 +1781,13 @@ async function ensureLeaflet(){
   function openProjectProfile(projectId,focusPoint){
     const project=atlasData.projects?.projects?.find(item=>item.id===projectId);
     if(!project)return;
+    stopProjectTimeLapsePlayback();
+    if(historicalLayer&&map.hasLayer(historicalLayer))map.removeLayer(historicalLayer);
+    if(!outlineMode&&satellite&&!map.hasLayer(satellite)){
+      satellite.addTo(map);
+      el("satelliteToggle").classList.add("active");
+      el("outlineToggle").classList.remove("active");
+    }
     selectedProjectId=projectId;
     renderSidePanel("projects");
     if(document.body.classList.contains("sidebar-collapsed"))toggleRecordsPanel();
@@ -1846,7 +1853,13 @@ async function ensureLeaflet(){
           escapeHtml(project.name)+"<br><small>"+escapeHtml(districtName)+" district locator · not exact project coordinates</small>",
           {direction:"top",offset:[0,-8],className:"project-marker-tooltip"}
         );
-        marker.on("click",()=>openProjectProfile(project.id,locatorPoint));
+        marker.on("click",()=>{
+          if(activeProjectSpotId){
+            setStatus("The orange dot is only a district locator, not the exact work site. Click the actual project location elsewhere inside the district.",true);
+            return;
+          }
+          openProjectProfile(project.id,locatorPoint);
+        });
         marker.addTo(projectMarkersLayer);
         markerCount++;
       });
