@@ -394,6 +394,15 @@
     .atlas-compact-row span{font-size:10px;color:#29445d}
     .atlas-compact-row strong{font-size:11px;color:#18354f;text-align:right}
     .atlas-compact-row small{grid-column:1/-1;font-size:9px;color:#708399}
+    .atlas-ministry-table{margin-top:8px}
+    .atlas-ministry-head,.atlas-ministry-row{display:grid;grid-template-columns:minmax(0,1fr) 76px 78px;gap:7px;align-items:start}
+    .atlas-ministry-head{position:sticky;top:0;z-index:2;padding:8px 0;background:#f7f9fc;color:#6d8093;font-size:8px;font-weight:850;border-bottom:1px solid #dce5ef}
+    .atlas-ministry-row{padding:9px 0;border-bottom:1px solid #e4ebf1;font-size:9px;color:#28445d}
+    .atlas-ministry-row>span{min-width:0;overflow-wrap:anywhere}
+    .atlas-ministry-row>span small{display:block;font-size:8px;color:#8a9aab;margin-bottom:2px}
+    .atlas-ministry-row>span em{display:block;margin-top:4px;color:#75879a;font-size:8px;font-style:normal;line-height:1.5}
+    .atlas-ministry-row strong{text-align:right;color:#173c5c;font-size:10px}
+    .atlas-ministry-row>small{text-align:right;color:#75879a;font-size:9px}
     .atlas-directory-heading{display:flex;justify-content:space-between;gap:8px;align-items:baseline;margin:18px 0 8px}
     .atlas-directory-heading h3{margin:0;color:#173550}
     .atlas-directory-heading span{font-size:9px;color:#61768d;text-align:right}
@@ -1591,7 +1600,7 @@ async function ensureLeaflet(){
           '<path d="M28 161 L75 148 M400 159 L477 138" stroke="#f8fbfb" stroke-width="2" stroke-dasharray="5 7"/>'+
           '<text x="20" y="25" fill="#dceaf0" font-size="11">Uttara North</text><text x="397" y="177" fill="#dceaf0" font-size="11">Kamalapur</text>'+
         '</svg>'+
-        '<div class="atlas-model-foot">Schematic of an elevated rail corridor, not the official track alignment or an as-built engineering model.</div>'+
+        '<div class="atlas-model-foot">'+escapeHtml(project.modelNotice||"Conceptual elevated rail schematic; not official engineering or as-built geometry.")+'</div>'+
       '</div>';
     }
     return '<div class="atlas-model-wrap">'+
@@ -1664,9 +1673,10 @@ async function ensureLeaflet(){
     if(!d)return '<p class="atlas-empty-note">Ministry budget data file unavailable.</p>';
     let html='<div class="atlas-directory-heading"><h3>62 ministry / division lines</h3><span>Budget speech Table 5 · BDT crore</span></div>';
     html+='<input class="atlas-filter-input" type="search" data-ministry-filter placeholder="Filter by ministry or division…" aria-label="Filter ministry budget lines">';
-    html+='<div class="atlas-ministry-table"><div class="atlas-ministry-head"><span>Ministry / division</span><span>FY26–27</span><span>FY25–26 revised</span></div>';
+    html+='<div class="atlas-ministry-table"><div class="atlas-ministry-head"><span>Ministry / division</span><span>FY26–27 budget</span><span>FY25–26 revised</span></div>';
     d.ministryBudget.forEach(row=>{
-      html+='<div class="atlas-ministry-row"><span><small>'+row.code+'</small>'+escapeHtml(row.name)+'</span><strong>'+fmtAtlasNumber(row.budgetFY2026_27)+'</strong><small>'+fmtAtlasNumber(row.revisedFY2025_26)+'</small></div>';
+      const actual=row.actualFY2024_25==null?"Not separately itemized":fmtAtlasNumber(row.actualFY2024_25);
+      html+='<div class="atlas-ministry-row"><span><small>'+row.code+'</small>'+escapeHtml(row.name)+'<em>FY25–26 original: '+fmtAtlasNumber(row.budgetFY2025_26)+' · FY24–25 actual in Table 4: '+actual+'</em></span><strong>'+fmtAtlasNumber(row.budgetFY2026_27)+'</strong><small>'+fmtAtlasNumber(row.revisedFY2025_26)+'</small></div>';
     });
     html+='</div><p class="atlas-small-note">A missing FY2024–25 actual means Table 4 does not itemize that line separately; it is not zero. Full ministry-level audited actuals are not yet imported.</p>';
     return html;
@@ -1695,7 +1705,8 @@ async function ensureLeaflet(){
   function renderProjectsPanel(){
     const d=atlasData.projects;
     if(!d)return '<p class="atlas-empty-note">Project data file unavailable.</p>';
-    let html='<div class="atlas-kpi-grid">'+
+    let html='<input class="atlas-filter-input" type="search" data-project-filter placeholder="Filter projects by title, district or agency…" aria-label="Filter project register">'+
+      '<div class="atlas-kpi-grid">'+
       '<div class="atlas-kpi"><small>RTHD approved list</small><strong>73</strong><small>portal entries</small></div>'+
       '<div class="atlas-kpi"><small>Imported approved rows</small><strong>'+d.coverage.rthdApprovedProjectRegister.importedRecords+'</strong><small>first page only</small></div>'+
       '<div class="atlas-kpi"><small>Mega-project records</small><strong>'+d.coverage.rthdMegaProjectRegister.importedRecords+'</strong><small>quantified snapshot</small></div>'+
@@ -1725,6 +1736,12 @@ async function ensureLeaflet(){
     const panel=el("sideContent");
     panel.addEventListener("input",event=>{
       const target=event.target;
+      if(target.matches("[data-project-filter]")){
+        const q=normalise(target.value);
+        panel.querySelectorAll(".atlas-project-card").forEach(card=>{
+          card.style.display=(!q||normalise(card.textContent).includes(q))?"":"none";
+        });
+      }
       if(target.matches("[data-district-filter]")){
         const q=normalise(target.value);
         panel.querySelectorAll(".atlas-district-row").forEach(row=>{
