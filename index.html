@@ -419,6 +419,18 @@
     .atlas-location-chip{padding:6px 9px;border:1px solid #cbd8e7;border-radius:20px;background:#eef4fb;color:#24537a;font-size:9px;font-weight:750}
     .atlas-location-chip.is-context{color:#64778a;background:#f7f9fb}
     .atlas-project-card,.atlas-contract-card{padding:14px;margin:14px 0;border:1px solid #d7e2ee;border-radius:16px;background:#fff;box-shadow:0 5px 18px rgba(18,43,70,.06)}
+    .atlas-project-timelapse{margin:12px 0 2px;padding:12px;border:1px solid #b9cfde;border-radius:13px;background:linear-gradient(145deg,#eef5fa,#f8fbfd)}
+    .atlas-project-timelapse-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
+    .atlas-project-timelapse-head strong{font-size:11px;color:#17425f}
+    .atlas-project-timelapse-head span{font-size:8px;color:#668096}
+    .atlas-project-timelapse>p{font-size:9px;line-height:1.55;color:#526c82;margin:7px 0}
+    .atlas-choose-spot{width:100%;padding:10px 12px;border:0;border-radius:9px;background:#1c5c85;color:#fff;font-size:10px;font-weight:800;cursor:pointer;margin-top:5px}
+    .atlas-choose-spot.secondary{background:#e3edf4;color:#24536f;border:1px solid #c8d9e5}
+    .atlas-project-timelapse-current{font-size:13px;font-weight:850;color:#164c73;margin:10px 0}
+    .atlas-project-timelapse-controls{display:grid;grid-template-columns:38px minmax(0,1fr);align-items:center;gap:10px}
+    .atlas-time-play{width:36px;height:36px;border:0;border-radius:50%;background:#1c5c85;color:#fff;font-size:13px;cursor:pointer}
+    .atlas-project-timelapse-controls input[type=range]{width:100%;accent-color:#267aa6}
+    .atlas-project-timelapse-scale{display:flex;justify-content:space-between;gap:8px;font-size:8px;color:#75899a}
     .atlas-project-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
     .atlas-project-kind{color:#2967ff;font-size:8px;font-weight:900;letter-spacing:.12em}
     .atlas-project-id{font-size:8px;color:#8493a2}
@@ -638,6 +650,9 @@ async function ensureLeaflet(){
   let fallbackDivisionLayer=null,clipFrameScheduled=0;
   let satellite=null,historicalLayer=null,outlineMode=false,lastPoint=null,pointMarker=null;
   let waybackCore=null,waybackItems=[],waybackIndex=0,playTimer=null,lastSearchAt=0;
+  const projectSpotPoints=Object.create(null);
+  const projectTimeLapseStates=Object.create(null);
+  let activeProjectSpotId=null,projectTimeLapseTimer=null;
   let geocodeResults=[];
   let searchBusy=false;
   const el=id=>document.getElementById(id);
@@ -829,6 +844,7 @@ async function ensureLeaflet(){
         if(interactive){
           path.on("click",event=>{
             if(event.originalEvent)L.DomEvent.stopPropagation(event.originalEvent);
+            if(activeProjectSpotId&&handleProjectSpotMapClick(event.latlng))return;
             selectAdministrativeArea(r,true);
           });
           path.on("mouseover",()=>path.setStyle({color:"#d9ed8e",weight:3.2,fillOpacity:.12}));
@@ -1169,8 +1185,23 @@ async function ensureLeaflet(){
     });
   }
   map.on("zoomend",refreshAreaLabels);
+  function handleProjectSpotMapClick(point){
+    if(!activeProjectSpotId)return false;
+    const projectId=activeProjectSpotId;
+    if(!pointMatchesProjectDistrict(projectId,point)){
+      setStatus("That point is outside the project's source-listed district area, or its district boundary could not be matched. Choose a point inside the highlighted project district.",true);
+      return true;
+    }
+    activeProjectSpotId=null;
+    projectSpotPoints[projectId]={lat:point.lat,lng:point.lng};
+    setPoint(point,"Visitor-selected imagery point for "+projectId);
+    if(document.body.classList.contains("sidebar-collapsed"))toggleRecordsPanel();
+    window.setTimeout(()=>loadProjectTimeLapse(projectId,point),320);
+    return true;
+  }
   map.on("click",event=>{
     if(!bounds.contains(event.latlng))return;
+    if(handleProjectSpotMapClick(event.latlng))return;
     setPoint(event.latlng);
     renderSidePanel(activePanel);
   });
@@ -1681,7 +1712,194 @@ async function ensureLeaflet(){
     html+='</div><p class="atlas-small-note">A missing FY2024–25 actual means Table 4 does not itemize that line separately; it is not zero. Full ministry-level audited actuals are not yet imported.</p>';
     return html;
   }
+  function pointInRing(longitude,latitude,ring){
+    let inside=false;
+    for(let i=0,j=ring.length-1;i<ring.length;j=i++){
+      const xi=ring[i][0],yi=ring[i][1];
+      const xj=ring[j][0],yj=ring[j][1];
+      const crosses=((yi>latitude)!==(yj>latitude))&&
+        (longitude<(xj-xi)*(latitude-yi)/(yj-yi)+xi);
+      if(crosses)inside=!inside;
+    }
+    return inside;
+  }
+  function pointInProjectGeometry(longitude,latitude,geometry){
+    if(!geometry)return false;
+    const polygons=geometry.type==="Polygon"?[geometry.coordinates]:
+      (geometry.type==="MultiPolygon"?geometry.coordinates:[]);
+    return polygons.some(rings=>{
+      if(!rings||!rings.length||!pointInRing(longitude,latitude,rings[0]))return false;
+      return !rings.slice(1).some(hole=>pointInRing(longitude,latitude,hole));
+    });
+  }
+  function pointMatchesProjectDistrict(projectId,point){
+    const project=atlasData.projects?.projects?.find(item=>item.id===projectId);
+    if(!project||project.mapDisplay?.areaConflict)return false;
+    const districtNames=(project.administrativeAreas||[])
+      .filter(area=>area.type==="district").map(area=>normalise(area.name));
+    if(!districtNames.length||!cache.district?.records)return false;
+    return cache.district.records.some(record=>
+      districtNames.includes(normalise(record.name))&&
+      pointInProjectGeometry(point.lng,point.lat,record.feature?.geometry)
+    );
+  }
+  function stopProjectTimeLapsePlayback(){
+    if(projectTimeLapseTimer){window.clearInterval(projectTimeLapseTimer);projectTimeLapseTimer=null;}
+    document.querySelectorAll("[data-project-time-play]").forEach(button=>{
+      button.textContent="▶";
+      button.setAttribute("aria-label","Play project-location imagery time-lapse");
+    });
+  }
+  function projectTimeLapseMarkup(project){
+    const id=project.id;
+    const state=projectTimeLapseStates[id];
+    if(project.mapDisplay?.areaConflict&&!state){
+      return '<div class="atlas-project-timelapse" data-project-timelapse="'+escapeHtml(id)+'">'+
+        '<div class="atlas-project-timelapse-head"><strong>Location time-lapse</strong><span>Location unresolved</span></div>'+
+        '<p>The official project register contains conflicting administrative-area labels. This project cannot be safely placed or selected for a location time-lapse until its source location is reconciled.</p>'+
+      '</div>';
+    }
+    if(!state){
+      const hasOfficialPoint=Number.isFinite(Number(project.latitude))&&Number.isFinite(Number(project.longitude));
+      return '<div class="atlas-project-timelapse" data-project-timelapse="'+escapeHtml(id)+'">'+
+        '<div class="atlas-project-timelapse-head"><strong>Location time-lapse</strong><span>Esri imagery archive</span></div>'+
+        (hasOfficialPoint?
+          '<p>Official project coordinate is available in the source-linked record. Open the reported point to load its imagery history.</p><button type="button" class="atlas-choose-spot" data-open-project-spot="'+escapeHtml(id)+'">⌖ Open reported spot &amp; time-lapse</button>':
+          '<p>Choose the actual reported work site on the map to load imagery history for this project profile.</p><p class="atlas-small-note">The project source currently supplies an administrative area, not an exact surveyed GPS point. The selected point will be labelled as visitor-selected, not an official project coordinate.</p><button type="button" class="atlas-choose-spot" data-choose-project-spot="'+escapeHtml(id)+'">⌖ Choose reported spot on map</button>')+
+      '</div>';
+    }
+    if(state.loading){
+      return '<div class="atlas-project-timelapse" data-project-timelapse="'+escapeHtml(id)+'">'+
+        '<div class="atlas-project-timelapse-head"><strong>Location time-lapse</strong><span>Loading archive…</span></div>'+
+        '<p>Checking Esri Wayback versions at '+state.point.lat.toFixed(5)+', '+state.point.lng.toFixed(5)+'…</p>'+
+        '<p class="atlas-small-note">Visitor-selected map point · not an official survey coordinate.</p>'+
+      '</div>';
+    }
+    if(!state.items||!state.items.length){
+      return '<div class="atlas-project-timelapse" data-project-timelapse="'+escapeHtml(id)+'">'+
+        '<div class="atlas-project-timelapse-head"><strong>Location time-lapse</strong><span>No archive versions</span></div>'+
+        '<p>'+escapeHtml(state.metadataText||"No distinct historical imagery versions were returned for this point and zoom level.")+'</p>'+
+        '<p class="atlas-small-note">Selected point: '+state.point.lat.toFixed(5)+', '+state.point.lng.toFixed(5)+' · visitor-selected.</p>'+
+        '<button type="button" class="atlas-choose-spot" data-choose-project-spot="'+escapeHtml(id)+'">Choose another spot</button>'+
+      '</div>';
+    }
+    const item=state.items[state.index]||state.items[state.items.length-1];
+    return '<div class="atlas-project-timelapse" data-project-timelapse="'+escapeHtml(id)+'">'+
+      '<div class="atlas-project-timelapse-head"><strong>Location time-lapse</strong><span>'+state.items.length+' archive versions</span></div>'+
+      '<div class="atlas-project-timelapse-current" data-project-time-date>'+escapeHtml(item.releaseDateLabel||item.itemTitle||"Archive version")+'</div>'+
+      '<div class="atlas-project-timelapse-controls">'+
+        '<button type="button" class="atlas-time-play" data-project-time-play="'+escapeHtml(id)+'" aria-label="Play project-location imagery time-lapse">▶</button>'+
+        '<input type="range" min="0" max="'+(state.items.length-1)+'" value="'+state.index+'" step="1" data-project-time-slider="'+escapeHtml(id)+'" aria-label="Project location historical imagery timeline">'+
+      '</div>'+
+      '<div class="atlas-project-timelapse-scale"><span>'+escapeHtml(state.items[0].releaseDateLabel||"Oldest available")+'</span><span>'+escapeHtml(state.items[state.items.length-1].releaseDateLabel||"Latest available")+'</span></div>'+
+      '<p class="atlas-small-note" data-project-time-meta>'+escapeHtml(state.metadataText||"Loading image capture metadata…")+'</p>'+
+      '<p class="atlas-small-note">Selected point: '+state.point.lat.toFixed(5)+', '+state.point.lng.toFixed(5)+' · visitor-selected, not an official surveyed project coordinate.</p>'+
+      '<button type="button" class="atlas-choose-spot secondary" data-choose-project-spot="'+escapeHtml(id)+'">Choose another spot</button>'+
+    '</div>';
+  }
+  function applyProjectTimeLapseVersion(projectId,index,withMetadata){
+    const state=projectTimeLapseStates[projectId];
+    if(!state||!state.items||!state.items.length)return;
+    state.index=Math.max(0,Math.min(Number(index)||0,state.items.length-1));
+    const item=state.items[state.index];
+    const url=String(item.itemURL||"")
+      .replaceAll("{level}","{z}").replaceAll("{row}","{y}").replaceAll("{col}","{x}");
+    if(!url){
+      state.metadataText="No tile URL was supplied for this archive version.";
+    }else{
+      if(satellite&&map.hasLayer(satellite))map.removeLayer(satellite);
+      if(historicalLayer&&map.hasLayer(historicalLayer))map.removeLayer(historicalLayer);
+      historicalLayer=L.tileLayer(url,{
+        maxZoom:19,opacity:1,
+        attribution:"Historical imagery © Esri and imagery providers"
+      }).addTo(map);
+      el("satelliteToggle").classList.remove("active");
+      el("outlineToggle").classList.remove("active");
+      state.metadataText="Showing archive release "+(item.releaseDateLabel||"version")+".";
+    }
+    const root=el("sideContent").querySelector('[data-project-timelapse="'+CSS.escape(projectId)+'"]');
+    if(root){
+      const slider=root.querySelector("[data-project-time-slider]");
+      const date=root.querySelector("[data-project-time-date]");
+      const meta=root.querySelector("[data-project-time-meta]");
+      if(slider)slider.value=String(state.index);
+      if(date)date.textContent=item.releaseDateLabel||item.itemTitle||"Archive version";
+      if(meta)meta.textContent=state.metadataText;
+    }
+    if(withMetadata!==false){
+      getWaybackCore().then(core=>core.getMetadata(
+        {longitude:state.point.lng,latitude:state.point.lat},
+        Math.max(map.getZoom(),12),item.releaseNum
+      )).then(meta=>{
+        const capture=meta&&meta.date?new Date(meta.date).toISOString().slice(0,10):"Capture date not supplied";
+        const provider=meta&&meta.provider?meta.provider:"Provider not supplied";
+        const resolution=meta&&meta.resolution?meta.resolution+" m/pixel":"Resolution not supplied";
+        state.metadataText="Image capture: "+capture+" · "+provider+" · "+resolution+" · archive release "+(item.releaseDateLabel||"unknown")+".";
+        const target=el("sideContent").querySelector('[data-project-timelapse="'+CSS.escape(projectId)+'"] [data-project-time-meta]');
+        if(target)target.textContent=state.metadataText;
+      }).catch(()=>{
+        state.metadataText="Capture metadata unavailable · archive release "+(item.releaseDateLabel||"unknown")+".";
+        const target=el("sideContent").querySelector('[data-project-timelapse="'+CSS.escape(projectId)+'"] [data-project-time-meta]');
+        if(target)target.textContent=state.metadataText;
+      });
+    }
+  }
+  async function loadProjectTimeLapse(projectId,point){
+    stopProjectTimeLapsePlayback();
+    projectTimeLapseStates[projectId]={point:{lat:point.lat,lng:point.lng},loading:true,items:[],index:0,metadataText:"Checking imagery archive…"};
+    renderSidePanel("projects");
+    try{
+      const historyZoom=Math.max(map.getZoom(),12);
+      if(map.getZoom()<historyZoom)map.setView(point,historyZoom);
+      const core=await getWaybackCore();
+      const items=await core.getWaybackItemsWithLocalChanges(
+        {longitude:point.lng,latitude:point.lat},historyZoom,
+        {onlyUseSizeToFilterDuplicates:true}
+      );
+      const sorted=Array.isArray(items)?items.slice().sort((a,b)=>(a.releaseDatetime||0)-(b.releaseDatetime||0)):[];
+      projectTimeLapseStates[projectId]={
+        point:{lat:point.lat,lng:point.lng},loading:false,items:sorted,
+        index:Math.max(0,sorted.length-1),
+        metadataText:sorted.length?"Loading image capture metadata…":"No local imagery archive versions were returned."
+      };
+      renderSidePanel("projects");
+      if(sorted.length)applyProjectTimeLapseVersion(projectId,sorted.length-1,true);
+    }catch(error){
+      console.error("Project profile imagery history failed:",error);
+      projectTimeLapseStates[projectId]={
+        point:{lat:point.lat,lng:point.lng},loading:false,items:[],index:0,
+        metadataText:"Historical imagery could not be loaded: "+error.message
+      };
+      renderSidePanel("projects");
+    }
+  }
+  function startChoosingProjectSpot(projectId){
+    stopProjectTimeLapsePlayback();
+    const project=atlasData.projects?.projects?.find(item=>item.id===projectId);
+    if(!project||project.mapDisplay?.areaConflict){
+      setStatus("This project's reported area needs clarification before a map time-lapse can be attached.",true);
+      return;
+    }
+    activeProjectSpotId=projectId;
+    activePanel="projects";
+    renderSidePanel("projects");
+    const districtNames=(project.administrativeAreas||[])
+      .filter(area=>area.type==="district").map(area=>normalise(area.name));
+    const districtRecords=(cache.district?.records||[]).filter(record=>districtNames.includes(normalise(record.name)));
+    if(districtRecords.length){
+      const areaBounds=L.latLngBounds([]);
+      districtRecords.forEach(record=>{
+        const layer=cache.district.layer.getLayers().find(path=>path._atlasRecord&&path._atlasRecord.id===record.id);
+        if(layer)areaBounds.extend(layer.getBounds());
+      });
+      if(areaBounds.isValid())map.fitBounds(areaBounds,{padding:[70,70],maxZoom:9});
+    }
+    setStatus("Choose the actual project work site inside the highlighted/source-listed district area. A district-centre click is not a project coordinate.");
+    if(!document.body.classList.contains("sidebar-collapsed"))toggleRecordsPanel();
+    window.setTimeout(()=>map.invalidateSize({pan:false}),320);
+  }
   function renderProjectCard(project){
+
     const isMega=project.kind==="mega";
     const cost=isMega?croreFromLakh(project.approval.latestRevisedTotalLakh):croreFromLakh(project.approvedProjectCostLakh);
     const title=project.name;
@@ -1703,6 +1921,7 @@ async function ensureLeaflet(){
     }else{
       html+='<div class="atlas-location-chips">'+(project.administrativeAreas||[]).map(a=>a.type==="district"?'<button class="atlas-location-chip" type="button" data-district="'+escapeHtml(a.name)+'">'+escapeHtml(a.name)+' ↗</button>':'<span class="atlas-location-chip is-context">'+escapeHtml(a.name)+'</span>').join("")+'</div>';
     }
+    html+=projectTimeLapseMarkup(project);
     html+='<div class="atlas-project-foot"><span>Source date: '+escapeHtml(project.sourceUpdatedAt||project.lastChecked||"not supplied")+'</span><a class="atlas-source-inline" href="'+escapeHtml(project.source||project.approval?.source||"#")+'" target="_blank" rel="noopener">Original record ↗</a></div>';
     html+='</article>';
     return html;
@@ -1760,7 +1979,60 @@ async function ensureLeaflet(){
         });
       }
     });
+    panel.addEventListener("input",event=>{
+      const slider=event.target.closest("[data-project-time-slider]");
+      if(!slider)return;
+      stopProjectTimeLapsePlayback();
+      const projectId=slider.getAttribute("data-project-time-slider");
+      applyProjectTimeLapseVersion(projectId,Number(slider.value),true);
+    });
     panel.addEventListener("click",async event=>{
+      const openSpot=event.target.closest("[data-open-project-spot]");
+      if(openSpot){
+        const projectId=openSpot.getAttribute("data-open-project-spot");
+        const project=atlasData.projects?.projects?.find(item=>item.id===projectId);
+        const lat=Number(project?.latitude),lng=Number(project?.longitude);
+        const point=L.latLng(lat,lng);
+        if(!project||!Number.isFinite(lat)||!Number.isFinite(lng)||!bounds.contains(point)){
+          setStatus("This project has no valid source-backed point inside Bangladesh.",true);
+          return;
+        }
+        const projectHasDistrict=(project.administrativeAreas||[]).some(area=>area.type==="district");
+        if(projectHasDistrict&&!pointMatchesProjectDistrict(projectId,point)){
+          setStatus("The reported coordinate does not fall inside the project's listed district boundary. It is not being opened as a project site.",true);
+          return;
+        }
+        activePanel="projects";
+        map.setView(point,Math.max(map.getZoom(),14));
+        setPoint(point,"Officially reported project coordinate for "+projectId);
+        if(document.body.classList.contains("sidebar-collapsed"))toggleRecordsPanel();
+        window.setTimeout(()=>loadProjectTimeLapse(projectId,point),320);
+        return;
+      }
+      const chooseSpot=event.target.closest("[data-choose-project-spot]");
+      if(chooseSpot){
+        startChoosingProjectSpot(chooseSpot.getAttribute("data-choose-project-spot"));
+        return;
+      }
+      const playButton=event.target.closest("[data-project-time-play]");
+      if(playButton){
+        const projectId=playButton.getAttribute("data-project-time-play");
+        const state=projectTimeLapseStates[projectId];
+        if(!state||state.items.length<2)return;
+        if(projectTimeLapseTimer){
+          stopProjectTimeLapsePlayback();
+        }else{
+          stopPlayback();
+          playButton.textContent="Ⅱ";
+          playButton.setAttribute("aria-label","Pause project-location imagery time-lapse");
+          projectTimeLapseTimer=window.setInterval(()=>{
+            const current=projectTimeLapseStates[projectId];
+            if(!current||!current.items.length){stopProjectTimeLapsePlayback();return;}
+            applyProjectTimeLapseVersion(projectId,(current.index+1)%current.items.length,false);
+          },1600);
+        }
+        return;
+      }
       const button=event.target.closest("[data-district]");
       if(!button)return;
       const district=button.getAttribute("data-district");
@@ -1780,6 +2052,7 @@ async function ensureLeaflet(){
 
   function renderSidePanel(key){
     activePanel=modules[key]?key:"overview";
+    if(activePanel!=="projects")stopProjectTimeLapsePlayback();
     document.querySelectorAll(".sidebar-tab").forEach(button=>
       button.classList.toggle("active",button.dataset.panel===activePanel)
     );
