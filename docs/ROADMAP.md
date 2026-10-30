@@ -7,18 +7,22 @@
 - [ ] Add accessibility and mobile checks.
 - [ ] Add a privacy and contact policy before collecting submissions.
 
-## Stage 1 — Atlas interface
-- [x] Bangladesh-only map using published eight-division and 64-district boundary layers.
-- [x] Switch between Division (8) and District (64) map levels.
-- [x] Searchable English / Bangla directory for all 64 districts, grouped by division.
-- [x] Individually coloured district polygons and selectable map areas.
-- [x] Zoom in, zoom out, fit-Bangladesh and focus-to-selected-area controls.
-- [ ] Pin and preserve a versioned copy of the administrative boundary dataset with attribution.
-- [ ] Browser-validate optional upazila (BBS 2022), union (DGHS All_Union) and ward (DGHS All_Wards_main) layers, including actual feature counts and name matching.
-- [ ] Browser-validate satellite basemap attribution, point selection and the Wayback history timeline / acquisition metadata.
-- [ ] Confirm the Mouza / land-record portal link and keep village / mouza polygons unpublished until a complete, licensed boundary source is documented.
-- [ ] Add thematic project, finance and public-asset map layers after reviewed datasets exist.
-- [ ] Add map-data coverage, vintage, precision and imagery-coverage notes.
+## Stage 1 — Map-first atlas interface
+- [x] Replace the scrolling homepage with a full-screen Bangladesh map workspace.
+- [x] Default to Esri satellite imagery, bounded to Bangladesh and masked by a national outline polygon.
+- [x] Add a documented fallback chain for the national mask; disable satellite view rather than show neighbouring countries if no reliable mask can load.
+- [x] Fix ArcGIS query ordering by reading each service's actual object-ID field from metadata (including `fid` on BBS ADM1 / ADM2 layers).
+- [x] Add switchable Division, District, Upazila, Union and available Ward map levels.
+- [x] Add map zoom, fit-Bangladesh, satellite / outline controls and zoom-aware feature labels.
+- [x] Add a collapsible government-information sidebar with Overview, Budget, Ministries, Projects, Procurement, Audit, Environment, Indicators and Sources sections.
+- [x] Add Bangladesh place search, local administrative-name matching and submit-only Nominatim lookup.
+- [x] Add point selection and a video-style slider / playback for local Esri World Imagery Wayback versions.
+- [ ] Browser-validate ADM0 mask geometry, all boundary query pagination, actual feature counts, name matching and map outline at desktop / mobile sizes.
+- [ ] Browser-validate Esri satellite tile attribution, mask clipping, Wayback tile switching and capture metadata.
+- [ ] Browser-validate Nominatim search and the public usage-policy / privacy notice.
+- [ ] Populate the sidebar only after source extraction, review and publication approvals.
+- [ ] Preserve a versioned copy of the administrative boundary datasets and provenance.
+- [ ] Add verified project / finance / asset layers only after the data model and review gates are implemented.
 
 ## Stage 2 — Source inventory
 - [ ] Inventory national budget documents by fiscal year.
