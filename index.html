@@ -394,6 +394,41 @@
     .atlas-location-chip{padding:6px 9px;border:1px solid #cbd8e7;border-radius:20px;background:#eef4fb;color:#24537a;font-size:9px;font-weight:750}
     .atlas-location-chip.is-context{color:#64778a;background:#f7f9fb}
     .atlas-project-card,.atlas-contract-card{padding:14px;margin:14px 0;border:1px solid #d7e2ee;border-radius:16px;background:#fff;box-shadow:0 5px 18px rgba(18,43,70,.06)}
+
+    .project-map-legend{position:absolute;z-index:760;left:14px;bottom:16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;max-width:min(440px,calc(100% - 28px));padding:9px 12px;border:1px solid rgba(255,255,255,.85);border-radius:13px;background:rgba(255,254,250,.96);box-shadow:0 8px 25px rgba(10,30,21,.18);backdrop-filter:blur(12px);font-size:9px;color:#45596b}
+    .project-map-legend strong{font-size:10px;color:#183b53}
+    .project-map-legend small{flex-basis:100%;margin-left:17px;color:#718397;font-size:8px}
+    .project-map-dot{display:inline-block;width:10px;height:10px;flex:none;border:2px solid #fff;border-radius:50%;background:#f28a19;box-shadow:0 0 0 2px #c86b0c}
+    .atlas-project-pin-shell{background:transparent;border:0}
+    .atlas-project-pin{display:block;width:17px;height:17px;border:3px solid #fff;border-radius:50%;background:#f28a19;box-shadow:0 2px 8px rgba(65,37,10,.5),0 0 0 2px #c86b0c;transition:transform .14s ease}
+    .leaflet-marker-icon:hover .atlas-project-pin,.leaflet-marker-icon:focus .atlas-project-pin{transform:scale(1.28)}
+    .project-marker-tooltip{border:1px solid #dbe4ec;border-radius:8px;background:#fff;color:#214059;box-shadow:0 4px 14px rgba(0,0,0,.16);font-size:9px;line-height:1.5}
+    .project-marker-tooltip small{color:#718397}
+    .atlas-project-card.is-project-selected{border-color:#f28a19;box-shadow:0 0 0 3px rgba(242,138,25,.19),0 8px 24px rgba(18,43,70,.08)}
+    .atlas-project-type-image{margin:11px 0 13px;border-radius:13px;overflow:hidden;background:linear-gradient(145deg,#143d52,#22617b)}
+    .atlas-project-type-image svg{display:block;width:100%;height:auto;max-height:170px}
+    .atlas-project-type-caption{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:5px;padding:8px 10px;background:#123449}
+    .atlas-project-type-caption span{font-size:9px;font-weight:850;color:#edf5f7}
+    .atlas-project-type-caption small{font-size:8px;color:#a9c1cd}
+    .atlas-profile-section{margin:13px 0;padding:12px;border:1px solid #e0e8ef;border-radius:12px;background:#fbfcfd}
+    .atlas-profile-section h4{margin:0 0 9px;color:#1c405b;font-size:11px}
+    .atlas-finance-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+    .atlas-finance-grid>div{padding:9px;border-radius:9px;background:#edf3f8;min-width:0}
+    .atlas-finance-grid small{display:block;font-size:8px;color:#72869a;line-height:1.45}
+    .atlas-finance-grid strong{display:block;margin-top:5px;color:#173e5d;font-size:12px;overflow-wrap:anywhere}
+    .atlas-finance-subrow,.atlas-person-row{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid #e6edf2;font-size:9px;color:#647a8f}
+    .atlas-finance-subrow strong,.atlas-person-row strong{color:#244a65;text-align:right;overflow-wrap:anywhere;max-width:60%}
+    .atlas-person-card{padding:10px;margin-top:8px;border:1px solid #dce6ed;border-radius:10px;background:#f3f7fa}
+    .atlas-person-card>small{display:block;font-size:8px;color:#74899b}
+    .atlas-person-card>strong{display:block;margin:4px 0;color:#173e5d;font-size:12px}
+    .atlas-person-card>span{display:block;color:#49667d;font-size:9px}
+    .atlas-person-card.is-unpublished{background:#fafbfd;border-style:dashed}
+    .atlas-person-card p{font-size:8px;line-height:1.55;color:#677c8e}
+    .atlas-output-list{margin:8px 0;padding:9px;border-radius:9px;background:#f0f5f8}
+    .atlas-output-list>small{font-size:8px;color:#72869a;font-weight:850;text-transform:uppercase;letter-spacing:.06em}
+    .atlas-output-list p,.atlas-output-list li{font-size:9px;line-height:1.55;color:#4e687d}
+    .atlas-output-list ul{margin:6px 0 0;padding-left:17px}
+    @media(max-width:560px){.project-map-legend{bottom:12px;left:10px;max-width:calc(100% - 20px)}.atlas-finance-grid{gap:6px}}
     .atlas-project-timelapse{margin:12px 0 2px;padding:12px;border:1px solid #b9cfde;border-radius:13px;background:linear-gradient(145deg,#eef5fa,#f8fbfd)}
     .atlas-project-timelapse-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
     .atlas-project-timelapse-head strong{font-size:11px;color:#17425f}
@@ -1823,16 +1858,124 @@ async function ensureLeaflet(){
     }
   }
 
+  function projectTypeImageHtml(project){
+    const kind=project.projectType||(
+      project.kind==="mega"?"Urban mass rapid transit":
+      (/bridge/i.test(project.name)?"Bridge construction":"Road / highway improvement")
+    );
+    let svg="";
+    if(/metro|transit|rail/i.test(kind)){
+      svg='<svg viewBox="0 0 520 190" role="img" aria-label="Conceptual elevated metro project illustration">'+
+        '<path d="M0 150 L520 150 L520 190 L0 190 Z" fill="#d8e3e5"/>'+
+        '<path d="M0 125 L520 125" stroke="#708d99" stroke-width="5"/>'+
+        '<path d="M30 132 L490 132" stroke="#f7fbfc" stroke-width="3"/>'+
+        '<path d="M88 132 V182 M210 132 V182 M330 132 V182 M442 132 V182" stroke="#68818d" stroke-width="12"/>'+
+        '<g transform="translate(170 66)"><rect width="192" height="52" rx="12" fill="#e5f0f4" stroke="#7395a4" stroke-width="3"/><path d="M10 10 H182" stroke="#1d78a0" stroke-width="7"/><g fill="#477d95"><rect x="19" y="22" width="37" height="17" rx="3"/><rect x="67" y="22" width="37" height="17" rx="3"/><rect x="115" y="22" width="37" height="17" rx="3"/></g><circle cx="42" cy="52" r="6" fill="#243f50"/><circle cx="151" cy="52" r="6" fill="#243f50"/></g>'+
+        '<text x="24" y="30" fill="#e6f4f8" font-size="16" font-weight="700">MASS TRANSIT</text>'+
+      '</svg>';
+    }else if(/bridge/i.test(kind)){
+      svg='<svg viewBox="0 0 520 190" role="img" aria-label="Conceptual bridge project illustration">'+
+        '<path d="M0 145 Q90 128 170 145 T340 145 T520 145 V190 H0 Z" fill="#5f9fb2"/>'+
+        '<path d="M0 125 L520 125 L520 143 L0 143 Z" fill="#5a6671"/>'+
+        '<path d="M55 124 L100 35 L145 124 M375 124 L420 35 L465 124" fill="none" stroke="#dce9ed" stroke-width="7"/>'+
+        '<path d="M100 35 V170 M420 35 V170" stroke="#c3d4db" stroke-width="9"/>'+
+        '<path d="M0 124 L520 124" stroke="#fff0c9" stroke-width="3" stroke-dasharray="14 10"/>'+
+        '<path d="M88 143 V185 M145 143 V185 M375 143 V185 M432 143 V185" stroke="#677b86" stroke-width="11"/>'+
+        '<text x="24" y="25" fill="#e6f4f8" font-size="16" font-weight="700">BRIDGE / CROSSING</text>'+
+      '</svg>';
+    }else{
+      svg='<svg viewBox="0 0 520 190" role="img" aria-label="Conceptual road and highway project illustration">'+
+        '<path d="M0 150 L520 150 L520 190 L0 190 Z" fill="#c3d5c8"/>'+
+        '<path d="M155 190 L225 70 L295 70 L365 190 Z" fill="#4b5b66"/>'+
+        '<path d="M259 83 L259 190" stroke="#f4e8b6" stroke-width="4" stroke-dasharray="15 11"/>'+
+        '<path d="M216 91 L183 190 M302 91 L335 190" stroke="#e3e9e8" stroke-width="4"/>'+
+        '<g fill="#527e63"><circle cx="72" cy="95" r="24"/><circle cx="112" cy="120" r="19"/><circle cx="433" cy="105" r="25"/><circle cx="474" cy="127" r="18"/></g>'+
+        '<g fill="#dce8eb"><rect x="27" y="48" width="11" height="49"/><rect x="462" y="53" width="11" height="49"/></g>'+
+        '<text x="24" y="25" fill="#e6f4f8" font-size="16" font-weight="700">ROAD / HIGHWAY</text>'+
+      '</svg>';
+    }
+    return '<div class="atlas-project-type-image">'+svg+
+      '<div class="atlas-project-type-caption"><span>'+escapeHtml(kind)+'</span><small>Conceptual project-type illustration · not a site photograph</small></div>'+
+    '</div>';
+  }
+
+  function projectFundingDetailsHtml(project){
+    const f=project.financials||{};
+    const originalLakh=project.approval?.originalTotalLakh??project.approvedProjectCostLakh??f.approvedCostLakh;
+    const revisedLakh=project.approval?.latestRevisedTotalLakh??f.revisedCostLakh;
+    const spentLakh=f.reportedCumulativeExpenditureLakh??f.reportedExpenditureLakh;
+    const releaseLakh=f.fundReleaseLakh??f.releaseLakh;
+    const spentLabel=spentLakh==null?"Not published in the imported project source":atlasMoney(croreFromLakh(spentLakh));
+    const spendPeriod=f.expenditureAsOf?(" · reported through "+escapeHtml(f.expenditureAsOf)):"";
+    let html='<section class="atlas-profile-section"><h4>Funding and reported expenditure</h4><div class="atlas-finance-grid">';
+    html+='<div><small>Original approved cost</small><strong>'+atlasMoney(originalLakh==null?null:croreFromLakh(originalLakh))+'</strong></div>';
+    html+='<div><small>Latest revised cost</small><strong>'+atlasMoney(revisedLakh==null?null:croreFromLakh(revisedLakh))+'</strong></div>';
+    html+='<div><small>Funds released</small><strong>'+(releaseLakh==null?"Not published":atlasMoney(croreFromLakh(releaseLakh)))+'</strong></div>';
+    html+='<div><small>Reported cumulative expenditure</small><strong>'+spentLabel+'</strong></div>';
+    html+='</div>';
+    if(spentLakh!=null){
+      html+='<p class="atlas-small-note">Reported amount is a cumulative total from the cited project progress report'+spendPeriod+'. '+escapeHtml(f.note||"It is not automatically an audited or current-year total.")+'</p>';
+    }else{
+      html+='<p class="atlas-warning-text">The approved-project listing publishes the estimated cost, not project-level releases, payments or actual expenditure. Unknown is not zero.</p>';
+    }
+    if(project.approval?.latestGoBShareLakh!=null){
+      html+='<div class="atlas-finance-subrow"><span>Government of Bangladesh share</span><strong>'+atlasMoney(croreFromLakh(project.approval.latestGoBShareLakh))+'</strong></div>';
+      html+='<div class="atlas-finance-subrow"><span>Project-aid share</span><strong>'+atlasMoney(croreFromLakh(project.approval.latestProjectAidShareLakh))+'</strong></div>';
+    }
+    html+='</section>';
+    return html;
+  }
+
+  function projectManagementDetailsHtml(project){
+    const pd=project.projectDirector;
+    let html='<section class="atlas-profile-section"><h4>Responsible ministry and project leadership</h4>';
+    html+='<div class="atlas-person-row"><span>Responsible ministry</span><strong>'+escapeHtml(project.ministry||"Not specified in the imported project record")+'</strong></div>';
+    html+='<div class="atlas-person-row"><span>Implementing agency</span><strong>'+escapeHtml(project.implementingAgency||"Not specified in the imported project record")+'</strong></div>';
+    if(pd&&pd.name){
+      html+='<div class="atlas-person-card"><small>Project Director named in source</small><strong>'+escapeHtml(pd.name)+'</strong><span>'+escapeHtml(pd.designation||"Project Director")+'</span><small>Source snapshot: '+escapeHtml(pd.sourceDate||"date not supplied")+'</small><a class="atlas-source-inline" href="'+escapeHtml(pd.source)+'" target="_blank" rel="noopener">Open official leadership source ↗</a><p class="atlas-small-note">'+escapeHtml(pd.note||"The name and role are shown as stated in the cited report.")+'</p></div>';
+    }else{
+      html+='<div class="atlas-person-card is-unpublished"><small>Project Director / responsible engineer</small><strong>Not identified in the imported source</strong><p class="atlas-small-note">'+escapeHtml(project.managementNote||"The available project listing does not name an individual project director or responsible engineer.")+'</p></div>';
+    }
+    html+='</section>';
+    return html;
+  }
+
+  function projectContractDetailsHtml(project){
+    const packages=project.contractPackages||[];
+    let html='<section class="atlas-profile-section"><h4>Contractor and awarded company</h4>';
+    if(packages.length){
+      packages.forEach(item=>{
+        html+='<div class="atlas-person-card"><small>'+escapeHtml(item.reference||"Tender reference not supplied")+'</small><strong>'+escapeHtml(item.supplierNameAsPublished||"Supplier not published")+'</strong><span>'+escapeHtml(item.packageTitle||"Contract package")+'</span><div class="atlas-person-row"><span>Award value</span><strong>'+escapeHtml(item.contractValueLabel||"Not published")+'</strong></div><div class="atlas-person-row"><span>Award date</span><strong>'+escapeHtml(item.awardDate||"Not supplied")+'</strong></div>'+(item.source?'<a class="atlas-source-inline" href="'+escapeHtml(item.source)+'" target="_blank" rel="noopener">Open award source ↗</a>':"")+'</div>';
+      });
+    }else{
+      html+='<div class="atlas-person-card is-unpublished"><small>Supplier / contractor</small><strong>No matching award linked yet</strong><p class="atlas-small-note">'+escapeHtml(project.contractStatusNote||"A contractor has not been linked to this project using a matching official tender or project reference.")+'</p><p class="atlas-small-note">Do not attach a company from another road contract simply because it works in the same district.</p></div>';
+    }
+    html+='</section>';
+    return html;
+  }
+
+  function projectOutputDetailsHtml(project){
+    let html='<section class="atlas-profile-section"><h4>Project scope and intended outcome</h4>';
+    if(project.plannedOutputs&&project.plannedOutputs.length){
+      html+='<div class="atlas-output-list"><small>Planned outputs</small><ul>'+project.plannedOutputs.map(item=>'<li>'+escapeHtml(item)+'</li>').join("")+'</ul></div>';
+    }
+    if(project.outcomes?.intended){
+      html+='<div class="atlas-output-list"><small>Intended outcome</small><p>'+escapeHtml(project.outcomes.intended)+'</p></div>';
+    }
+    html+='<p class="atlas-small-note">An intended result is not proof that the result has been achieved. Measured outcomes are shown only when a dated source provides them.</p></section>';
+    return html;
+  }
+
   function renderProjectCard(project){
 
     const isMega=project.kind==="mega";
     const cost=isMega?croreFromLakh(project.approval.latestRevisedTotalLakh):croreFromLakh(project.approvedProjectCostLakh);
     const title=project.name;
-    let html='<article class="atlas-project-card"><div class="atlas-project-top"><span class="atlas-project-kind">'+(isMega?"MEGA PROJECT":"APPROVED ROAD PROJECT · RTHD")+'</span><span class="atlas-project-id">'+escapeHtml(project.id)+'</span></div>';
+    let html='<article class="atlas-project-card" data-project-card="'+escapeHtml(project.id)+'"><div class="atlas-project-top"><span class="atlas-project-kind">'+(isMega?"MEGA PROJECT":"APPROVED ROAD PROJECT · RTHD")+'</span><span class="atlas-project-id">'+escapeHtml(project.id)+'</span></div>';
     html+='<h3>'+escapeHtml(title)+'</h3><p class="atlas-project-meta">'+escapeHtml(project.implementingAgency||"Implementing agency not in imported row")+' · '+(isMega?"RTHD mega-project progress PDF":"RTHD approved-project list")+'</p>';
+    html+=projectTypeImageHtml(project);
     html+='<div class="atlas-project-money"><small>'+(isMega?"Third revised project total":"Approved estimate")+'</small><strong>'+atlasMoney(cost)+'</strong><small>Original unit: '+(isMega?"lakh taka converted to crore":"lakh taka converted to crore")+'</small></div>';
     if(isMega)html+=projectModelHtml(project);
-    else html+=projectModelHtml(project);
     if(isMega){
       (project.progress||[]).forEach(progress=>html+=progressBarHtml(progress));
       html+='<p class="atlas-small-note">Progress snapshot: '+escapeHtml(project.approval.sourceDate)+' · physical and financial measures are separate. The RTHD index has a newer report dated 12 Oct 2026 which is not yet transcribed.</p>';
@@ -1846,6 +1989,10 @@ async function ensureLeaflet(){
     }else{
       html+='<div class="atlas-location-chips">'+(project.administrativeAreas||[]).map(a=>a.type==="district"?'<button class="atlas-location-chip" type="button" data-district="'+escapeHtml(a.name)+'">'+escapeHtml(a.name)+' ↗</button>':'<span class="atlas-location-chip is-context">'+escapeHtml(a.name)+'</span>').join("")+'</div>';
     }
+    html+=projectFundingDetailsHtml(project);
+    html+=projectManagementDetailsHtml(project);
+    html+=projectContractDetailsHtml(project);
+    html+=projectOutputDetailsHtml(project);
     html+=projectTimeLapseMarkup(project);
     html+='<div class="atlas-project-foot"><span>Source date: '+escapeHtml(project.sourceUpdatedAt||project.lastChecked||"not supplied")+'</span><a class="atlas-source-inline" href="'+escapeHtml(project.source||project.approval?.source||"#")+'" target="_blank" rel="noopener">Original record ↗</a></div>';
     html+='</article>';
