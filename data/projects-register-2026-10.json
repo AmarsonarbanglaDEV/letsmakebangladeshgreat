@@ -225,7 +225,30 @@
         "Passenger ridership, journey-time, farebox, safety and emissions outcomes are not extracted from this progress report.",
         "RTHD's mega-project index lists a Line-6 report dated 12 October 2026. This dataset's quantified physical and financial progress still comes from the February 2026 PDF and needs replacement after extracting the October report.",
         "Additional package-level progress bars (CP-05 to CP-08) are transcribed from printed page 4 of the February 2026 report. These are separate package measures and must not be averaged into one overall completion figure."
-      ]
+      ],
+      "projectType": "Urban mass rapid transit / elevated metro",
+      "projectDirector": {
+        "name": "Mr. Md. Abdul Wohab",
+        "designation": "Project Director (Additional Charge)",
+        "sourceDate": "2026-02-28",
+        "source": "https://eservices.rthd.gov.bd/admin/docs/news/rthd_13.pdf",
+        "sourceTitle": "RTHD MRT Line-6 progress report up to February 2026",
+        "sourcePage": "Project Director's Information section",
+        "note": "This is the official name/role shown in the February 2026 report, not a confirmation that the appointment remains unchanged on 30 October 2026."
+      },
+      "financials": {
+        "originalApprovedCostLakh": 2198507.21,
+        "latestRevisedCostLakh": 3271772.57,
+        "reportedCumulativeExpenditureLakh": 2638142.08,
+        "expenditureAsOf": "2026-02-28",
+        "expenditureUnit": "BDT lakh",
+        "currentFiscalYearRowIsPartial": "FY2025-26 expenditure row is reported only through February 2026.",
+        "fundReleaseLakh": null,
+        "auditedExpenditureLakh": null,
+        "note": "Cumulative sum of the annual project-report expenditure rows, including the partial FY2025-26 row through February 2026. Not a current FY2026-27 total or independently audited total."
+      },
+      "contractPackages": [],
+      "contractStatusNote": "No individual supplier/contractor package records have been linked to the current project register using a matching procurement reference in this pilot dataset."
     },
     {
       "id": "RTHD-N6-CHAPAINAWABGANJ",
@@ -277,7 +300,11 @@
         "approvedCostLakh": 48189.03,
         "revisedCostLakh": null,
         "releaseLakh": null,
-        "reportedExpenditureLakh": null
+        "reportedExpenditureLakh": null,
+        "fundReleaseLakh": null,
+        "auditedExpenditureLakh": null,
+        "expenditureAsOf": null,
+        "note": "The RTHD approved-project listing provides an estimated project cost, but does not provide a project-level release/payment/expenditure figure. Not published in the imported source."
       },
       "projectContracts": [],
       "sourceStatus": "reviewed_source_extract",
@@ -290,7 +317,12 @@
         "The approval-list record supplies cost, duration and project area; it does not provide current physical progress or cumulative expenditure.",
         "The schedule end date has passed, but this entry alone does not establish completion or delay. Current status remains unconfirmed.",
         "No exact project coordinate or route geometry has been imported."
-      ]
+      ],
+      "projectType": "Highway improvement",
+      "projectDirector": null,
+      "contractPackages": [],
+      "contractStatusNote": "No BPPA award has been linked to this approved-project record by a matching tender/project reference. Supplier names from other road awards are not assumed to belong to this project.",
+      "managementNote": "The approved-project listing names the ministry/agency/project area but does not identify the individual Project Director or responsible engineer."
     },
     {
       "id": "RTHD-CUMILLA-4-DISTRICT-HIGHWAYS",
@@ -361,7 +393,11 @@
         "approvedCostLakh": 102352,
         "revisedCostLakh": null,
         "releaseLakh": null,
-        "reportedExpenditureLakh": null
+        "reportedExpenditureLakh": null,
+        "fundReleaseLakh": null,
+        "auditedExpenditureLakh": null,
+        "expenditureAsOf": null,
+        "note": "The RTHD approved-project listing provides an estimated project cost, but does not provide a project-level release/payment/expenditure figure. Not published in the imported source."
       },
       "projectContracts": [],
       "sourceStatus": "reviewed_source_extract",
@@ -373,7 +409,12 @@
       "dataLimitations": [
         "The approval-list record supplies cost, duration and area, not project-level physical or financial progress.",
         "No exact coordinates or individual alignments are available in this listing."
-      ]
+      ],
+      "projectType": "Highway improvement",
+      "projectDirector": null,
+      "contractPackages": [],
+      "contractStatusNote": "No BPPA award has been linked to this approved-project record by a matching tender/project reference. Supplier names from other road awards are not assumed to belong to this project.",
+      "managementNote": "The approved-project listing names the ministry/agency/project area but does not identify the individual Project Director or responsible engineer."
     },
     {
       "id": "RTHD-SONAPUR-KABIRHAT-DAGANBHUINYA",
@@ -439,7 +480,11 @@
         "approvedCostLakh": 45702.04,
         "revisedCostLakh": null,
         "releaseLakh": null,
-        "reportedExpenditureLakh": null
+        "reportedExpenditureLakh": null,
+        "fundReleaseLakh": null,
+        "auditedExpenditureLakh": null,
+        "expenditureAsOf": null,
+        "note": "The RTHD approved-project listing provides an estimated project cost, but does not provide a project-level release/payment/expenditure figure. Not published in the imported source."
       },
       "projectContracts": [],
       "sourceStatus": "reviewed_source_extract",
@@ -451,7 +496,12 @@
       "dataLimitations": [
         "The original completion date has passed, but the approved-project listing alone does not establish current completion status.",
         "No physical/financial progress or exact route geometry is supplied in this listing."
-      ]
+      ],
+      "projectType": "Highway improvement",
+      "projectDirector": null,
+      "contractPackages": [],
+      "contractStatusNote": "No BPPA award has been linked to this approved-project record by a matching tender/project reference. Supplier names from other road awards are not assumed to belong to this project.",
+      "managementNote": "The approved-project listing names the ministry/agency/project area but does not identify the individual Project Director or responsible engineer."
     },
     {
       "id": "RTHD-ULIPUR-CHILMARI-LINK",
@@ -499,7 +549,11 @@
         "approvedCostLakh": 6825.49,
         "revisedCostLakh": null,
         "releaseLakh": null,
-        "reportedExpenditureLakh": null
+        "reportedExpenditureLakh": null,
+        "fundReleaseLakh": null,
+        "auditedExpenditureLakh": null,
+        "expenditureAsOf": null,
+        "note": "The RTHD approved-project listing provides an estimated project cost, but does not provide a project-level release/payment/expenditure figure. Not published in the imported source."
       },
       "progress": [],
       "projectContracts": [],
@@ -514,7 +568,12 @@
         "This approval-list row provides estimated approved cost, duration, approval date and area. It does not provide a current payment ledger, latest physical progress, or supplier award.",
         "A passed planned completion date does not independently establish that the project is delayed, complete or abandoned.",
         "The portal's project-area field supports administrative area highlighting only. No exact route geometry or point has been imported."
-      ]
+      ],
+      "projectType": "Road construction / upgrading",
+      "projectDirector": null,
+      "contractPackages": [],
+      "contractStatusNote": "No BPPA award has been linked to this approved-project record by a matching tender/project reference. Supplier names from other road awards are not assumed to belong to this project.",
+      "managementNote": "The approved-project listing names the ministry/agency/project area but does not identify the individual Project Director or responsible engineer."
     },
     {
       "id": "RTHD-BARABHANGA-BRIDGE-SYLHET",
@@ -562,7 +621,11 @@
         "approvedCostLakh": 12676.92,
         "revisedCostLakh": null,
         "releaseLakh": null,
-        "reportedExpenditureLakh": null
+        "reportedExpenditureLakh": null,
+        "fundReleaseLakh": null,
+        "auditedExpenditureLakh": null,
+        "expenditureAsOf": null,
+        "note": "The RTHD approved-project listing provides an estimated project cost, but does not provide a project-level release/payment/expenditure figure. Not published in the imported source."
       },
       "progress": [],
       "projectContracts": [],
@@ -577,7 +640,12 @@
         "This approval-list row provides estimated approved cost, duration, approval date and area. It does not provide a current payment ledger, latest physical progress, or supplier award.",
         "A passed planned completion date does not independently establish that the project is delayed, complete or abandoned.",
         "The portal's project-area field supports administrative area highlighting only. No exact route geometry or point has been imported."
-      ]
+      ],
+      "projectType": "Bridge construction",
+      "projectDirector": null,
+      "contractPackages": [],
+      "contractStatusNote": "No BPPA award has been linked to this approved-project record by a matching tender/project reference. Supplier names from other road awards are not assumed to belong to this project.",
+      "managementNote": "The approved-project listing names the ministry/agency/project area but does not identify the individual Project Director or responsible engineer."
     },
     {
       "id": "RTHD-RAMERKANDA-LAKSHARCHAR-R823",
@@ -627,7 +695,11 @@
         "approvedCostLakh": 51456.91,
         "revisedCostLakh": null,
         "releaseLakh": null,
-        "reportedExpenditureLakh": null
+        "reportedExpenditureLakh": null,
+        "fundReleaseLakh": null,
+        "auditedExpenditureLakh": null,
+        "expenditureAsOf": null,
+        "note": "The RTHD approved-project listing provides an estimated project cost, but does not provide a project-level release/payment/expenditure figure. Not published in the imported source."
       },
       "progress": [],
       "projectContracts": [],
@@ -643,7 +715,12 @@
         "A passed planned completion date does not independently establish that the project is delayed, complete or abandoned.",
         "The portal's project-area field supports administrative area highlighting only. No exact route geometry or point has been imported.",
         "Location warning: the published row pairs Munshiganj with Keraniganj, which do not form a consistent parent/child administrative pairing. The map deliberately does not geocode this row pending source reconciliation."
-      ]
+      ],
+      "projectType": "Road construction / upgrading",
+      "projectDirector": null,
+      "contractPackages": [],
+      "contractStatusNote": "No BPPA award has been linked to this approved-project record by a matching tender/project reference. Supplier names from other road awards are not assumed to belong to this project.",
+      "managementNote": "The approved-project listing names the ministry/agency/project area but does not identify the individual Project Director or responsible engineer."
     },
     {
       "id": "RTHD-BHULTA-ARAIHAZAR-BANCHHARAMPUR-R203-R220",
@@ -706,7 +783,11 @@
         "approvedCostLakh": 153222,
         "revisedCostLakh": null,
         "releaseLakh": null,
-        "reportedExpenditureLakh": null
+        "reportedExpenditureLakh": null,
+        "fundReleaseLakh": null,
+        "auditedExpenditureLakh": null,
+        "expenditureAsOf": null,
+        "note": "The RTHD approved-project listing provides an estimated project cost, but does not provide a project-level release/payment/expenditure figure. Not published in the imported source."
       },
       "progress": [],
       "projectContracts": [],
@@ -721,7 +802,12 @@
         "This approval-list row provides estimated approved cost, duration, approval date and area. It does not provide a current payment ledger, latest physical progress, or supplier award.",
         "A passed planned completion date does not independently establish that the project is delayed, complete or abandoned.",
         "The portal's project-area field supports administrative area highlighting only. No exact route geometry or point has been imported."
-      ]
+      ],
+      "projectType": "Highway improvement",
+      "projectDirector": null,
+      "contractPackages": [],
+      "contractStatusNote": "No BPPA award has been linked to this approved-project record by a matching tender/project reference. Supplier names from other road awards are not assumed to belong to this project.",
+      "managementNote": "The approved-project listing names the ministry/agency/project area but does not identify the individual Project Director or responsible engineer."
     },
     {
       "id": "RTHD-GALACHIPA-BRIDGE-Z8806",
@@ -769,7 +855,11 @@
         "approvedCostLakh": 52125.99,
         "revisedCostLakh": null,
         "releaseLakh": null,
-        "reportedExpenditureLakh": null
+        "reportedExpenditureLakh": null,
+        "fundReleaseLakh": null,
+        "auditedExpenditureLakh": null,
+        "expenditureAsOf": null,
+        "note": "The RTHD approved-project listing provides an estimated project cost, but does not provide a project-level release/payment/expenditure figure. Not published in the imported source."
       },
       "progress": [],
       "projectContracts": [],
@@ -784,7 +874,12 @@
         "This approval-list row provides estimated approved cost, duration, approval date and area. It does not provide a current payment ledger, latest physical progress, or supplier award.",
         "A passed planned completion date does not independently establish that the project is delayed, complete or abandoned.",
         "The portal's project-area field supports administrative area highlighting only. No exact route geometry or point has been imported."
-      ]
+      ],
+      "projectType": "Bridge construction",
+      "projectDirector": null,
+      "contractPackages": [],
+      "contractStatusNote": "No BPPA award has been linked to this approved-project record by a matching tender/project reference. Supplier names from other road awards are not assumed to belong to this project.",
+      "managementNote": "The approved-project listing names the ministry/agency/project area but does not identify the individual Project Director or responsible engineer."
     },
     {
       "id": "RTHD-GHONAPARA-MAUSOLEUM-ROAD",
@@ -832,7 +927,11 @@
         "approvedCostLakh": 34704.02,
         "revisedCostLakh": null,
         "releaseLakh": null,
-        "reportedExpenditureLakh": null
+        "reportedExpenditureLakh": null,
+        "fundReleaseLakh": null,
+        "auditedExpenditureLakh": null,
+        "expenditureAsOf": null,
+        "note": "The RTHD approved-project listing provides an estimated project cost, but does not provide a project-level release/payment/expenditure figure. Not published in the imported source."
       },
       "progress": [],
       "projectContracts": [],
@@ -847,7 +946,12 @@
         "This approval-list row provides estimated approved cost, duration, approval date and area. It does not provide a current payment ledger, latest physical progress, or supplier award.",
         "A passed planned completion date does not independently establish that the project is delayed, complete or abandoned.",
         "The portal's project-area field supports administrative area highlighting only. No exact route geometry or point has been imported."
-      ]
+      ],
+      "projectType": "Bridge construction",
+      "projectDirector": null,
+      "contractPackages": [],
+      "contractStatusNote": "No BPPA award has been linked to this approved-project record by a matching tender/project reference. Supplier names from other road awards are not assumed to belong to this project.",
+      "managementNote": "The approved-project listing names the ministry/agency/project area but does not identify the individual Project Director or responsible engineer."
     },
     {
       "id": "RTHD-NARSINGDI-R211-R114",
@@ -910,7 +1014,11 @@
         "approvedCostLakh": 98484.72,
         "revisedCostLakh": null,
         "releaseLakh": null,
-        "reportedExpenditureLakh": null
+        "reportedExpenditureLakh": null,
+        "fundReleaseLakh": null,
+        "auditedExpenditureLakh": null,
+        "expenditureAsOf": null,
+        "note": "The RTHD approved-project listing provides an estimated project cost, but does not provide a project-level release/payment/expenditure figure. Not published in the imported source."
       },
       "progress": [],
       "projectContracts": [],
@@ -925,7 +1033,12 @@
         "This approval-list row provides estimated approved cost, duration, approval date and area. It does not provide a current payment ledger, latest physical progress, or supplier award.",
         "A passed planned completion date does not independently establish that the project is delayed, complete or abandoned.",
         "The portal's project-area field supports administrative area highlighting only. No exact route geometry or point has been imported."
-      ]
+      ],
+      "projectType": "Highway improvement",
+      "projectDirector": null,
+      "contractPackages": [],
+      "contractStatusNote": "No BPPA award has been linked to this approved-project record by a matching tender/project reference. Supplier names from other road awards are not assumed to belong to this project.",
+      "managementNote": "The approved-project listing names the ministry/agency/project area but does not identify the individual Project Director or responsible engineer."
     }
   ]
 }
