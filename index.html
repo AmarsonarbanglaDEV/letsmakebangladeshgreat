@@ -742,12 +742,61 @@
     @media(prefers-reduced-motion:reduce){
       .sidebar,.sidebar-tab,.icon-btn,.map-control,.map-pill{transition:none!important}
     }
+    /* Sidebar interaction: one consistent control, visible close action and mobile scrim. */
+    .sidebar{z-index:940;transition:transform .28s cubic-bezier(.2,.75,.2,1),opacity .22s,box-shadow .22s}
+    .sidebar-head{position:relative;padding-right:54px}
+    .sidebar-close{
+      position:absolute;top:13px;right:15px;width:33px;height:33px;display:grid;place-items:center;
+      border:1px solid #d8e3ed;border-radius:10px;background:#fff;color:#36546d;
+      font-size:23px;line-height:1;cursor:pointer;
+      transition:background .15s,border-color .15s,transform .15s
+    }
+    .sidebar-close:hover{background:#eaf2fb;border-color:#b8cce0;transform:rotate(3deg)}
+    .sidebar-menu-toggle{position:relative;display:grid;place-items:center;font-size:19px}
+    .sidebar-menu-toggle span{display:block;line-height:1;transition:transform .2s}
+    body:not(.sidebar-collapsed) .sidebar-menu-toggle span{transform:rotate(90deg)}
+    .sidebar-backdrop{display:none}
+    #sidebarRailToggle{transition:opacity .18s,transform .18s,background .18s}
+    body:not(.sidebar-collapsed) #sidebarRailToggle{opacity:0;pointer-events:none;transform:translateX(-5px)}
+    #sidebarRailToggle{background:#fff;color:#24527a;border:1px solid #d5e2ee;box-shadow:0 5px 15px rgba(7,28,47,.12)}
+    #sidebarRailToggle:hover{background:#e9f2fb;color:#1d5da4}
+    .sidebar-menu-toggle:focus-visible,.sidebar-close:focus-visible,#sidebarRailToggle:focus-visible,
+    .sidebar-tab:focus-visible,.sidebar-backdrop:focus-visible{
+      outline:3px solid rgba(83,151,255,.75);outline-offset:3px
+    }
+    body:not(.sidebar-collapsed) .map-levels{left:430px;max-width:calc(100% - 530px);transition:left .28s,max-width .28s}
+    body:not(.sidebar-collapsed) .map-status{left:430px;max-width:min(440px,calc(100% - 560px))}
+    @media(max-width:900px){
+      .sidebar{z-index:960;top:76px;left:9px;bottom:9px;width:min(390px,calc(100vw - 18px));max-height:none}
+      body.sidebar-collapsed .sidebar{width:min(390px,calc(100vw - 18px));transform:translateX(calc(-100% - 25px))}
+      .sidebar-backdrop{
+        display:block;position:absolute;z-index:950;inset:67px 0 0;border:0;border-radius:0;
+        padding:0;background:rgba(4,17,29,.46);backdrop-filter:blur(2px);
+        -webkit-backdrop-filter:blur(2px);opacity:1;visibility:visible;
+        transition:opacity .22s,visibility .22s;cursor:pointer
+      }
+      body.sidebar-collapsed .sidebar-backdrop{opacity:0;visibility:hidden;pointer-events:none}
+      body:not(.sidebar-collapsed) .sidebar{box-shadow:0 18px 65px rgba(3,17,29,.42)}
+      body:not(.sidebar-collapsed) .map-levels{left:9px;max-width:calc(100% - 125px)}
+      body:not(.sidebar-collapsed) .map-status{left:9px;max-width:calc(100% - 18px)}
+      body:not(.sidebar-collapsed) #sidebarRailToggle{opacity:0;pointer-events:none}
+    }
+    @media(max-width:560px){
+      .sidebar-close{top:10px;right:12px;width:31px;height:31px}
+      .sidebar-head{padding-right:50px}
+      .sidebar-backdrop{inset:63px 0 0}
+    }
+    @media(prefers-reduced-motion:reduce){
+      .sidebar,.sidebar-close,.sidebar-menu-toggle span,.sidebar-backdrop,#sidebarRailToggle{transition:none!important}
+    }
   </style>
 </head>
 <body>
 <header class="topbar">
   <div class="brand-area">
-    <button class="icon-btn" id="sidebarToggle" type="button" aria-label="Toggle government data sidebar" title="Toggle sidebar">☰</button>
+    <button class="icon-btn sidebar-menu-toggle" id="sidebarToggle" type="button"
+      aria-controls="sidebar" aria-expanded="false" aria-label="Open navigation panel"
+      title="Open navigation panel"><span aria-hidden="true">☰</span></button>
     <a class="brand" href="#map" aria-label="Let's Make Bangladesh Great">
       <span class="brand-symbol">৳</span>
       <span class="brand-name">LET'S MAKE BANGLADESH GREAT<small>PUBLIC MONEY · PUBLIC KNOWLEDGE</small></span>
@@ -767,8 +816,9 @@
 </header>
 
 <main class="workspace">
-  <aside class="sidebar" id="sidebar" aria-label="Government information sidebar">
+  <aside class="sidebar" id="sidebar" aria-label="Government information sidebar" aria-hidden="true" inert>
     <div class="sidebar-head">
+      <button class="sidebar-close" id="sidebarClose" type="button" aria-label="Close navigation panel" title="Close panel"><span aria-hidden="true">×</span></button>
       <div class="eyebrow" data-en="Bangladesh public atlas" data-bn="বাংলাদেশ পাবলিক অ্যাটলাস">BANGLADESH ATLAS</div>
       <h1 data-en="One country. Public records." data-bn="এক দেশ। জনগণের নথি।">One country. Public records.</h1>
       <p data-en="Explore places, follow public money and track development with source-linked records." data-bn="স্থান অনুসন্ধান করুন, সরকারি অর্থের হিসাব দেখুন এবং উৎস-সংযুক্ত নথিতে উন্নয়ন পর্যবেক্ষণ করুন।">Explore places, follow public money and track development with source-linked records.</p>
@@ -816,12 +866,15 @@
     </section>
     <div class="sidebar-foot">Evidence first · Unknown stays unknown · Map data is not proof of expenditure.</div>
   </aside>
+  <button class="sidebar-backdrop" id="sidebarBackdrop" type="button"
+    aria-label="Close navigation panel" aria-hidden="true" tabindex="-1"></button>
 
-  <section class="map-area" aria-label="Bangladesh interactive map">
+  <section class="map-area" id="mapArea" aria-label="Bangladesh interactive map">
     <div id="map" role="application" aria-label="Satellite map of Bangladesh with administrative boundaries"></div>
 
     <nav class="atlas-rail rail-left" aria-label="Atlas navigation">
-      <button id="sidebarRailToggle" type="button" aria-label="Open public records panel" title="Public records">▤</button>
+      <button id="sidebarRailToggle" type="button" aria-controls="sidebar" aria-expanded="false"
+        aria-label="Open navigation panel" title="Open navigation panel">☷</button>
       <button id="searchFocus" type="button" aria-label="Focus map search" title="Search places">⌕</button>
     </nav>
 
@@ -2482,17 +2535,95 @@ async function ensureLeaflet(){
     button.addEventListener("click",()=>renderSidePanel(button.dataset.panel));
   });
 
-  // Hisaab-style clean opening: the map is the first screen; records open on demand.
-  document.body.classList.add("sidebar-collapsed");
-  function toggleRecordsPanel(){
-    document.body.classList.toggle("sidebar-collapsed");
+  // The map stays the landing view. Sidebar state is explicit and shared by every control.
+  const sidebar=el("sidebar");
+  const sidebarBackdrop=el("sidebarBackdrop");
+  const mapArea=el("mapArea");
+  const sidebarToggle=el("sidebarToggle");
+  const sidebarRailToggle=el("sidebarRailToggle");
+  const sidebarClose=el("sidebarClose");
+  let lastSidebarTrigger=sidebarToggle;
+  let sidebarResizeFrame=0;
+
+  function isCompactSidebar(){return window.matchMedia("(max-width: 900px)").matches;}
+  function sidebarIsOpen(){return !document.body.classList.contains("sidebar-collapsed");}
+  function syncSidebarState(open){
+    sidebar.setAttribute("aria-hidden",open?"false":"true");
+    sidebar.inert=!open;
+    sidebarToggle.setAttribute("aria-expanded",String(open));
+    sidebarRailToggle.setAttribute("aria-expanded",String(open));
+    sidebarToggle.setAttribute("aria-label",open?"Close navigation panel":"Open navigation panel");
+    sidebarToggle.title=open?"Close navigation panel":"Open navigation panel";
+    sidebarToggle.querySelector("span").textContent=open?"×":"☰";
+    sidebarRailToggle.setAttribute("aria-label",open?"Navigation panel open":"Open navigation panel");
+    sidebarRailToggle.title=open?"Navigation panel open":"Open navigation panel";
+    sidebarBackdrop.setAttribute("aria-hidden",String(!(open&&isCompactSidebar())));
+    sidebarBackdrop.tabIndex=open&&isCompactSidebar()?0:-1;
+    mapArea.inert=open&&isCompactSidebar();
+    if(isCompactSidebar()){
+      sidebar.setAttribute("role","dialog");
+      sidebar.setAttribute("aria-modal","true");
+    }else{
+      sidebar.setAttribute("role","complementary");
+      sidebar.removeAttribute("aria-modal");
+    }
+  }
+  function setSidebarOpen(open,trigger,restoreFocus){
+    const wasOpen=sidebarIsOpen();
+    if(open===wasOpen)return;
+    if(open&&trigger)lastSidebarTrigger=trigger;
+    document.body.classList.toggle("sidebar-collapsed",!open);
+    syncSidebarState(open);
     window.setTimeout(()=>{
       map.invalidateSize({pan:false});
       scheduleCountryClip();
-    },300);
+    },320);
+    if(open){
+      window.requestAnimationFrame(()=>sidebarClose.focus());
+    }else if(restoreFocus!==false){
+      const target=trigger||lastSidebarTrigger||sidebarToggle;
+      window.requestAnimationFrame(()=>{if(target&&typeof target.focus==="function")target.focus();});
+    }
   }
-  el("sidebarToggle").addEventListener("click",toggleRecordsPanel);
-  el("sidebarRailToggle").addEventListener("click",toggleRecordsPanel);
+  function toggleRecordsPanel(event){
+    const trigger=event&&event.currentTarget?event.currentTarget:sidebarToggle;
+    setSidebarOpen(!sidebarIsOpen(),trigger,true);
+  }
+
+  document.body.classList.add("sidebar-collapsed");
+  syncSidebarState(false);
+  sidebarToggle.addEventListener("click",toggleRecordsPanel);
+  sidebarRailToggle.addEventListener("click",toggleRecordsPanel);
+  sidebarClose.addEventListener("click",()=>setSidebarOpen(false,lastSidebarTrigger,true));
+  sidebarBackdrop.addEventListener("click",()=>setSidebarOpen(false,sidebarToggle,true));
+
+  document.addEventListener("keydown",event=>{
+    if(!sidebarIsOpen())return;
+    if(event.key==="Escape"){
+      event.preventDefault();
+      setSidebarOpen(false,lastSidebarTrigger,true);
+      return;
+    }
+    if(event.key!=="Tab"||!isCompactSidebar())return;
+    const focusable=[...sidebar.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),[tabindex]:not([tabindex="-1"])')]
+      .filter(node=>node.getClientRects().length>0&&!node.hasAttribute("inert"));
+    if(!focusable.length){event.preventDefault();sidebarClose.focus();return;}
+    const first=focusable[0],last=focusable[focusable.length-1];
+    if(event.shiftKey&&document.activeElement===first){
+      event.preventDefault();last.focus();
+    }else if(!event.shiftKey&&document.activeElement===last){
+      event.preventDefault();first.focus();
+    }
+  });
+
+  window.addEventListener("resize",()=>{
+    window.cancelAnimationFrame(sidebarResizeFrame);
+    sidebarResizeFrame=window.requestAnimationFrame(()=>{
+      syncSidebarState(sidebarIsOpen());
+      map.invalidateSize({pan:false});
+      scheduleCountryClip();
+    });
+  });
   el("searchFocus").addEventListener("click",()=>{
     el("mapSearch").focus();
     el("mapSearch").scrollIntoView({block:"nearest",behavior:"smooth"});
