@@ -760,6 +760,8 @@ async function ensureLeaflet(){
   }
   function setPoint(latlng,label){
     lastPoint=latlng;
+    if(historicalLayer&&map.hasLayer(historicalLayer))map.removeLayer(historicalLayer);
+    if(!outlineMode&&satellite&&!map.hasLayer(satellite))satellite.addTo(map);
     if(pointMarker&&map.hasLayer(pointMarker))map.removeLayer(pointMarker);
     pointMarker=L.circleMarker(latlng,{
       pane:"markerPane",radius:7,color:"#fff",weight:3,fillColor:"#e08a3b",fillOpacity:1
@@ -1180,7 +1182,13 @@ async function ensureLeaflet(){
     button.addEventListener("click",()=>renderSidePanel(button.dataset.panel));
   });
 
-  el("sidebarToggle").addEventListener("click",()=>document.body.classList.toggle("sidebar-collapsed"));
+  if(window.matchMedia&&window.matchMedia("(max-width:900px)").matches){
+    document.body.classList.add("sidebar-collapsed");
+  }
+  el("sidebarToggle").addEventListener("click",()=>{
+    document.body.classList.toggle("sidebar-collapsed");
+    window.setTimeout(()=>map.invalidateSize({pan:false}),280);
+  });
   document.querySelectorAll("[data-level]").forEach(button=>
     button.addEventListener("click",()=>switchLevel(button.dataset.level))
   );
