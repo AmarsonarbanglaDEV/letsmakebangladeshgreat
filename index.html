@@ -475,6 +475,54 @@
       .atlas-project-card,.atlas-contract-card{padding:12px}
     }
 
+    /* A dedicated, easy-to-find national report route; the map remains the home screen. */
+    .sidebar-tabs{grid-template-columns:repeat(3,minmax(0,1fr));align-content:start;gap:6px;padding:10px 14px 12px}
+    .national-report-tab{
+      grid-column:1/-1;display:flex;align-items:center;gap:11px;min-height:54px;
+      padding:9px 11px;text-align:left;border:1px solid #cbd9f4;border-radius:13px;
+      background:linear-gradient(110deg,#e7efff,#f4f7ff);color:#163d67;
+      box-shadow:0 4px 13px rgba(41,103,255,.07)
+    }
+    .national-report-tab:hover{background:#e0eaff;border-color:#9db8ef}
+    .national-report-tab.active{background:#2967ff;color:#fff;border-color:#2967ff;box-shadow:0 6px 16px rgba(41,103,255,.22)}
+    .national-report-icon{width:34px;height:34px;display:grid;place-items:center;flex:none;border-radius:10px;background:#d3e2ff;color:#1e57bc;font-size:19px;font-weight:900}
+    .national-report-tab.active .national-report-icon{background:rgba(255,255,255,.18);color:#fff}
+    .national-report-copy{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+    .national-report-copy strong{font-size:11px;line-height:1.3}
+    .national-report-copy small{font-size:9px;line-height:1.3;opacity:.78;font-weight:600}
+    .national-report-arrow{font-size:15px;opacity:.8}
+    .sidebar-nav-label{grid-column:1/-1;padding:3px 1px 1px;color:#74869a;font-size:8px;font-weight:900;letter-spacing:.14em}
+    .sidebar-tab{min-height:34px}
+    .atlas-report-cover{position:relative;overflow:hidden;padding:17px;margin:12px 0 16px;border-radius:16px;background:linear-gradient(135deg,#102b47,#1e5a83);color:#fff;box-shadow:0 10px 28px rgba(19,57,91,.16)}
+    .atlas-report-cover:after{content:"৳";position:absolute;right:12px;bottom:-30px;color:rgba(255,255,255,.09);font-size:118px;font-weight:900;line-height:1}
+    .atlas-report-kicker{position:relative;z-index:1;color:#bcd5f5;font-size:8px;font-weight:900;letter-spacing:.13em}
+    .atlas-report-year{position:relative;z-index:1;margin-top:9px;color:#d6e6ff;font-size:11px;font-weight:800}
+    .atlas-report-cover>strong{position:relative;z-index:1;display:block;margin:2px 0;color:#fff;font-size:29px;letter-spacing:-.06em}
+    .atlas-report-cover>p{position:relative;z-index:1;margin:0;color:#e1edff;font-size:11px;font-weight:750}
+    .atlas-report-cover>small{position:relative;z-index:1;display:block;margin-top:7px;color:#b9cde0;font-size:8px}
+    .atlas-national-kpis .atlas-kpi{background:#f4f7fc}
+    .atlas-national-kpis .atlas-kpi strong{font-size:16px}
+    .atlas-report-implementation{margin:16px 0;padding:14px;border:1px solid #cbdced;border-radius:15px;background:#eef5fb}
+    .atlas-report-implementation>div:first-child{display:grid;grid-template-columns:1fr auto;gap:4px 8px;align-items:center}
+    .atlas-report-implementation>div:first-child span{color:#58748e;font-size:8px;font-weight:900;letter-spacing:.12em}
+    .atlas-report-implementation>div:first-child strong{grid-row:span 2;color:#1a6494;font-size:29px;letter-spacing:-.05em}
+    .atlas-report-implementation>div:first-child small{color:#6d8295;font-size:8px}
+    .atlas-report-implementation-numbers{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+    .atlas-report-implementation-numbers>div{padding:9px;border-radius:10px;background:#fff}
+    .atlas-report-implementation-numbers small{display:block;color:#788da0;font-size:8px}
+    .atlas-report-implementation-numbers strong{display:block;margin-top:4px;color:#214d70;font-size:12px}
+    .atlas-report-implementation>p,.atlas-report-caveat p{color:#647b8f;font-size:9px;line-height:1.65}
+    .atlas-report-caveat{margin:14px 0;padding:12px;border-left:3px solid #e0a43c;border-radius:0 11px 11px 0;background:#fff8ec}
+    .atlas-report-caveat>strong{color:#765422;font-size:10px}
+    .atlas-report-caveat p{margin:5px 0 0;color:#796b55}
+    @media(max-width:560px){
+      .sidebar-tabs{gap:5px;padding:8px 10px 10px}
+      .national-report-tab{min-height:50px;padding:8px 9px}
+      .national-report-copy strong{font-size:10px}
+      .atlas-report-cover{padding:14px}
+      .atlas-report-cover>strong{font-size:25px}
+      .atlas-national-kpis .atlas-kpi strong{font-size:14px}
+    }
   </style>
 </head>
 <body>
@@ -515,6 +563,12 @@
     </div>
 
     <nav class="sidebar-tabs" aria-label="Government information sections">
+      <button class="sidebar-tab national-report-tab" data-panel="national" type="button">
+        <span class="national-report-icon" aria-hidden="true">৳</span>
+        <span class="national-report-copy"><strong>National Report</strong><small>Budget · expenditure · development</small></span>
+        <span class="national-report-arrow" aria-hidden="true">↗</span>
+      </button>
+      <div class="sidebar-nav-label">EXPLORE &amp; TRACK</div>
       <button class="sidebar-tab active" data-panel="overview" type="button">Overview</button>
       <button class="sidebar-tab" data-panel="budget" type="button">Budget</button>
       <button class="sidebar-tab" data-panel="ministries" type="button">Ministries</button>
@@ -1350,9 +1404,19 @@ async function ensureLeaflet(){
       ],
       sources:[]
     },
+    national:{
+      title:"Bangladesh national report",
+      intro:"A country-wide view of the FY2026–27 budget, expenditure plan, revenue, deficit and reported development implementation.",
+      note:"The Tk 938,000 crore figure is the FY2026–27 budgeted expenditure, not cash already spent. Historical actuals and current-year implementation figures are labelled separately and use their own reporting periods and source bases.",
+      cards:[],
+      sources:[
+        ["National Budget Speech FY2026–27","Finance Division · published 11 June 2026 · Tables 2–4","https://nbr.gov.bd/uploads/budget/Budget_Speech_English.pdf"],
+        ["IMED development progress","FY2026–27 national ADP implementation update","https://imed.gov.bd/pages/news"]
+      ]
+    },
     budget:{
-      title:"Public budget & expenditure",
-      intro:"Follow national allocations, revised budgets, reported actual expenditure, releases and development spending.",
+      title:"Budget breakdown",
+      intro:"Explore national sector allocations, ministry budget lines and the Annual Development Programme in more detail. Start with National Report for the country-wide headline figures.",
       note:"Allocation is not expenditure. A ministry allocation must not be displayed as local district spending unless an accounting record directly supports that location.",
       cards:[
         ["National budget","Budget speech, budget-in-brief, revenue and expenditure statements."],
@@ -1551,16 +1615,46 @@ async function ensureLeaflet(){
     html+='</div><p class="atlas-small-note">Selecting a district focuses its administrative polygon. This does not assert that a listed project is located at the district centre.</p>';
     return html;
   }
+  function renderNationalReportPanel(){
+    const d=atlasData.budget;
+    if(!d)return '<p class="atlas-empty-note">National budget data file unavailable.</p>';
+    const h=d.headline;
+    const snap=(d.adpImplementation||[]).find(item=>item.fiscalYear==="2026-27"&&item.period==="July–September 2026")||(d.adpImplementation||[])[0];
+    let html='<section class="atlas-report-cover">'+
+      '<div class="atlas-report-kicker">BANGLADESH · NATIONAL FISCAL SNAPSHOT</div>'+
+      '<div class="atlas-report-year">FY 2026–27</div>'+
+      '<strong>'+atlasMoney(h.totalExpenditure.budgetFY2026_27)+'</strong>'+
+      '<p>Budgeted total expenditure</p>'+
+      '<small>National Budget Speech · published '+escapeHtml(d.publicationDate||"date not supplied")+'</small>'+
+    '</section>';
+    html+='<h3>National budget at a glance</h3><p class="atlas-small-note">All values below are BDT crore. These are proposed FY2026–27 budget figures unless explicitly marked as actual or reported implementation.</p>';
+    html+='<div class="atlas-kpi-grid atlas-national-kpis">'+
+      '<div class="atlas-kpi"><small>Revenue income · budget</small><strong>'+atlasMoney(h.totalRevenueIncome.budgetFY2026_27)+'</strong><small>FY2026–27</small></div>'+
+      '<div class="atlas-kpi"><small>Budget deficit</small><strong>'+atlasMoney(h.budgetDeficit.budgetFY2026_27)+'</strong><small>FY2026–27</small></div>'+
+      '<div class="atlas-kpi"><small>Development expenditure</small><strong>'+atlasMoney(h.developmentExpenditure.budgetFY2026_27)+'</strong><small>FY2026–27</small></div>'+
+      '<div class="atlas-kpi"><small>Operating / recurrent</small><strong>'+atlasMoney(h.operatingRecurrentExpenditure.budgetFY2026_27)+'</strong><small>FY2026–27</small></div>'+
+      '<div class="atlas-kpi"><small>Annual Development Programme</small><strong>'+atlasMoney(h.annualDevelopmentProgramme.budgetFY2026_27)+'</strong><small>FY2026–27</small></div>'+
+      '<div class="atlas-kpi"><small>Last full-year actual expenditure</small><strong>'+atlasMoney(h.totalExpenditure.actualFY2024_25)+'</strong><small>FY2024–25 actual · not current-year spending</small></div>'+
+    '</div>';
+    html+='<h3>Where the budget is allocated</h3><p class="atlas-small-note">Overall sector classification from Budget Speech Table 4. The percentages describe allocation shares, not service quality or achieved results.</p>';
+    d.overallSectorBudget.forEach(row=>{
+      html+='<div class="atlas-sector-row"><div><strong>'+escapeHtml(row.name)+'</strong><span>'+atlasMoney(row.budgetFY2026_27)+' · '+Number(row.sharePct).toFixed(2)+'%</span></div><div class="atlas-progress-track"><i style="width:'+Math.max(0,Math.min(100,row.sharePct))+'%"></i></div><small>'+escapeHtml(row.note||"Budget classification category")+'</small></div>';
+    });
+    if(snap){
+      html+='<section class="atlas-report-implementation"><div><span>DEVELOPMENT IMPLEMENTATION</span><strong>'+Number(snap.financialImplementationPct).toFixed(2)+'%</strong><small>'+escapeHtml(snap.period)+' · published '+escapeHtml(snap.publicationDate||"date not supplied")+'</small></div>'+
+        '<div class="atlas-report-implementation-numbers"><div><small>Reported expenditure</small><strong>'+atlasMoney(snap.reportedExpenditureCrore)+'</strong></div><div><small>IMED denominator</small><strong>'+atlasMoney(snap.implementationDenominatorCrore)+'</strong></div></div>'+
+        '<p>This is the national ADP financial implementation rate, not physical completion and not the amount of the whole national budget already spent. The denominator reported for this update differs from the Tk 300,000 crore ADP in Budget Speech Table 2; the two bases are kept separate pending reconciliation.</p>'+
+        '<a class="atlas-source-inline" href="'+escapeHtml(snap.source)+'" target="_blank" rel="noopener">Open IMED update ↗</a> · <a class="atlas-source-inline" href="'+escapeHtml(snap.denominatorSource||snap.source)+'" target="_blank" rel="noopener">Denominator source ↗</a>'+
+      '</section>';
+    }
+    html+='<div class="atlas-report-caveat"><strong>How to read this report</strong><p>Budgeted expenditure is a plan, not proof that the money has been paid. The FY2024–25 actual is a past full-year figure. The July–September 2026 ADP figure is a separate, current-year implementation snapshot. None of these national totals should be treated as spending in a particular district.</p></div>';
+    return html;
+  }
+
   function renderBudgetPanel(){
     const d=atlasData.budget;
     if(!d)return '<p class="atlas-empty-note">Budget data file unavailable.</p>';
-    const h=d.headline;
-    let html='<div class="atlas-kpi-grid">'+
-      '<div class="atlas-kpi"><small>Total budget · FY2026–27</small><strong>'+atlasMoney(h.totalExpenditure.budgetFY2026_27)+'</strong></div>'+
-      '<div class="atlas-kpi"><small>Revenue income</small><strong>'+atlasMoney(h.totalRevenueIncome.budgetFY2026_27)+'</strong></div>'+
-      '<div class="atlas-kpi"><small>Budget deficit</small><strong>'+atlasMoney(h.budgetDeficit.budgetFY2026_27)+'</strong></div>'+
-      '<div class="atlas-kpi"><small>Development expenditure</small><strong>'+atlasMoney(h.developmentExpenditure.budgetFY2026_27)+'</strong></div>'+
-    '</div>';
+    let html='<p class="atlas-small-note">Detailed allocation view · BDT crore. National headline totals are kept in the separate National Report section.</p>';
     html+='<h3>Overall sector allocation</h3><p class="atlas-small-note">Budget speech Table 4 · BDT crore. Bars show shares of the proposed national budget, not outcomes.</p>';
     d.overallSectorBudget.forEach(row=>{
       html+='<div class="atlas-sector-row"><div><strong>'+escapeHtml(row.name)+'</strong><span>'+atlasMoney(row.budgetFY2026_27)+' · '+Number(row.sharePct).toFixed(2)+'%</span></div><div class="atlas-progress-track"><i style="width:'+Math.max(0,Math.min(100,row.sharePct))+'%"></i></div><small>FY2024–25 actual in Table 4: '+atlasMoney(row.actualFY2024_25)+'</small></div>';
@@ -2035,6 +2129,7 @@ async function ensureLeaflet(){
   }
   function renderLiveDataPanel(key){
     if(key==="overview")return renderDistrictDirectory();
+    if(key==="national")return renderNationalReportPanel();
     if(key==="budget")return renderBudgetPanel();
     if(key==="ministries")return renderMinistriesPanel();
     if(key==="projects")return renderProjectsPanel();
@@ -2137,14 +2232,14 @@ async function ensureLeaflet(){
   function renderSidePanel(key){
     activePanel=modules[key]?key:"overview";
     if(activePanel!=="projects")stopProjectTimeLapsePlayback();
-    document.querySelectorAll(".sidebar-tab").forEach(button=>
+    document.querySelectorAll(".sidebar-tab, .national-report-tab").forEach(button=>
       button.classList.toggle("active",button.dataset.panel===activePanel)
     );
     const module=modules[activePanel];
     const selected=el("selectedAreaName").textContent;
     let html='<h2>'+module.title+'</h2><p class="side-intro">'+module.intro+'</p>';
     html+='<div class="data-status atlas-snapshot-status"><span class="status-icon">i</span><span>Research snapshot: 30 Oct 2026 · source-linked pilot records; national and project-level coverage is still incomplete. Allocations, awards, payments and outcomes are shown separately.</span></div>';
-    if(activePanel!=="overview")html+='<div class="data-card"><strong>Map context: '+escapeHtml(selected)+'</strong><p>Records shown here must have a documented relationship to this geography. National or ministry-level figures will not be presented as local spending.</p></div>';
+    if(!["overview","national","budget"].includes(activePanel))html+='<div class="data-card"><strong>Map context: '+escapeHtml(selected)+'</strong><p>Records shown here must have a documented relationship to this geography. National or ministry-level figures will not be presented as local spending.</p></div>';
     if(!["budget","ministries","projects","procurement","overview"].includes(activePanel)){
       (module.cards||[]).forEach(card=>{
         html+='<div class="data-card"><strong>'+card[0]+'</strong><p>'+card[1]+'</p><p><b style="color:#916b26">No source-reviewed dataset connected for this section yet</b></p></div>';
@@ -2161,7 +2256,7 @@ async function ensureLeaflet(){
     html+='<div class="method-note">'+module.note+'</div>';
     el("sideContent").innerHTML=html;
   }
-  document.querySelectorAll(".sidebar-tab").forEach(button=>{
+  document.querySelectorAll(".sidebar-tab, .national-report-tab").forEach(button=>{
     button.addEventListener("click",()=>renderSidePanel(button.dataset.panel));
   });
 
