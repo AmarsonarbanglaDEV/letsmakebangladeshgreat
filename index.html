@@ -263,7 +263,7 @@
     <form class="search-form" id="searchForm" role="search">
       <span class="search-symbol" aria-hidden="true">⌕</span>
       <input id="mapSearch" type="search" autocomplete="off" placeholder="Search a place, road, market or area in Bangladesh…" aria-label="Search a location in Bangladesh">
-      <button class="search-submit" type="submit" aria-label="Search map">↵</button>
+      <button class="search-submit" id="searchSubmit" type="submit" aria-label="Search map">↵</button>
     </form>
     <div class="search-results" id="searchResults" role="listbox" aria-label="Map search results"></div>
   </div>
@@ -417,6 +417,7 @@ async function ensureLeaflet(){
   let satellite=null,historicalLayer=null,outlineMode=false,lastPoint=null,pointMarker=null;
   let waybackCore=null,waybackItems=[],waybackIndex=0,playTimer=null,lastSearchAt=0;
   let geocodeResults=[];
+  let searchBusy=false;
   const el=id=>document.getElementById(id);
   const statusEl=el("mapStatus");
   const searchResultsEl=el("searchResults");
@@ -426,6 +427,11 @@ async function ensureLeaflet(){
   function normalise(value){
     return String(value||"").toLowerCase().normalize("NFD")
       .replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]/g,"");
+  }
+  function escapeHtml(value){
+    return String(value||"").replace(/[&<>"']/g,char=>({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+    }[char]));
   }
   function getField(props,names){
     const keys=Object.keys(props||{});
@@ -555,7 +561,7 @@ async function ensureLeaflet(){
         const r=byFeature.get(feature);
         if(!r)return;
         path._atlasRecord=r;
-        path.bindTooltip(r.name+(r.bn?" / "+r.bn:""),{
+        path.bindTooltip(escapeHtml(r.name+(r.bn?" / "+r.bn:"")),{
           sticky:true,className:"area-label",direction:"auto"
         });
         if(interactive){
@@ -858,7 +864,9 @@ async function ensureLeaflet(){
   searchForm.addEventListener("submit",async event=>{
     event.preventDefault();
     const query=searchInput.value.trim();
-    if(!query)return;
+    if(!query||searchBusy)return;
+    searchBusy=true;
+    el("searchSubmit")?.setAttribute("disabled","disabled");
     closeSearchResults();
     searchResultsEl.innerHTML="";
     const localMatches=[];
@@ -868,6 +876,8 @@ async function ensureLeaflet(){
       });
     });
     if(localMatches.length){
+      searchBusy=false;
+      el("searchSubmit").removeAttribute("disabled");
       searchResultsEl.innerHTML="";
       localMatches.slice(0,8).forEach(record=>{
         addSearchResult(record.name,infoText(record)||levelInfo[record.level].label,"▦",async()=>{
@@ -909,6 +919,9 @@ async function ensureLeaflet(){
       searchResultsEl.innerHTML="";
       const message=document.createElement("div");message.className="search-help";message.textContent="Place search is unavailable at the moment. Try a full administrative area name or check your connection.";
       searchResultsEl.appendChild(message);
+    }finally{
+      searchBusy=false;
+      el("searchSubmit").removeAttribute("disabled");
     }
   });
   document.addEventListener("click",event=>{
@@ -977,10 +990,12 @@ async function ensureLeaflet(){
     el("loadHistory").textContent="Checking archive…";
     el("historyMeta").textContent="Checking image versions available at this point and zoom level…";
     try{
+      const historyZoom=Math.max(map.getZoom(),12);
+      if(map.getZoom()<historyZoom)map.setView(lastPoint,historyZoom);
       const core=await getWaybackCore();
       const items=await core.getWaybackItemsWithLocalChanges(
         {longitude:lastPoint.lng,latitude:lastPoint.lat},
-        Math.max(map.getZoom(),12),
+        historyZoom,
         {onlyUseSizeToFilterDuplicates:true}
       );
       if(!Array.isArray(items)||!items.length){
