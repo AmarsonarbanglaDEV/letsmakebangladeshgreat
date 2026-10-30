@@ -1384,6 +1384,45 @@
       .atlas-welcome,.top-nav-button,.atlas-rail button,.map-pill,.map-control,.sidebar{transition:none!important}
     }
 
+
+    .sidebar-sheet-handle{display:none}
+    @media(max-width:760px){
+      .sidebar{
+        top:auto;left:8px;right:8px;bottom:8px;width:auto;
+        height:min(78dvh,720px);max-height:calc(100dvh - 78px);
+        border-radius:23px 23px 19px 19px;
+        transform:translate3d(0,0,0);
+      }
+      body.sidebar-collapsed .sidebar{
+        width:auto;transform:translate3d(0,calc(100% + 24px),0);
+      }
+      .sidebar-sheet-handle{
+        display:grid;place-items:center;flex:none;height:18px;
+        background:#fafbf6;border-radius:22px 22px 0 0;
+      }
+      .sidebar-sheet-handle span{
+        display:block;width:40px;height:4px;border-radius:8px;background:#c5d2c5;
+      }
+      .sidebar-head{padding:13px 50px 12px 15px}
+      .sidebar-head h1{font-size:18px}
+      .selected-area{margin:8px 11px 7px}
+      .sidebar-tabs{max-height:38%;gap:6px;padding:3px 11px 10px}
+      .side-content{padding:12px 13px 18px}
+      .sidebar-backdrop{inset:65px 0 0}
+    }
+    @media(max-width:560px){
+      .sidebar{left:7px;right:7px;bottom:7px;height:min(82dvh,720px);max-height:calc(100dvh - 76px)}
+      .sidebar-sheet-handle{height:16px}
+      .sidebar-head{padding:11px 45px 10px 13px}
+      .sidebar-head h1{font-size:17px}
+      .sidebar-head p{font-size:9px}
+      .selected-area{margin:7px 9px 6px;padding:8px 10px}
+      .sidebar-tabs{max-height:37%;gap:5px;padding:2px 9px 8px}
+      .sidebar-tab{min-height:31px}
+      .side-content{padding:10px 10px 16px}
+      .sidebar-backdrop{inset:63px 0 0}
+    }
+
 </style>
 </head>
 <body>
@@ -1420,6 +1459,7 @@
 
 <main class="workspace">
   <aside class="sidebar" id="sidebar" aria-label="Government information sidebar" aria-hidden="true" inert>
+    <div class="sidebar-sheet-handle" aria-hidden="true"><span></span></div>
     <div class="sidebar-head">
       <button class="sidebar-close" id="sidebarClose" type="button" aria-label="Close navigation panel" title="Close panel"><span aria-hidden="true">×</span></button>
       <div class="eyebrow" data-en="Bangladesh · public development atlas" data-bn="বাংলাদেশ · পাবলিক ডেভেলপমেন্ট অ্যাটলাস">BANGLADESH · PUBLIC DEVELOPMENT ATLAS</div>
