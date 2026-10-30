@@ -905,7 +905,9 @@ async function ensureLeaflet(){
         paths.push(commands.join("")+"Z");
       });
     });
-    if(!paths.length)throw new Error("The current view does not intersect the Bangladesh boundary.");
+    // When the camera is outside Bangladesh, an empty clip is safer than
+    // revealing neighbouring countries. The path is recalculated as the user pans.
+    if(!paths.length)return 'path(evenodd, "M0 0")';
     return 'path(evenodd, "'+paths.join("")+'")';
   }
 
