@@ -24,7 +24,7 @@ The first version is a static HTML/CSS/JavaScript site deployed through Cloudfla
 - Production preview: https://letsmakebangladeshgreat.pages.dev/
 - Repository: https://github.com/AmarsonarbanglaDEV/letsmakebangladeshgreat
 
-The current interface is a prototype. It does **not** yet contain a verified project, payment, funding or indicator database. Empty states are intentional; no project or financial figures are fabricated to populate the design.
+The current interface is a prototype. It now includes switchable Bangladesh division and 64-district map views, a searchable bilingual district directory, distinct district colours and map zoom controls. It does **not** yet contain a verified project, payment, funding or indicator database. Empty states are intentional; no project or financial figures are fabricated to populate the design.
 
 ## Evidence principles
 
@@ -50,7 +50,8 @@ Current prototype:
 - CSS
 - Vanilla JavaScript
 - Leaflet map library via CDN
-- Bangladesh eight-division boundary polygons from the DGHS GIS Feature Service (BBS ADM1 dataset)
+- Switchable division / district map levels, 64 individually coloured district areas, bilingual names, search and zoom controls
+- Bangladesh eight-division boundaries and 64-district polygons from the DGHS GIS Feature Service (BBS ADM1 / ADM2 datasets)
 
 Planned capabilities:
 - PostgreSQL / Supabase for structured records

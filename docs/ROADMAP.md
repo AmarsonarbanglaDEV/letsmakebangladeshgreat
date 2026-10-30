@@ -8,11 +8,14 @@
 - [ ] Add a privacy and contact policy before collecting submissions.
 
 ## Stage 1 — Atlas interface
-- [x] Bangladesh-only map using the published eight-division boundary layer.
-- [x] Division selector.
+- [x] Bangladesh-only map using published eight-division and 64-district boundary layers.
+- [x] Switch between Division (8) and District (64) map levels.
+- [x] Searchable English / Bangla directory for all 64 districts, grouped by division.
+- [x] Individually coloured district polygons and selectable map areas.
+- [x] Zoom in, zoom out, fit-Bangladesh and focus-to-selected-area controls.
 - [ ] Pin and preserve a versioned copy of the administrative boundary dataset with attribution.
-- [ ] Add district and upazila navigation.
-- [ ] Add map-layer controls backed by actual datasets.
+- [ ] Add upazila navigation.
+- [ ] Add thematic project, finance and public-asset map layers after reviewed datasets exist.
 - [ ] Add map-data coverage and precision notes.
 
 ## Stage 2 — Source inventory

@@ -11,8 +11,11 @@ The platform is an information and research tool. It does not determine guilt, a
 The public experience has three principal exploration screens:
 
 ### A. Bangladesh Atlas
-- A Bangladesh-only administrative map showing the country outline and eight division polygons; do not show surrounding countries or a global basemap in this view.
-- Division boundaries from the DGHS GIS Feature Service using the BBS ADM1 administrative-boundary dataset; district boundaries may be added later from a documented Bangladesh source.
+- A Bangladesh-only administrative map showing either the eight division polygons or all 64 district polygons; do not show surrounding countries or a global basemap in this view.
+- A visible Division / District level switch, with all 64 districts listed and searchable in English and Bangla.
+- Each district polygon receives its own stable, distinct display colour, and its official name is available in the directory and map tooltip.
+- Zoom in, zoom out and fit-Bangladesh controls, plus focus-to-area when a division or district is selected.
+- Division boundaries from the DGHS GIS Feature Service using the BBS ADM1 administrative-boundary dataset; district boundaries from the matching BBS ADM2 administrative-boundary dataset.
 - Optional upazila and union layers when data quality permits.
 - Separate toggles for funding facts, projects, public assets, historical locations, audit observations and environment records.
 - Search by project, administrative area, ministry, agency and source.
@@ -191,6 +194,6 @@ Private case tracking, confidential notes, personal details and restricted origi
 
 ## 12. Current implementation boundary
 
-The current site is a static prototype. The Bangladesh map draws administrative division polygons from the DGHS GIS Feature Service (BBS ADM1 dataset); these boundaries are geographic reference data, not project locations or evidence of expenditure. The project, funding, tree, global-indicator and audit sections intentionally show no published records until a verified dataset exists.
+The current site is a static prototype. The Bangladesh map can switch between division polygons from the DGHS GIS Feature Service (BBS ADM1 dataset) and 64 district polygons from its BBS ADM2 dataset. The district directory includes English and Bangla names, individual display colours, search and zoom/focus controls. These boundaries are geographic reference data, not project locations or evidence of expenditure. The project, funding, tree, global-indicator and audit sections intentionally show no published records until a verified dataset exists.
 
 A private owner console, authenticated submissions, database, evidence storage and publication system are future work and must not be represented as operational until implemented and tested.
