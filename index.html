@@ -1697,7 +1697,12 @@ async function ensureLeaflet(){
     }else{
       html+='<p class="atlas-warning-text">No project-level progress percentage, release or expenditure was provided in the imported approved-project listing. Progress is not assumed to be 0%.</p>';
     }
-    html+='<p class="atlas-project-area-label">Officially listed area:</p><div class="atlas-location-chips">'+(project.administrativeAreas||[]).map(a=>a.type==="district"?'<button class="atlas-location-chip" type="button" data-district="'+escapeHtml(a.name)+'">'+escapeHtml(a.name)+' ↗</button>':'<span class="atlas-location-chip is-context">'+escapeHtml(a.name)+'</span>').join("")+'</div>';
+    html+='<p class="atlas-project-area-label">Officially listed area:</p>';
+    if(project.mapDisplay?.areaConflict){
+      html+='<p class="atlas-warning-text">Area conflict in the source register: '+escapeHtml((project.administrativeAreas||[]).map(a=>a.name).join(" / "))+'. Not mapped until the administrative relationship is confirmed.</p>';
+    }else{
+      html+='<div class="atlas-location-chips">'+(project.administrativeAreas||[]).map(a=>a.type==="district"?'<button class="atlas-location-chip" type="button" data-district="'+escapeHtml(a.name)+'">'+escapeHtml(a.name)+' ↗</button>':'<span class="atlas-location-chip is-context">'+escapeHtml(a.name)+'</span>').join("")+'</div>';
+    }
     html+='<div class="atlas-project-foot"><span>Source date: '+escapeHtml(project.sourceUpdatedAt||project.lastChecked||"not supplied")+'</span><a class="atlas-source-inline" href="'+escapeHtml(project.source||project.approval?.source||"#")+'" target="_blank" rel="noopener">Original record ↗</a></div>';
     html+='</article>';
     return html;
