@@ -523,6 +523,12 @@
       .atlas-report-cover>strong{font-size:25px}
       .atlas-national-kpis .atlas-kpi strong{font-size:14px}
     }
+    .atlas-data-health{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:10px 0 13px;padding:10px 11px;border:1px solid #d9e4ef;border-radius:11px;background:#f3f7fb;color:#31536f}
+    .atlas-data-health strong{display:block;font-size:10px;font-weight:800}
+    .atlas-data-health small{display:block;margin-top:4px;color:#72879a;font-size:8px;line-height:1.5}
+    .atlas-data-health button{flex:none;padding:7px 9px;border:1px solid #c7d9ec;border-radius:8px;background:#fff;color:#205b9b;font-size:9px;font-weight:800}
+    .atlas-data-health button:hover{background:#e8f1fc}
+    .atlas-data-health button:disabled{opacity:.6;cursor:wait}
     /* ── Atlas UI refresh: calm institutional palette, clearer hierarchy, larger type ── */
     :root{
       --atlas-ink:#182b3d;--atlas-muted:#65788a;--atlas-line:#dce5ed;
@@ -1795,21 +1801,63 @@ async function ensureLeaflet(){
 
   // Source-linked public datasets (kept separate by evidence type and accounting level).
   let atlasData={budget:null,projects:null,contracts:null,districts:null};
+  const atlasDataFiles={
+    budget:"data/budget-fy2026-27.json",
+    projects:"data/projects-register-2026-10.json",
+    contracts:"data/road-contract-awards-2026-10.json",
+    districts:"data/bangladesh-districts-2026-09.json"
+  };
   let atlasDataPromise=null;
-  function loadAtlasData(){
-    if(atlasDataPromise)return atlasDataPromise;
-    atlasDataPromise=Promise.all([
-      ["budget","data/budget-fy2026-27.json"],
-      ["projects","data/projects-register-2026-10.json"],
-      ["contracts","data/road-contract-awards-2026-10.json"],
-      ["districts","data/bangladesh-districts-2026-09.json"]
-    ].map(async([key,url])=>{
-      const response=await fetch(url,{cache:"force-cache"});
-      if(!response.ok)throw new Error("Could not load "+url+" (HTTP "+response.status+")");
-      atlasData[key]=await response.json();
-    })).then(()=>atlasData).catch(error=>{
-      console.error("Atlas public-data files could not all be loaded:",error);
-      setStatus("Some public-data panels could not load: "+error.message,true);
+  const atlasDataState={};
+  Object.keys(atlasDataFiles).forEach(key=>atlasDataState[key]={status:"waiting",error:""});
+  function atlasDataStatusMarkup(){
+    const entries=Object.entries(atlasDataState);
+    const ready=entries.filter(([,v])=>v.status==="loaded").length;
+    const failed=entries.filter(([,v])=>v.status==="error");
+    const loading=entries.some(([,v])=>v.status==="loading"||v.status==="waiting");
+    const label=failed.length
+      ? ready+" of "+entries.length+" data files loaded · "+failed.length+" need attention"
+      : loading?"Loading public datasets…":ready+" of "+entries.length+" data files loaded";
+    return '<div class="atlas-data-health" role="status" aria-live="polite"><div><strong>'+escapeHtml(label)+'</strong><small>'+entries.map(([key,v])=>escapeHtml(key)+": "+(v.status==="loaded"?"ready":v.status==="error"?"error":v.status==="loading"?"loading":"waiting")).join(" · ")+'</small></div>'+(failed.length?'<button type="button" data-retry-atlas-data>Retry failed files</button>':"")+'</div>';
+  }
+  async function loadOneAtlasData(key,url){
+    atlasDataState[key]={status:"loading",error:""};
+    renderSidePanel(activePanel);
+    let lastError=null;
+    for(let attempt=1;attempt<=3;attempt++){
+      try{
+        const target=new URL(url,document.baseURI).toString();
+        const response=await fetch(target,{cache:"no-store",headers:{Accept:"application/json"}});
+        if(!response.ok)throw new Error("HTTP "+response.status+" for "+url);
+        const type=(response.headers.get("content-type")||"").toLowerCase();
+        if(type.includes("text/html"))throw new Error("The server returned HTML instead of JSON for "+url+"; check the deployed data path.");
+        const data=await response.json();
+        if(!data||typeof data!=="object"||Array.isArray(data))throw new Error("Invalid JSON data structure in "+url);
+        atlasData[key]=data;
+        atlasDataState[key]={status:"loaded",error:""};
+        return data;
+      }catch(error){
+        lastError=error;
+        if(attempt<3)await new Promise(resolve=>window.setTimeout(resolve,350*attempt));
+      }
+    }
+    atlasData[key]=null;
+    atlasDataState[key]={status:"error",error:lastError?.message||"Unknown data loading error"};
+    console.error("Atlas dataset failed:",key,lastError);
+    return null;
+  }
+  function loadAtlasData(forceRetry=false){
+    if(atlasDataPromise&&!forceRetry)return atlasDataPromise;
+    if(forceRetry)atlasDataPromise=null;
+    atlasDataPromise=Promise.all(Object.entries(atlasDataFiles).map(([key,url])=>{
+      if(atlasData[key]&&!forceRetry)return Promise.resolve(atlasData[key]);
+      return loadOneAtlasData(key,url);
+    })).then(()=>{
+      renderSidePanel(activePanel);
+      syncProjectMarkers();
+      const failed=Object.entries(atlasDataState).filter(([,v])=>v.status==="error");
+      if(failed.length)setStatus("Some data files could not load: "+failed.map(([key])=>key).join(", ")+". Use Retry failed files in the data panel.",true);
+      else setStatus("Public datasets loaded successfully.");
       return atlasData;
     });
     return atlasDataPromise;
@@ -2442,6 +2490,8 @@ async function ensureLeaflet(){
       applyProjectTimeLapseVersion(projectId,Number(slider.value),true);
     });
     panel.addEventListener("click",async event=>{
+      const retryData=event.target.closest("[data-retry-atlas-data]");
+      if(retryData){retryData.disabled=true;retryData.textContent="Retrying…";await loadAtlasData(true);return;}
       const openSpot=event.target.closest("[data-open-project-spot]");
       if(openSpot){
         const projectId=openSpot.getAttribute("data-open-project-spot");
@@ -2514,6 +2564,7 @@ async function ensureLeaflet(){
     const selected=el("selectedAreaName").textContent;
     let html='<h2>'+module.title+'</h2><p class="side-intro">'+module.intro+'</p>';
     html+='<div class="data-status atlas-snapshot-status"><span class="status-icon">i</span><span>Research snapshot: 30 Oct 2026 · source-linked pilot records; national and project-level coverage is still incomplete. Allocations, awards, payments and outcomes are shown separately.</span></div>';
+    html+=atlasDataStatusMarkup();
     if(!["overview","national","budget"].includes(activePanel))html+='<div class="data-card"><strong>Map context: '+escapeHtml(selected)+'</strong><p>Records shown here must have a documented relationship to this geography. National or ministry-level figures will not be presented as local spending.</p></div>';
     if(!["budget","ministries","projects","procurement","overview"].includes(activePanel)){
       (module.cards||[]).forEach(card=>{
@@ -2663,10 +2714,7 @@ async function ensureLeaflet(){
   // The public service does not permit client-side autocomplete; keep requests <= 1/second.
   renderSidePanel("overview");
   attachAtlasPanelDelegates();
-  loadAtlasData().then(()=>{
-    renderSidePanel(activePanel);
-    syncProjectMarkers();
-  }); 
+  loadAtlasData(); 
 })();
 </script>
 </body>
