@@ -1850,7 +1850,7 @@ async function ensureLeaflet(){
     if(atlasDataPromise&&!forceRetry)return atlasDataPromise;
     if(forceRetry)atlasDataPromise=null;
     atlasDataPromise=Promise.all(Object.entries(atlasDataFiles).map(([key,url])=>{
-      if(atlasData[key]&&!forceRetry)return Promise.resolve(atlasData[key]);
+      if(atlasData[key]&&(!forceRetry||atlasDataState[key].status==="loaded"))return Promise.resolve(atlasData[key]);
       return loadOneAtlasData(key,url);
     })).then(()=>{
       renderSidePanel(activePanel);
