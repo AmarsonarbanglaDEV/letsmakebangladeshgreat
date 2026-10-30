@@ -26,6 +26,10 @@ The first version is a static HTML/CSS/JavaScript site deployed through Cloudfla
 
 The current interface is a full-screen, Bangladesh-only map workspace. It opens in satellite mode, masks imagery outside Bangladesh using the national boundary, draws selectable administrative outlines, and offers a collapsible public-finance sidebar. Search supports local administrative areas plus submitted place-name searches restricted to Bangladesh. A video-style timeline can play the historical Esri World Imagery Wayback versions available for a selected point. This is still a prototype: the government-finance sidebar is structured but does **not** yet contain a verified project, payment, funding or indicator database. Historical imagery begins in 2014 and local availability varies; it is not a complete 15-year record.
 
+## Interface design
+
+The public map uses an independently implemented, Bangladesh-themed adaptation of a map-first atlas interface, informed by [Hisaab](https://github.com/theadiram/Hisaab). The layout keeps the map as the main canvas, with floating navigation, contextual evidence panels and compact map controls. See [third-party notices](THIRD_PARTY_NOTICES.md) for attribution and licensing information.
+
 ## Evidence principles
 
 1. An allocation is not an expenditure.
