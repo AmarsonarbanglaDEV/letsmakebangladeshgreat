@@ -545,7 +545,7 @@ async function ensureLeaflet(){
       try{
         response=await fetchWithTimeout(endpoint,{
           method:"GET",headers:{Accept:"application/geo+json, application/json"},
-          credentials:"same-origin",cache:"no-cache"
+          credentials:"same-origin",cache:"force-cache"
         },32000,"Map-data endpoint");
         data=await response.json();
       }catch(error){
@@ -597,7 +597,9 @@ async function ensureLeaflet(){
     const byFeature=new WeakMap();
     records.forEach(record=>byFeature.set(record.feature,record));
     const layer=L.geoJSON(data,{
-      pane:"boundaryPane",
+      pane:"boundaryPane",renderer:adminRenderer,
+      smoothFactor:level==="division"?3.0:
+        (level==="district"?2.4:(level==="upazila"?1.8:(level==="union"?1.5:1.2))),
       style:feature=>{
         const r=byFeature.get(feature);
         return {
@@ -723,13 +725,15 @@ async function ensureLeaflet(){
       [0,55],[0,125],[40,125],[40,55],[0,55]
     ];
     countryMask=L.polygon([outside].concat(holes),{
-      pane:"maskPane",stroke:false,fill:true,fillColor:"#f3f3ed",fillOpacity:1,
+      pane:"maskPane",renderer:maskRenderer,noClip:true,smoothFactor:1.5,
+      stroke:false,fill:true,fillColor:"#f3f3ed",fillOpacity:1,
       interactive:false,fillRule:"evenodd"
     }).addTo(map);
     if(countryOutline&&map.hasLayer(countryOutline))map.removeLayer(countryOutline);
-    countryOutline=L.geoJSON(data,{
-      pane:"countryPane",interactive:false,
-      style:{color:"#ddf2b2",weight:3.5,opacity:1,fill:false}
+    countryOutline=L.polyline(holes,{
+      pane:"countryPane",renderer:countryRenderer,noClip:true,smoothFactor:1.5,
+      color:"#ddf2b2",weight:3.5,opacity:1,fill:false,
+      interactive:false
     }).addTo(map);
     const countryBounds=countryOutline.getBounds();
     if(countryBounds.isValid())map.fitBounds(countryBounds.pad(.11),{padding:[25,25]});
@@ -739,28 +743,25 @@ async function ensureLeaflet(){
     try{
       const data=await fetchArcGISLayer(levelInfo.country.url);
       installBangladeshMask(data);
+      if(!outlineMode&&satellite&&!map.hasLayer(satellite))satellite.addTo(map);
       setStatus(data.fallbackReason
         ?"Bangladesh outline loaded · geoBoundaries backup source"
         :"Bangladesh national outline loaded · BBS ADM0");
       return true;
     }catch(error){
-      console.warn("National outline service failed; deriving the mask from the eight division polygons.",error);
-      try{
-        const divisions=await fetchLayer("division");
-        installBangladeshMask(divisions);
-        setStatus("Bangladesh mask derived from the official division boundaries.");
-        return true;
-      }catch(divisionError){
-        console.error("Bangladesh outline failed:",divisionError);
-        if(loadingCover&&map.hasLayer(loadingCover))map.removeLayer(loadingCover);
-        if(satellite&&map.hasLayer(satellite))map.removeLayer(satellite);
-        outlineMode=true;
-        el("satelliteToggle").classList.remove("active");
-        el("outlineToggle").classList.add("active");
-        map.fitBounds(bounds,{padding:[25,25]});
-        setStatus("Bangladesh boundary data could not load. Satellite is turned off to avoid displaying surrounding countries. "+divisionError.message,true);
-        return false;
-      }
+      // Division polygons are separate adjacent areas, not a dissolved
+      // national outline. Never treat them as overlapping mask holes.
+      console.error("Bangladesh national outline failed:",error);
+      if(loadingCover&&map.hasLayer(loadingCover))map.removeLayer(loadingCover);
+      if(satellite&&map.hasLayer(satellite))map.removeLayer(satellite);
+      outlineMode=true;
+      el("satelliteToggle").classList.remove("active");
+      el("satelliteToggle").disabled=true;
+      el("satelliteToggle").title="Satellite imagery is disabled until a verified national boundary is available.";
+      el("outlineToggle").classList.add("active");
+      map.fitBounds(bounds,{padding:[25,25]});
+      setStatus("The national boundary could not be verified. Satellite imagery is disabled to keep surrounding countries hidden. "+error.message,true);
+      return false;
     }
   }
 
@@ -774,7 +775,12 @@ async function ensureLeaflet(){
   map.createPane("maskPane");map.getPane("maskPane").style.zIndex=350;map.getPane("maskPane").style.pointerEvents="none";
   map.createPane("countryPane");map.getPane("countryPane").style.zIndex=430;map.getPane("countryPane").style.pointerEvents="none";
   map.createPane("boundaryPane");map.getPane("boundaryPane").style.zIndex=450;
-  // Keep the satellite canvas covered until the national polygon arrives.
+  // The mask surrounds the viewport. Use SVG with no geometry clipping so
+  // the outer ring cannot disappear when it encloses the entire map view.
+  const maskRenderer=L.svg({pane:"maskPane"});
+  const countryRenderer=L.svg({pane:"countryPane"});
+  const adminRenderer=L.canvas({pane:"boundaryPane",padding:0.5});
+  // Keep the map neutral until a valid Bangladesh mask is ready.
   loadingCover=L.rectangle(bounds,{
     pane:"maskPane",stroke:false,fill:true,fillColor:"#e6e9df",
     fillOpacity:1,interactive:false
@@ -784,8 +790,7 @@ async function ensureLeaflet(){
     "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
     {maxZoom:19,bounds:bounds,attribution:"Sources: Esri, Maxar, Earthstar Geographics, and the GIS User Community"}
   );
-  satellite.addTo(map);
-
+  // Satellite imagery is added only after the country mask has been installed.
   const boundaryFallback=()=>{outlineMode=true;if(satellite&&map.hasLayer(satellite))map.removeLayer(satellite);if(historicalLayer&&map.hasLayer(historicalLayer))map.removeLayer(historicalLayer);el("outlineToggle").classList.add("active");el("satelliteToggle").classList.remove("active");};
   el("satelliteToggle").addEventListener("click",()=>{
     outlineMode=false;
@@ -1272,13 +1277,8 @@ async function ensureLeaflet(){
     await loadCountryBoundary();
     setStatus("Loading district boundaries…");
     await switchLevel("district");
-    // Preload the division outline for instant level switching, but do not replace the district view.
-    try{
-      const division=await loadLevel("division");
-      buildAreaDirectoryIndex();
-      if(activeLevel==="district")setStatus("Bangladesh outline and 64-district layer loaded · switch to divisions, upazilas or unions.");
-    }catch(error){
-      console.warn("Division outline preload failed",error);
+    if(activeLevel==="district"&&currentLayer){
+      setStatus("Bangladesh outline and district layer loaded · switch to divisions, upazilas or unions.");
     }
   }
   start().catch(error=>{
