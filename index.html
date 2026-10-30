@@ -806,6 +806,176 @@
     @media(prefers-reduced-motion:reduce){
       .sidebar,.sidebar-close,.sidebar-menu-toggle span,.sidebar-backdrop,#sidebarRailToggle{transition:none!important}
     }
+  
+    /* Sidebar rebuild · Atlas navigation v3 */
+    .sidebar{
+      top:90px;left:20px;bottom:20px;width:min(398px,calc(100vw - 40px));
+      border:1px solid rgba(225,235,245,.86);border-radius:25px;
+      background:#f8fafd;box-shadow:0 24px 78px rgba(3,17,31,.34);
+      overflow:hidden;display:flex;flex-direction:column;
+      transition:transform .3s cubic-bezier(.2,.8,.2,1),opacity .22s,box-shadow .22s;
+    }
+    body.sidebar-collapsed .sidebar{
+      width:min(398px,calc(100vw - 40px));
+      transform:translate3d(calc(-100% - 34px),0,0);opacity:0;pointer-events:none;
+    }
+    .sidebar-head{
+      position:relative;flex:none;padding:21px 58px 19px 21px;
+      border:0;background:
+        radial-gradient(circle at 92% 0%,rgba(82,143,244,.27),transparent 37%),
+        linear-gradient(135deg,#0e2a42 0%,#123f60 62%,#15517a 100%);
+      color:#f4f8fc;
+    }
+    .sidebar-head:after{
+      content:"";position:absolute;left:21px;right:21px;bottom:0;height:1px;
+      background:linear-gradient(90deg,rgba(180,214,255,.42),transparent);
+    }
+    .sidebar-head .eyebrow{color:#9dc9ff;font-size:9px;letter-spacing:.18em}
+    .sidebar-head h1{margin:8px 0 6px;color:#fff;font-size:23px;line-height:1.08;letter-spacing:-.055em;font-weight:800}
+    .sidebar-head p{max-width:285px;margin:0;color:#c4d7e7;font-size:11px;line-height:1.55}
+    .sidebar-close{
+      top:17px;right:17px;width:34px;height:34px;
+      border:1px solid rgba(222,239,255,.28);border-radius:11px;
+      background:rgba(255,255,255,.1);color:#f5f9ff;
+      font-size:22px;box-shadow:0 4px 14px rgba(0,0,0,.12);
+    }
+    .sidebar-close:hover{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.48)}
+    .selected-area{
+      position:relative;flex:none;margin:13px 14px 10px;padding:11px 13px 10px 15px;
+      border:1px solid #dce7f1;border-radius:15px;background:#fff;
+      box-shadow:0 4px 14px rgba(25,57,89,.045);
+    }
+    .selected-area:before{
+      content:"";position:absolute;left:0;top:12px;bottom:12px;width:3px;
+      border-radius:0 4px 4px 0;background:#3578e5;
+    }
+    .selected-top small{color:#8294a7;font-size:8px;letter-spacing:.15em}
+    .selected-dot{background:#2ba77a;box-shadow:0 0 0 4px rgba(43,167,122,.12)}
+    #selectedAreaName{margin-top:5px;color:#193a58;font-size:15px;letter-spacing:-.035em}
+    #selectedAreaBn{color:#3474bb;font-size:10px}
+    #selectedPath{color:#8798a8;font-size:9px}
+    .sidebar-tabs{
+      flex:none;display:flex;flex-direction:column;gap:10px;
+      max-height:44%;min-height:0;overflow-y:auto;overflow-x:hidden;
+      padding:4px 14px 13px;border:0;background:transparent;
+      scrollbar-width:thin;scrollbar-color:#cbd8e5 transparent;
+    }
+    .sidebar-nav-group{display:grid;gap:6px;min-width:0}
+    .sidebar-nav-label{
+      padding:3px 4px 1px;margin:0;color:#8293a5;
+      font-size:8px;font-weight:900;letter-spacing:.17em;line-height:1.2;
+    }
+    .sidebar-nav-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+    .sidebar-tab{
+      min-width:0;min-height:40px;display:flex;align-items:center;justify-content:flex-start;
+      gap:9px;padding:7px 9px;border:1px solid transparent;border-radius:11px;
+      background:transparent;color:#536c82;font-size:10px;font-weight:750;line-height:1.2;
+      text-align:left;box-shadow:none;transform:none;
+      transition:background .16s,border-color .16s,color .16s,box-shadow .16s;
+    }
+    .sidebar-tab:hover{background:#edf3f9;border-color:#dfe8f1;color:#214f79;transform:none}
+    .sidebar-tab:focus-visible{outline:3px solid rgba(58,125,220,.32);outline-offset:2px}
+    .sidebar-tab.active{
+      border-color:#c7dcf7;background:#e8f1ff;color:#1c5ca9;
+      box-shadow:inset 3px 0 #3478dc,0 3px 10px rgba(42,102,180,.06);
+    }
+    .sidebar-tab-icon{
+      flex:none;width:26px;height:26px;display:grid;place-items:center;
+      border:1px solid #e7edf3;border-radius:8px;background:#fff;color:#67839e;
+      font-size:13px;font-weight:800;
+    }
+    .sidebar-tab.active .sidebar-tab-icon{
+      border-color:#d1e2fa;background:#d9e9ff;color:#1e63b4;
+    }
+    .national-report-tab{
+      min-height:58px;width:100%;padding:9px 11px;border:1px solid #d0e0f1;
+      border-radius:14px;background:linear-gradient(110deg,#e8f2ff,#f5f8fd);
+      color:#19466e;box-shadow:0 4px 12px rgba(25,75,125,.055);
+    }
+    .national-report-tab:hover{background:linear-gradient(110deg,#dfedff,#f2f7ff);border-color:#aac9ec}
+    .national-report-tab.active{
+      background:linear-gradient(110deg,#1f5fa8,#174879);border-color:#174879;
+      color:#fff;box-shadow:0 7px 18px rgba(24,78,133,.2);
+    }
+    .national-report-icon{
+      flex:none;width:34px;height:34px;display:grid;place-items:center;
+      border-radius:10px;background:#d6e8ff;color:#1d5fa9;font-size:17px;font-weight:900;
+    }
+    .national-report-tab.active .national-report-icon{background:rgba(255,255,255,.16);color:#fff}
+    .national-report-copy{display:grid;gap:3px;min-width:0;flex:1}
+    .national-report-copy strong{font-size:11px;font-weight:850}
+    .national-report-copy small{color:#71869a;font-size:9px;font-weight:550}
+    .national-report-tab.active .national-report-copy small{color:#d7e8fa}
+    .national-report-arrow{color:#6c8bad;font-size:15px}
+    .national-report-tab.active .national-report-arrow{color:#c8e1ff}
+    .side-content{
+      flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;
+      padding:15px 17px 23px;border-top:1px solid #e5ecf3;
+      background:linear-gradient(180deg,#f4f7fb 0%,#f8fafd 42px);
+      color:#203b51;scrollbar-width:thin;scrollbar-color:#cbd8e5 transparent;
+    }
+    .side-content h2{font-size:19px;color:#193a56;letter-spacing:-.04em}
+    .side-content h3{color:#214b6d}
+    .side-intro{color:#687f93}
+    .sidebar-foot{
+      flex:none;padding:10px 15px;border-top:1px solid #e3ebf2;
+      background:#f4f7fb;color:#8193a4;font-size:8px;
+    }
+    .atlas-rail{
+      left:20px;top:50%;transform:translateY(-50%);gap:6px;padding:7px;
+      border:1px solid rgba(230,239,248,.9);border-radius:16px;
+      background:rgba(248,251,254,.96);box-shadow:0 12px 34px rgba(4,20,36,.24);
+    }
+    .atlas-rail button{
+      width:40px;height:40px;border-radius:11px;color:#244c6d;
+      border:1px solid transparent;font-size:18px;
+    }
+    .atlas-rail button:hover{background:#e8f1fc;color:#2367ba;border-color:#d8e6f5}
+    #sidebarRailToggle{background:#eaf2fc;border-color:#d8e6f5;color:#2464ac}
+    body:not(.sidebar-collapsed) #sidebarRailToggle{opacity:0;pointer-events:none}
+    body:not(.sidebar-collapsed) .map-levels{left:445px;max-width:calc(100% - 560px)}
+    body:not(.sidebar-collapsed) .map-status{left:445px;max-width:min(440px,calc(100% - 590px))}
+    .sidebar-backdrop{z-index:930}
+    @media(max-width:900px){
+      .sidebar{
+        top:76px;left:10px;bottom:10px;width:min(398px,calc(100vw - 20px));
+        max-height:none;z-index:960;border-radius:22px;
+      }
+      body.sidebar-collapsed .sidebar{
+        width:min(398px,calc(100vw - 20px));
+        transform:translate3d(calc(-100% - 28px),0,0);opacity:0;pointer-events:none;
+      }
+      .sidebar-tabs{max-height:43%;gap:9px;padding:4px 12px 12px}
+      .sidebar-head{padding:17px 54px 15px 17px}
+      .sidebar-head h1{font-size:20px}
+      .selected-area{margin:10px 12px 8px}
+      .side-content{padding:14px 14px 20px}
+      .atlas-rail{left:10px;top:auto;bottom:180px;transform:none}
+      body:not(.sidebar-collapsed) .map-levels{left:9px;max-width:calc(100% - 125px)}
+      body:not(.sidebar-collapsed) .map-status{left:9px;max-width:calc(100% - 18px)}
+      body:not(.sidebar-collapsed) #sidebarRailToggle{opacity:0;pointer-events:none}
+    }
+    @media(max-width:560px){
+      .sidebar{top:70px;left:8px;bottom:8px;width:calc(100vw - 16px);border-radius:19px}
+      body.sidebar-collapsed .sidebar{width:calc(100vw - 16px)}
+      .sidebar-head{padding:14px 50px 13px 15px}
+      .sidebar-head h1{font-size:18px}
+      .sidebar-head p{font-size:10px}
+      .selected-area{margin:8px 10px 7px;padding:9px 12px}
+      .sidebar-tabs{max-height:42%;gap:7px;padding:3px 10px 10px}
+      .sidebar-nav-grid{gap:5px}
+      .sidebar-tab{min-height:36px;padding:6px 7px;gap:7px;font-size:9px}
+      .sidebar-tab-icon{width:23px;height:23px}
+      .national-report-tab{min-height:51px}
+      .national-report-icon{width:30px;height:30px}
+      .side-content{padding:12px 12px 18px}
+      .sidebar-foot{font-size:7px}
+      .atlas-rail{bottom:190px}
+    }
+    @media(prefers-reduced-motion:reduce){
+      .sidebar,.sidebar-tab,.sidebar-close,.atlas-rail button{transition:none!important}
+    }
+
   </style>
 </head>
 <body>
@@ -849,24 +1019,41 @@
     </div>
 
     <nav class="sidebar-tabs" aria-label="Government information sections">
-      <div class="sidebar-nav-label">COUNTRY-WIDE</div>
-      <button class="sidebar-tab national-report-tab" data-panel="national" type="button">
-        <span class="national-report-icon" aria-hidden="true">৳</span>
-        <span class="national-report-copy"><strong>National Report</strong><small>Budget · spending · development</small></span>
-        <span class="national-report-arrow" aria-hidden="true">↗</span>
-      </button>
-      <div class="sidebar-nav-label">EXPLORE</div>
-      <button class="sidebar-tab active" data-panel="overview" type="button"><span class="sidebar-tab-icon" aria-hidden="true">⌖</span><span>Overview</span></button>
-      <button class="sidebar-tab" data-panel="budget" type="button"><span class="sidebar-tab-icon" aria-hidden="true">৳</span><span>Budget</span></button>
-      <div class="sidebar-nav-label">DELIVERY</div>
-      <button class="sidebar-tab" data-panel="ministries" type="button"><span class="sidebar-tab-icon" aria-hidden="true">▤</span><span>Ministries</span></button>
-      <button class="sidebar-tab" data-panel="projects" type="button"><span class="sidebar-tab-icon" aria-hidden="true">◫</span><span>Projects</span></button>
-      <button class="sidebar-tab" data-panel="procurement" type="button"><span class="sidebar-tab-icon" aria-hidden="true">↗</span><span>Procurement</span></button>
-      <div class="sidebar-nav-label">ACCOUNTABILITY</div>
-      <button class="sidebar-tab" data-panel="audit" type="button"><span class="sidebar-tab-icon" aria-hidden="true">✓</span><span>Audit</span></button>
-      <button class="sidebar-tab" data-panel="environment" type="button"><span class="sidebar-tab-icon" aria-hidden="true">♧</span><span>Environment</span></button>
-      <button class="sidebar-tab" data-panel="indicators" type="button"><span class="sidebar-tab-icon" aria-hidden="true">⌁</span><span>Indicators</span></button>
-      <button class="sidebar-tab" data-panel="sources" type="button"><span class="sidebar-tab-icon" aria-hidden="true">◎</span><span>Sources</span></button>
+      <section class="sidebar-nav-group sidebar-nav-feature">
+        <div class="sidebar-nav-label">YOUR COUNTRY</div>
+        <button class="sidebar-tab national-report-tab" data-panel="national" type="button">
+          <span class="national-report-icon" aria-hidden="true">৳</span>
+          <span class="national-report-copy"><strong>National report</strong><small>Budget · spending · development</small></span>
+          <span class="national-report-arrow" aria-hidden="true">↗</span>
+        </button>
+      </section>
+
+      <section class="sidebar-nav-group">
+        <div class="sidebar-nav-label">EXPLORE THE ATLAS</div>
+        <div class="sidebar-nav-grid">
+          <button class="sidebar-tab active" data-panel="overview" type="button"><span class="sidebar-tab-icon" aria-hidden="true">⌖</span><span>Overview</span></button>
+          <button class="sidebar-tab" data-panel="budget" type="button"><span class="sidebar-tab-icon" aria-hidden="true">৳</span><span>Budget</span></button>
+        </div>
+      </section>
+
+      <section class="sidebar-nav-group">
+        <div class="sidebar-nav-label">DELIVERY TRACKING</div>
+        <div class="sidebar-nav-grid">
+          <button class="sidebar-tab" data-panel="ministries" type="button"><span class="sidebar-tab-icon" aria-hidden="true">▤</span><span>Ministries</span></button>
+          <button class="sidebar-tab" data-panel="projects" type="button"><span class="sidebar-tab-icon" aria-hidden="true">◫</span><span>Projects</span></button>
+          <button class="sidebar-tab" data-panel="procurement" type="button"><span class="sidebar-tab-icon" aria-hidden="true">↗</span><span>Procurement</span></button>
+        </div>
+      </section>
+
+      <section class="sidebar-nav-group">
+        <div class="sidebar-nav-label">PUBLIC ACCOUNTABILITY</div>
+        <div class="sidebar-nav-grid">
+          <button class="sidebar-tab" data-panel="audit" type="button"><span class="sidebar-tab-icon" aria-hidden="true">✓</span><span>Audit</span></button>
+          <button class="sidebar-tab" data-panel="environment" type="button"><span class="sidebar-tab-icon" aria-hidden="true">♧</span><span>Environment</span></button>
+          <button class="sidebar-tab" data-panel="indicators" type="button"><span class="sidebar-tab-icon" aria-hidden="true">⌁</span><span>Indicators</span></button>
+          <button class="sidebar-tab" data-panel="sources" type="button"><span class="sidebar-tab-icon" aria-hidden="true">◎</span><span>Sources</span></button>
+        </div>
+      </section>
     </nav>
 
     <section class="side-content" id="sideContent" aria-live="polite">
@@ -2613,9 +2800,12 @@ async function ensureLeaflet(){
   function renderSidePanel(key){
     activePanel=modules[key]?key:"overview";
     if(activePanel!=="projects")stopProjectTimeLapsePlayback();
-    document.querySelectorAll(".sidebar-tab, .national-report-tab").forEach(button=>
-      button.classList.toggle("active",button.dataset.panel===activePanel)
-    );
+    document.querySelectorAll(".sidebar-tab[data-panel]").forEach(button=>{
+      const active=button.dataset.panel===activePanel;
+      button.classList.toggle("active",active);
+      if(active)button.setAttribute("aria-current","page");
+      else button.removeAttribute("aria-current");
+    });
     const module=modules[activePanel];
     const selected=el("selectedAreaName").textContent;
     let html='<h2>'+module.title+'</h2><p class="side-intro">'+module.intro+'</p>';
