@@ -381,6 +381,30 @@ A completed bridge, road or metro structure is an output, not by itself proof of
 
 ---
 
+
+## 13. Project map markers and profile details
+
+The map-first interface uses orange dots as **approximate district reference locators** for the project profiles. A dot is placed at a representative point within the named district boundary; it is not an official GPS coordinate, site survey, road alignment, contractor office or proof of construction at that precise point. Projects spanning two districts may have one locator in each named district. Clicking a dot opens the corresponding project profile and focuses the sidebar on that project.
+
+The current pilot contains 11 project records. Ten have district labels that can be represented by 11 approximate district locators (the Sonapur–Kabirhat–Companyganj–Daganbhuiyan corridor spans Noakhali and Feni). One Ramerkanda–Laksharchar R-823 entry has inconsistent administrative labels in the published RTHD listing (Munshiganj district paired with Keraniganj upazila). It is deliberately not plotted until that location is reconciled. The map legend reports unresolved locations so absence of a dot is not mistaken for absence of a project.
+
+Each profile now contains:
+- A project-type illustration for metro, bridge or road infrastructure. These are labelled conceptual illustrations, not site photographs or engineering/as-built drawings.
+- Original approved cost and latest revised cost where supplied.
+- Fund releases and reported expenditure as separate fields. Missing project-level releases or spending remain “Not published” rather than zero.
+- Responsible ministry and implementing agency.
+- Project Director/person name only when the cited source identifies one.
+- Awarded company/contractor only when a BPPA contract award can be matched to the same project through a tender/project reference. Other road awards in the same district are not assigned to the profile.
+- Planned outputs and intended outcomes, with achieved/independently measured outcomes kept separate.
+- The Esri imagery time-lapse inside the project profile, not as a persistent home-map timeline.
+
+### Named MRT Line-6 project leadership
+
+RTHD's *Dhaka Mass Rapid Transit Development Project (Line-6)* progress report up to **28 February 2026** identifies **Mr. Md. Abdul Wohab** as **Project Director (Additional Charge)**. The profile displays this as a dated source snapshot, not a claim that the appointment remains unchanged on 30 October 2026. The report lists DMTCL as the implementing office. The current approved-project listing does not supply project-director names for the other ten project records, so their profile fields say that the name is not identified in the imported source.
+
+Official leadership source: https://eservices.rthd.gov.bd/admin/docs/news/rthd_13.pdf
+
+
 ## 12. Data files in this repository
 
 - `data/budget-fy2026-27.json` — 62 ministry/division lines, national/sector budgets, actuals where itemized, ADP implementation snapshots and outcome-target metadata.
