@@ -8,9 +8,9 @@
 - [ ] Add a privacy and contact policy before collecting submissions.
 
 ## Stage 1 — Atlas interface
-- [x] Initial interactive map showing division-headquarters reference points.
+- [x] Bangladesh-only map using the published eight-division boundary layer.
 - [x] Division selector.
-- [ ] Add sourced administrative boundaries with version and attribution.
+- [ ] Pin and preserve a versioned copy of the administrative boundary dataset with attribution.
 - [ ] Add district and upazila navigation.
 - [ ] Add map-layer controls backed by actual datasets.
 - [ ] Add map-data coverage and precision notes.
@@ -61,14 +61,7 @@
 - [ ] Distinguish observed, estimated and projected values.
 - [ ] Add historical charts and same-year comparisons where possible.
 
-## Stage 8 — We Have a Plan
-- [x] Initial share-card template with no invented statistics.
-- [ ] Add source-linked templates for real project records.
-- [ ] Add Bangla/English card exports.
-- [ ] Add record ID, reporting date and QR/evidence link.
-- [ ] Review social sharing and copyright rules.
-
-## Stage 9 — Private administration and publication controls
+## Stage 8 — Private administration and publication controls
 - [ ] Design protected owner membership and MFA.
 - [ ] Define source storage and access controls.
 - [ ] Implement review queues and role permissions.
@@ -77,7 +70,7 @@
 - [ ] Security test all public APIs and storage access.
 - [ ] Keep public release blocked until release gates pass.
 
-## Stage 10 — Public launch
+## Stage 9 — Public launch
 - [ ] Independent data-quality review.
 - [ ] Source-rights and privacy review.
 - [ ] Security review.
