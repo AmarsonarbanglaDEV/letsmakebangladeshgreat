@@ -165,31 +165,6 @@
     }
     .map-status:empty{display:none}
     .map-status.error{color:#825a17;background:#fff6e6;border-color:#eed8ad}
-    .timeline{
-      position:absolute;z-index:750;bottom:15px;left:15px;right:15px;
-      padding:13px 16px 11px;border:1px solid rgba(255,255,255,.85);border-radius:17px;
-      background:rgba(255,254,250,.96);box-shadow:0 10px 35px rgba(10,30,21,.2);
-      backdrop-filter:blur(15px)
-    }
-    .timeline-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}
-    .timeline-title{font-size:10px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#395740}
-    .timeline-current{font-size:11px;font-weight:900;color:#193e2a;font-variant-numeric:tabular-nums}
-    .timeline-main{display:grid;grid-template-columns:35px 1fr auto;gap:11px;align-items:center}
-    .play-btn{
-      width:34px;height:34px;border:0;border-radius:50%;background:#174c34;color:#fff;
-      font-size:13px;font-weight:900;box-shadow:0 4px 12px rgba(23,76,52,.22)
-    }
-    .play-btn:disabled{opacity:.35;cursor:not-allowed}
-    .timeline-range{width:100%;height:6px;border-radius:999px;appearance:none;background:linear-gradient(90deg,#24764a 0%,#24764a 0%,#d9e0d6 0%,#d9e0d6 100%);outline:0;cursor:pointer}
-    .timeline-range::-webkit-slider-thumb{appearance:none;width:15px;height:15px;border:3px solid #fff;border-radius:50%;background:#24764a;box-shadow:0 1px 5px rgba(0,0,0,.25)}
-    .timeline-range::-moz-range-thumb{width:11px;height:11px;border:3px solid #fff;border-radius:50%;background:#24764a;box-shadow:0 1px 5px rgba(0,0,0,.25)}
-    .history-load{padding:9px 13px;border:1px solid #dce6d9;border-radius:10px;background:#f1f6ed;color:#23583b;font-size:10px;font-weight:900;white-space:nowrap}
-    .history-load:hover:not(:disabled){background:#e4efe0}
-    .history-load:disabled{opacity:.45;cursor:not-allowed}
-    .timeline-scale{display:flex;justify-content:space-between;gap:8px;margin:6px 45px 0;color:#8a968d;font-size:9px}
-    .timeline-disclaimer{margin:6px 0 0;padding:6px 8px;border-radius:8px;background:#f6f7f2;color:#77847a;font-size:9px;line-height:1.45}
-    .timeline-meta{margin-top:7px;display:flex;align-items:center;justify-content:space-between;gap:12px;color:#7e897f;font-size:9px;line-height:1.5}
-    #historyMeta{min-width:0}
     .map-attribution{
       position:absolute;z-index:700;right:16px;bottom:108px;padding:6px 9px;
       border-radius:8px;background:rgba(255,254,250,.9);color:#65746a;font-size:9px;
@@ -558,22 +533,10 @@
     </div>
     <div class="map-status" id="mapStatus" role="status" aria-live="polite">Loading Bangladesh outline and satellite map…</div>
 
-    <div class="timeline" aria-label="Historical satellite imagery timeline">
-      <div class="timeline-top">
-        <span class="timeline-title" data-en="Historical imagery · local archive" data-bn="পুরনো স্যাটেলাইট ছবি · স্থানীয় আর্কাইভ">Historical imagery · local archive</span>
-        <strong class="timeline-current" id="timelineDate">Select a point on the map</strong>
-      </div>
-      <div class="timeline-main">
-        <button class="play-btn" id="timelinePlay" type="button" disabled aria-label="Play historical imagery">▶</button>
-        <input class="timeline-range" id="timelineSlider" type="range" min="0" max="0" value="0" disabled aria-label="Historical imagery timeline">
-        <button class="history-load" id="loadHistory" type="button" disabled data-en="Find imagery history" data-bn="পুরনো ছবি খুঁজুন">Find imagery history</button>
-      </div>
-      <div class="timeline-scale"><span id="timelineStart">2014 archive</span><span id="timelineEnd">Latest available</span></div>
-      <div class="timeline-disclaimer">Archive versions begin in 2014 and vary by location; this is not a complete 15-year record. Imagery can show visible change, but cannot prove corruption or misuse of public money.</div>
-      <div class="timeline-meta">
-        <span id="historyMeta">Click a point or search for a place, then find imagery versions for that location.</span>
-        <span>Esri World Imagery Wayback · imagery dates vary by location</span>
-      </div>
+    <div class="project-map-legend" id="projectMarkerLegend" aria-live="polite">
+      <span class="project-map-dot" aria-hidden="true"></span>
+      <span><strong>Projects</strong> · approximate district locators</span>
+      <small id="projectMarkerCount">Loading project locations…</small>
     </div>
     <div class="map-attribution">Satellite imagery © Esri, Maxar &amp; imagery contributors · Search © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a></div>
   </section>
@@ -649,7 +612,8 @@ async function ensureLeaflet(){
   let language="en",activeLevel="district",currentLayer=null,countryClipData=null,countryOutline=null;
   let fallbackDivisionLayer=null,clipFrameScheduled=0;
   let satellite=null,historicalLayer=null,outlineMode=false,lastPoint=null,pointMarker=null;
-  let waybackCore=null,waybackItems=[],waybackIndex=0,playTimer=null,lastSearchAt=0;
+  let projectMarkersLayer=null,selectedProjectId=null;
+  let waybackCore=null,lastPoint=null,lastSearchAt=0;
   const projectSpotPoints=Object.create(null);
   const projectTimeLapseStates=Object.create(null);
   let activeProjectSpotId=null,projectTimeLapseTimer=null;
@@ -669,8 +633,6 @@ async function ensureLeaflet(){
     statusEl.classList.add("error");
   });
   const searchResultsEl=el("searchResults");
-  const timelineSlider=el("timelineSlider");
-  const timelinePlay=el("timelinePlay");
 
   function normalise(value){
     return String(value||"").toLowerCase().normalize("NFD")
@@ -894,6 +856,7 @@ async function ensureLeaflet(){
     const built=makeRecordsAndLayer(data,level,true);
     built.layer._atlasRecords=built.records;
     cache[level]=built;
+    if(level==="district")syncProjectMarkers();
     return built;
   }
   async function switchLevel(level){
@@ -1113,6 +1076,7 @@ async function ensureLeaflet(){
   window.atlasMap=map;
   map.createPane("countryPane");map.getPane("countryPane").style.zIndex=420;map.getPane("countryPane").style.pointerEvents="none";
   map.createPane("boundaryPane");map.getPane("boundaryPane").style.zIndex=450;
+  map.createPane("projectMarkerPane");map.getPane("projectMarkerPane").style.zIndex=680;
   const countryRenderer=L.svg({pane:"countryPane"});
   const adminRenderer=L.canvas({pane:"boundaryPane",padding:0.5});
   map.getContainer().style.background="#081923";
@@ -1147,31 +1111,15 @@ async function ensureLeaflet(){
   el("zoomOut").addEventListener("click",()=>map.zoomOut());
   el("fitBangladesh").addEventListener("click",()=>map.fitBounds(bounds,{padding:[30,30]}));
 
-  function stopPlayback(){
-    if(playTimer){window.clearInterval(playTimer);playTimer=null;}
-    timelinePlay.textContent="▶";
-    timelinePlay.setAttribute("aria-label","Play historical imagery");
-  }
   function setPoint(latlng,label){
     lastPoint=latlng;
-    stopPlayback();
-    waybackItems=[];
-    timelineSlider.min="0";timelineSlider.max="0";timelineSlider.value="0";
-    timelineSlider.disabled=true;timelinePlay.disabled=true;
-    el("timelineDate").textContent="Select a point, then load history";
-    el("timelineStart").textContent="2014 archive";
-    el("timelineEnd").textContent="Latest available";
-    updateTimelineProgress();
     if(historicalLayer&&map.hasLayer(historicalLayer))map.removeLayer(historicalLayer);
     if(!outlineMode&&satellite&&!map.hasLayer(satellite))satellite.addTo(map);
     if(pointMarker&&map.hasLayer(pointMarker))map.removeLayer(pointMarker);
     pointMarker=L.circleMarker(latlng,{
-      pane:"markerPane",radius:7,color:"#fff",weight:3,fillColor:"#e08a3b",fillOpacity:1
+      pane:"markerPane",radius:6,color:"#fff",weight:2,fillColor:"#e08a3b",fillOpacity:1
     }).addTo(map);
-    const place=label||("Selected map point "+latlng.lat.toFixed(5)+", "+latlng.lng.toFixed(5));
-    el("historyMeta").textContent=place+" · zoom "+map.getZoom()+". Load the available imagery archive for this point.";
-    el("loadHistory").disabled=false;
-    stopPlayback();
+    if(label)setStatus(label+" · selected map point, not an official project coordinate.");
   }
   function refreshAreaLabels(){
     if(!currentLayer)return;
@@ -1201,9 +1149,7 @@ async function ensureLeaflet(){
   }
   map.on("click",event=>{
     if(!bounds.contains(event.latlng))return;
-    if(handleProjectSpotMapClick(event.latlng))return;
-    setPoint(event.latlng);
-    renderSidePanel(activePanel);
+    handleProjectSpotMapClick(event.latlng);
   });
 
   const searchForm=el("searchForm"),searchInput=el("mapSearch");
@@ -1357,107 +1303,6 @@ async function ensureLeaflet(){
     if(!waybackCore)waybackCore=await import("https://esm.sh/@esri/wayback-core?bundle");
     return waybackCore;
   }
-  async function updateCaptureMetadata(item){
-    if(!lastPoint)return;
-    el("historyMeta").textContent="Reading image capture metadata…";
-    try{
-      const core=await getWaybackCore();
-      const meta=await core.getMetadata(
-        {longitude:lastPoint.lng,latitude:lastPoint.lat},
-        Math.max(map.getZoom(),12),item.releaseNum
-      );
-      const capture=meta&&meta.date?new Date(meta.date).toISOString().slice(0,10):"Capture date not supplied";
-      const provider=meta&&meta.provider?meta.provider:"Provider not supplied";
-      const resolution=meta&&meta.resolution?meta.resolution+" m/pixel":"Resolution not supplied";
-      el("historyMeta").textContent="Image capture: "+capture+" · "+provider+" · "+resolution+" · archive version "+item.releaseDateLabel+".";
-    }catch(error){
-      el("historyMeta").textContent="Image capture metadata is unavailable. Archive version: "+item.releaseDateLabel+".";
-    }
-  }
-  function applyHistoryVersion(index,withMetadata){
-    if(!waybackItems.length)return;
-    waybackIndex=Math.max(0,Math.min(index,waybackItems.length-1));
-    const item=waybackItems[waybackIndex];
-    timelineSlider.value=String(waybackIndex);
-    el("timelineDate").textContent=item.releaseDateLabel||item.itemTitle||"Archive version";
-    const url=String(item.itemURL||"")
-      .replaceAll("{level}","{z}").replaceAll("{row}","{y}").replaceAll("{col}","{x}");
-    if(!url){
-      el("historyMeta").textContent="No tile URL was supplied for this archive version.";
-      return;
-    }
-    if(satellite&&map.hasLayer(satellite))map.removeLayer(satellite);
-    if(historicalLayer&&map.hasLayer(historicalLayer))map.removeLayer(historicalLayer);
-    historicalLayer=L.tileLayer(url,{
-      maxZoom:19,opacity:1,
-      attribution:"Historical imagery © Esri and imagery providers"
-    }).addTo(map);
-    el("satelliteToggle").classList.remove("active");
-    el("outlineToggle").classList.remove("active");
-    if(withMetadata!==false)updateCaptureMetadata(item);
-    else el("historyMeta").textContent="Showing archive release "+item.releaseDateLabel+". Drag the timeline to compare another version.";
-    updateTimelineProgress();
-  }
-  function updateTimelineProgress(){
-    const max=Number(timelineSlider.max)||0;
-    const value=Number(timelineSlider.value)||0;
-    const percent=max?value/max*100:0;
-    timelineSlider.style.background="linear-gradient(90deg,#24764a 0%,#24764a "+percent+"%,#d9e0d6 "+percent+"%,#d9e0d6 100%)";
-  }
-  async function loadHistory(){
-    if(!lastPoint)return;
-    el("loadHistory").disabled=true;
-    el("loadHistory").textContent="Checking archive…";
-    el("historyMeta").textContent="Checking image versions available at this point and zoom level…";
-    try{
-      const historyZoom=Math.max(map.getZoom(),12);
-      if(map.getZoom()<historyZoom)map.setView(lastPoint,historyZoom);
-      const core=await getWaybackCore();
-      const items=await core.getWaybackItemsWithLocalChanges(
-        {longitude:lastPoint.lng,latitude:lastPoint.lat},
-        historyZoom,
-        {onlyUseSizeToFilterDuplicates:true}
-      );
-      if(!Array.isArray(items)||!items.length){
-        waybackItems=[];timelineSlider.disabled=true;timelinePlay.disabled=true;
-        el("timelineDate").textContent="No local archive versions";
-        el("historyMeta").textContent="No distinct Wayback imagery versions were returned for this point and scale. Zoom in closer or choose another point.";
-        updateTimelineProgress();
-        return;
-      }
-      waybackItems=items.slice().sort((a,b)=>(a.releaseDatetime||0)-(b.releaseDatetime||0));
-      timelineSlider.min="0";timelineSlider.max=String(waybackItems.length-1);
-      timelineSlider.value=String(waybackItems.length-1);timelineSlider.disabled=false;
-      timelinePlay.disabled=waybackItems.length<2;
-      el("timelineStart").textContent=waybackItems[0].releaseDateLabel||"Oldest available";
-      el("timelineEnd").textContent=waybackItems[waybackItems.length-1].releaseDateLabel||"Latest available";
-      el("timelineDate").textContent=waybackItems[waybackItems.length-1].releaseDateLabel||"Latest version";
-      applyHistoryVersion(waybackItems.length-1,true);
-    }catch(error){
-      console.error("Wayback lookup failed",error);
-      timelineSlider.disabled=true;timelinePlay.disabled=true;
-      el("timelineDate").textContent="Archive unavailable";
-      el("historyMeta").textContent="Historical imagery could not be loaded. The current satellite view remains available.";
-    }finally{
-      el("loadHistory").disabled=!lastPoint;
-      el("loadHistory").textContent=language==="bn"?"পুরনো ছবি খুঁজুন":"Find imagery history";
-    }
-  }
-  el("loadHistory").addEventListener("click",loadHistory);
-  timelineSlider.addEventListener("input",()=>{
-    stopPlayback();applyHistoryVersion(Number(timelineSlider.value),true);
-  });
-  timelinePlay.addEventListener("click",()=>{
-    if(playTimer){stopPlayback();return;}
-    if(waybackItems.length<2)return;
-    timelinePlay.textContent="Ⅱ";timelinePlay.setAttribute("aria-label","Pause historical imagery");
-    playTimer=window.setInterval(()=>{
-      const next=(waybackIndex+1)%waybackItems.length;
-      applyHistoryVersion(next,false);
-    },1600);
-  });
-  window.addEventListener("beforeunload",stopPlayback);
-
   const modules={
     overview:{
       title:"Area overview",
@@ -1898,6 +1743,86 @@ async function ensureLeaflet(){
     if(!document.body.classList.contains("sidebar-collapsed"))toggleRecordsPanel();
     window.setTimeout(()=>map.invalidateSize({pan:false}),320);
   }
+  function openProjectProfile(projectId,focusPoint){
+    const project=atlasData.projects?.projects?.find(item=>item.id===projectId);
+    if(!project)return;
+    selectedProjectId=projectId;
+    renderSidePanel("projects");
+    if(document.body.classList.contains("sidebar-collapsed"))toggleRecordsPanel();
+    if(focusPoint&&bounds.contains(focusPoint)){
+      map.setView(focusPoint,Math.max(map.getZoom(),9));
+    }
+    window.setTimeout(()=>{
+      const card=el("sideContent").querySelector('[data-project-card="'+CSS.escape(projectId)+'"]');
+      if(card){
+        card.classList.add("is-project-selected");
+        card.scrollIntoView({behavior:"smooth",block:"start"});
+        window.setTimeout(()=>card.classList.remove("is-project-selected"),2400);
+      }
+    },380);
+  }
+
+  function syncProjectMarkers(){
+    if(!map||!atlasData.projects||!cache.district||!cache.district.layer)return;
+    if(!projectMarkersLayer)projectMarkersLayer=L.layerGroup().addTo(map);
+    projectMarkersLayer.clearLayers();
+    let markerCount=0,unresolvedCount=0,unmatchedCount=0;
+    (atlasData.projects.projects||[]).forEach(project=>{
+      if(project.mapDisplay?.areaConflict){
+        unresolvedCount++;
+        return;
+      }
+      const districtNames=[...new Set((project.administrativeAreas||[])
+        .filter(area=>area.type==="district"&&area.name)
+        .map(area=>area.name))];
+      if(!districtNames.length){
+        unresolvedCount++;
+        return;
+      }
+      districtNames.forEach(districtName=>{
+        const districtRecord=cache.district.records.find(record=>
+          normalise(record.name)===normalise(districtName)
+        );
+        if(!districtRecord){
+          unmatchedCount++;
+          return;
+        }
+        const districtLayer=cache.district.layer.getLayers().find(path=>
+          path._atlasRecord&&path._atlasRecord.id===districtRecord.id
+        );
+        if(!districtLayer){
+          unmatchedCount++;
+          return;
+        }
+        const locatorPoint=districtLayer.getBounds().getCenter();
+        const icon=L.divIcon({
+          className:"atlas-project-pin-shell",
+          html:'<span class="atlas-project-pin" aria-hidden="true"></span>',
+          iconSize:[22,22],
+          iconAnchor:[11,11]
+        });
+        const marker=L.marker(locatorPoint,{
+          pane:"projectMarkerPane",
+          icon,
+          keyboard:true,
+          title:project.name+" · "+districtName+" district locator (not exact site)"
+        });
+        marker.bindTooltip(
+          escapeHtml(project.name)+"<br><small>"+escapeHtml(districtName)+" district locator · not exact project coordinates</small>",
+          {direction:"top",offset:[0,-8],className:"project-marker-tooltip"}
+        );
+        marker.on("click",()=>openProjectProfile(project.id,locatorPoint));
+        marker.addTo(projectMarkersLayer);
+        markerCount++;
+      });
+    });
+    const countNode=el("projectMarkerCount");
+    if(countNode){
+      countNode.textContent=markerCount+" orange locator(s) · "+unresolvedCount+" unresolved project(s)"+
+        (unmatchedCount?" · "+unmatchedCount+" area match(es) unavailable":"");
+    }
+  }
+
   function renderProjectCard(project){
 
     const isMega=project.kind==="mega";
@@ -2022,7 +1947,6 @@ async function ensureLeaflet(){
         if(projectTimeLapseTimer){
           stopProjectTimeLapsePlayback();
         }else{
-          stopPlayback();
           playButton.textContent="Ⅱ";
           playButton.setAttribute("aria-label","Pause project-location imagery time-lapse");
           projectTimeLapseTimer=window.setInterval(()=>{
@@ -2130,6 +2054,11 @@ async function ensureLeaflet(){
   // Nominatim is queried only after the visitor submits the search form.
   // The public service does not permit client-side autocomplete; keep requests <= 1/second.
   renderSidePanel("overview");
+  attachAtlasPanelDelegates();
+  loadAtlasData().then(()=>{
+    renderSidePanel(activePanel);
+    syncProjectMarkers();
+  }); 
 })();
 </script>
 </body>
