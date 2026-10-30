@@ -1114,15 +1114,26 @@ async function ensureLeaflet(){
       try{
         response=await fetchWithTimeout(endpoint,{
           method:"GET",headers:{Accept:"application/geo+json, application/json"},
-          credentials:"same-origin",cache:"force-cache"
+          credentials:"same-origin",cache:"no-store"
         },32000,"Map-data endpoint");
-        data=await response.json();
       }catch(error){
         throw new Error("The site's map-data endpoint could not be reached. Make sure the Cloudflare Pages Functions deployment is active. "+error.message);
       }
+      const responseType=(response.headers.get("content-type")||"").toLowerCase();
       if(!response.ok){
-        throw new Error((data&&data.error)||("Map-data endpoint returned HTTP "+response.status));
+        let detail="HTTP "+response.status;
+        if(responseType.includes("json")){
+          try{const failure=await response.json();detail=failure.error||detail;}catch(_){}
+        }else if(responseType.includes("text")){
+          try{detail=(await response.text()).slice(0,180)||detail;}catch(_){}
+        }
+        throw new Error("Map-data endpoint failed: "+detail);
       }
+      if(!responseType.includes("json")&&!responseType.includes("+json")){
+        throw new Error("Map-data endpoint returned "+(responseType||"an unknown content type")+" instead of GeoJSON. Check the Cloudflare Pages Functions route.");
+      }
+      try{data=await response.json();}
+      catch(error){throw new Error("Map-data endpoint returned invalid JSON: "+error.message);}
       if(!data||!Array.isArray(data.features)){
         throw new Error("The map-data endpoint returned an invalid boundary response.");
       }
