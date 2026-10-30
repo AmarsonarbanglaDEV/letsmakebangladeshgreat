@@ -970,8 +970,9 @@ async function ensureLeaflet(){
   }
 
   map=L.map("map",{
-    center:[23.75,90.35],zoom:7,zoomControl:false,
+    center:[23.75,90.35],zoom:7,zoomControl:false,attributionControl:false,
     scrollWheelZoom:true,doubleClickZoom:true,
+    zoomAnimation:false,fadeAnimation:false,
     minZoom:6,maxZoom:19,maxBounds:bounds,maxBoundsViscosity:1,
     zoomSnap:.5,zoomDelta:.5,preferCanvas:true
   });
