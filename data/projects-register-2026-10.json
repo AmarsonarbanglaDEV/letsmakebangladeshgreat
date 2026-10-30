@@ -1,0 +1,412 @@
+{
+  "schemaVersion": "lm-bg-projects/1.0",
+  "snapshotDate": "2026-10-30",
+  "currency": "BDT",
+  "defaultUnit": "BDT crore unless a record says otherwise",
+  "coverage": {
+    "rthdApprovedProjectRegister": {
+      "source": "https://rthd.gov.bd/pages/approved-projects",
+      "sourceTitle": "Road Transport and Highways Division — Approved Projects",
+      "portalDisplayedTotal": 73,
+      "importedRecords": 3,
+      "note": "The official portal currently displays 73 approved-project entries. Three records below have been manually transcribed as a pilot. This is not a complete import of all 73 entries."
+    },
+    "rthdMegaProjectRegister": {
+      "source": "https://eservices.rthd.gov.bd/mega_project.php",
+      "sourceTitle": "Road Transport and Highways Division — Mega Projects",
+      "importedRecords": 1,
+      "note": "The portal lists mega-project update files. The MRT Line-6 progress record below is transcribed from its dated official report."
+    },
+    "mapLocationPolicy": "Map project points only when a project document gives a usable site coordinate or route geometry. Otherwise show an administrative-area highlight and label the location precision; never place a false point at a district centre."
+  },
+  "projects": [
+    {
+      "id": "RTHD-MRT6",
+      "kind": "mega",
+      "name": "Dhaka Mass Rapid Transit Development Project (Line-6)",
+      "alternateName": "MRT Line-6",
+      "ministry": "Road Transport and Bridges",
+      "implementingAgency": "Dhaka Mass Transit Company Limited (DMTCL)",
+      "modelType": "elevated_metro",
+      "modelLabel": "Conceptual elevated-metro schematic",
+      "modelNotice": "Conceptual visualisation only. This is not the official engineering design, as-built geometry, station layout, or surveyed model.",
+      "officialLocation": "Dhaka — Uttara North to Kamalapur",
+      "administrativeAreas": [
+        {
+          "type": "district",
+          "name": "Dhaka",
+          "precision": "district/corridor only"
+        }
+      ],
+      "mapDisplay": {
+        "mode": "area_highlight",
+        "exactCoordinatesAvailable": false,
+        "routeGeometryAvailable": false
+      },
+      "plannedOutputs": [
+        "A 21.26 km elevated viaduct from Uttara North to Kamalapur, as described in the RTHD report.",
+        "Mass-transit facilities intended to improve effective, efficient, safe and environment-friendly transport in Dhaka."
+      ],
+      "outcomes": {
+        "intended": "Introduce efficient public mass transit for Dhaka City, with safe and environment-friendly transport.",
+        "measured": "The February 2026 report records construction progress and expenditure. It does not, in this report, quantify passenger outcomes, journey-time savings, emissions reduction or safety outcomes.",
+        "independentlyVerifiedOutcome": null
+      },
+      "approval": {
+        "originalTotalLakh": 2198507.21,
+        "latestRevision": "3rd revision",
+        "latestRevisedTotalLakh": 3271772.57,
+        "latestGoBShareLakh": 1252196.53,
+        "latestProjectAidShareLakh": 2019576.04,
+        "sourceDate": "2026-02-28",
+        "originalDuration": "July 2012 to June 2024",
+        "secondRevisionDuration": "July 2012 to December 2025",
+        "thirdRevisionDuration": "July 2012 to December 2028",
+        "source": "https://eservices.rthd.gov.bd/admin/docs/news/rthd_13.pdf",
+        "sourceTitle": "RTHD — Dhaka Mass Rapid Transit Development Project (Line-6), progress up to February 2026",
+        "sourcePage": "Printed pages 1–4; approval/revision table on page 2"
+      },
+      "progress": [
+        {
+          "metric": "physical",
+          "label": "Uttara North to Motijheel section",
+          "percent": 99.6,
+          "reportedAt": "2026-02-28",
+          "source": "https://eservices.rthd.gov.bd/admin/docs/news/rthd_13.pdf",
+          "sourcePage": "Printed page 4",
+          "scope": "This percentage applies to the Uttara North–Motijheel section, not the entire extension to Kamalapur."
+        },
+        {
+          "metric": "physical",
+          "label": "Motijheel to Kamalapur extension",
+          "percent": 72.09,
+          "reportedAt": "2026-02-28",
+          "source": "https://eservices.rthd.gov.bd/admin/docs/news/rthd_13.pdf",
+          "sourcePage": "Printed page 4",
+          "scope": "The 1.16 km extension and Kamalapur station section."
+        },
+        {
+          "metric": "financial",
+          "label": "Expenditure against the 3rd revised allocation",
+          "percent": 80.68,
+          "reportedAt": "2026-02-28",
+          "source": "https://eservices.rthd.gov.bd/admin/docs/news/rthd_13.pdf",
+          "sourcePage": "Printed page 4",
+          "scope": "Financial progress reported by RTHD against the third revised allocation; not physical completion."
+        }
+      ],
+      "annualFinanceUnit": "BDT lakh",
+      "annualFinance": [
+        {
+          "fiscalYear": "2012-13",
+          "adpAllocation": 76.5,
+          "reportedExpenditure": 76.5
+        },
+        {
+          "fiscalYear": "2013-14",
+          "adpAllocation": 17300,
+          "reportedExpenditure": 13092
+        },
+        {
+          "fiscalYear": "2014-15",
+          "adpAllocation": 38000,
+          "reportedExpenditure": 37978
+        },
+        {
+          "fiscalYear": "2015-16",
+          "adpAllocation": 36595,
+          "reportedExpenditure": 36348.98
+        },
+        {
+          "fiscalYear": "2016-17",
+          "adpAllocation": 118242,
+          "reportedExpenditure": 117717.4
+        },
+        {
+          "fiscalYear": "2017-18",
+          "adpAllocation": 309595,
+          "reportedExpenditure": 298322.49
+        },
+        {
+          "fiscalYear": "2018-19",
+          "adpAllocation": 248118,
+          "reportedExpenditure": 253962.72
+        },
+        {
+          "fiscalYear": "2019-20",
+          "adpAllocation": 432673,
+          "reportedExpenditure": 379392.33
+        },
+        {
+          "fiscalYear": "2020-21",
+          "adpAllocation": 554283,
+          "reportedExpenditure": 428530.7
+        },
+        {
+          "fiscalYear": "2021-22",
+          "adpAllocation": 400770,
+          "reportedExpenditure": 400904.87
+        },
+        {
+          "fiscalYear": "2022-23",
+          "adpAllocation": 304900,
+          "reportedExpenditure": 304670.47
+        },
+        {
+          "fiscalYear": "2023-24",
+          "adpAllocation": 342500,
+          "reportedExpenditure": 197612.21
+        },
+        {
+          "fiscalYear": "2024-25",
+          "adpAllocation": 153250,
+          "reportedExpenditure": 136375.09
+        },
+        {
+          "fiscalYear": "2025-26",
+          "adpAllocation": 134744,
+          "reportedExpenditure": 33158.32,
+          "periodNote": "Reported only up to February 2026; not a full-year actual."
+        }
+      ],
+      "reportedCumulativeExpenditureLakh": 2638142.08,
+      "cumulativeNote": "Arithmetic sum of the annual reported expenditure rows above, including the partial FY2025-26 figure through February 2026. The annual figures retain the original report's units and period labels.",
+      "projectContracts": [],
+      "sourceStatus": "reviewed_source_extract",
+      "sourceUpdatedAt": "2026-02-28",
+      "lastChecked": "2026-10-30",
+      "dataLimitations": [
+        "No surveyed project route geometry has been imported; only the official district/corridor description is shown on the map.",
+        "Physical and financial progress percentages are separate and dated 28 February 2026.",
+        "The partial FY2025-26 expenditure is not a full-year actual.",
+        "Passenger ridership, journey-time, farebox, safety and emissions outcomes are not extracted from this progress report."
+      ]
+    },
+    {
+      "id": "RTHD-N6-CHAPAINAWABGANJ",
+      "kind": "local_roads",
+      "name": "Upgrading of the N-6 National Highway to proper standard and width — Nawabganj section",
+      "alternateName": "Kashinathpur–Dashuria–Natore–Rajshahi–Nawabganj–Kansat–Sonamasjid–Baliadighi N-6, Nawabganj section",
+      "ministry": "Road Transport and Bridges",
+      "implementingAgency": "Roads and Highways Department",
+      "modelType": "highway",
+      "modelLabel": "Conceptual divided-highway schematic",
+      "modelNotice": "Conceptual schematic only; no surveyed road alignment, cross-section drawing, or as-built model has been supplied with this register entry.",
+      "approvedProjectCostLakh": 48189.03,
+      "currency": "BDT",
+      "originalUnit": "lakh taka",
+      "implementationStart": "2024-02-01",
+      "plannedCompletion": "2026-06-30",
+      "administrativeAreas": [
+        {
+          "type": "district",
+          "name": "Chapainawabganj",
+          "precision": "district"
+        },
+        {
+          "type": "upazila",
+          "name": "Chapai Sadar",
+          "precision": "upazila"
+        },
+        {
+          "type": "upazila",
+          "name": "Shibganj",
+          "precision": "upazila"
+        }
+      ],
+      "mapDisplay": {
+        "mode": "area_highlight",
+        "exactCoordinatesAvailable": false,
+        "routeGeometryAvailable": false
+      },
+      "plannedOutputs": [
+        "Upgrade the specified N-6 section to the approved highway standard and width."
+      ],
+      "outcomes": {
+        "intended": "Improved standard and width of the N-6 national highway section covered by the approved project.",
+        "measured": null,
+        "independentlyVerifiedOutcome": null
+      },
+      "progress": [],
+      "financials": {
+        "approvedCostLakh": 48189.03,
+        "revisedCostLakh": null,
+        "releaseLakh": null,
+        "reportedExpenditureLakh": null
+      },
+      "projectContracts": [],
+      "sourceStatus": "reviewed_source_extract",
+      "source": "https://rthd.gov.bd/pages/approved-projects",
+      "sourceTitle": "RTHD — Approved Projects",
+      "sourcePage": "Project listing row 1",
+      "sourceUpdatedAt": "2026-10-30",
+      "lastChecked": "2026-10-30",
+      "dataLimitations": [
+        "The approval-list record supplies cost, duration and project area; it does not provide current physical progress or cumulative expenditure.",
+        "The schedule end date has passed, but this entry alone does not establish completion or delay. Current status remains unconfirmed.",
+        "No exact project coordinate or route geometry has been imported."
+      ]
+    },
+    {
+      "id": "RTHD-CUMILLA-4-DISTRICT-HIGHWAYS",
+      "kind": "local_roads",
+      "name": "Upgrading four district highways under Cumilla Roads Division to proper standard and width",
+      "ministry": "Road Transport and Bridges",
+      "implementingAgency": "Roads and Highways Department",
+      "modelType": "highway",
+      "modelLabel": "Conceptual district-road schematic",
+      "modelNotice": "Conceptual schematic only; not an engineering drawing, surveyed alignment, or as-built model.",
+      "approvedProjectCostLakh": 102352,
+      "currency": "BDT",
+      "originalUnit": "lakh taka",
+      "implementationStart": "2022-07-01",
+      "plannedCompletion": "2026-06-30",
+      "administrativeAreas": [
+        {
+          "type": "district",
+          "name": "Cumilla",
+          "precision": "district"
+        },
+        {
+          "type": "upazila",
+          "name": "Cumilla Sadar",
+          "precision": "upazila"
+        },
+        {
+          "type": "upazila",
+          "name": "Cumilla Sadar South",
+          "precision": "upazila"
+        },
+        {
+          "type": "upazila",
+          "name": "Lalmai",
+          "precision": "upazila"
+        },
+        {
+          "type": "upazila",
+          "name": "Barura",
+          "precision": "upazila"
+        },
+        {
+          "type": "upazila",
+          "name": "Nangalkot",
+          "precision": "upazila"
+        },
+        {
+          "type": "upazila",
+          "name": "Chauddagram",
+          "precision": "upazila"
+        }
+      ],
+      "mapDisplay": {
+        "mode": "area_highlight",
+        "exactCoordinatesAvailable": false,
+        "routeGeometryAvailable": false
+      },
+      "plannedOutputs": [
+        "Upgrade the four listed district-highway corridors to their approved standard and width."
+      ],
+      "outcomes": {
+        "intended": "Improved road standard and width across the four project corridors.",
+        "measured": null,
+        "independentlyVerifiedOutcome": null
+      },
+      "progress": [],
+      "financials": {
+        "approvedCostLakh": 102352,
+        "revisedCostLakh": null,
+        "releaseLakh": null,
+        "reportedExpenditureLakh": null
+      },
+      "projectContracts": [],
+      "sourceStatus": "reviewed_source_extract",
+      "source": "https://rthd.gov.bd/pages/approved-projects",
+      "sourceTitle": "RTHD — Approved Projects",
+      "sourcePage": "Project listing row 7",
+      "sourceUpdatedAt": "2026-10-30",
+      "lastChecked": "2026-10-30",
+      "dataLimitations": [
+        "The approval-list record supplies cost, duration and area, not project-level physical or financial progress.",
+        "No exact coordinates or individual alignments are available in this listing."
+      ]
+    },
+    {
+      "id": "RTHD-SONAPUR-KABIRHAT-DAGANBHUINYA",
+      "kind": "local_roads",
+      "name": "Upgrading the Sonapur–Kabirhat–Companyganj (Bashurhat)–Daganbhuiyan Regional Highway (R-148)",
+      "ministry": "Road Transport and Bridges",
+      "implementingAgency": "Roads and Highways Department",
+      "modelType": "highway",
+      "modelLabel": "Conceptual regional-road schematic",
+      "modelNotice": "Conceptual schematic only; not an engineering drawing, surveyed alignment, or as-built model.",
+      "approvedProjectCostLakh": 45702.04,
+      "currency": "BDT",
+      "originalUnit": "lakh taka",
+      "implementationStart": "2022-07-01",
+      "plannedCompletion": "2025-06-30",
+      "administrativeAreas": [
+        {
+          "type": "district",
+          "name": "Noakhali",
+          "precision": "district"
+        },
+        {
+          "type": "district",
+          "name": "Feni",
+          "precision": "district"
+        },
+        {
+          "type": "upazila",
+          "name": "Noakhali Sadar",
+          "precision": "upazila"
+        },
+        {
+          "type": "upazila",
+          "name": "Kabirhat",
+          "precision": "upazila"
+        },
+        {
+          "type": "upazila",
+          "name": "Companyganj",
+          "precision": "upazila"
+        },
+        {
+          "type": "upazila",
+          "name": "Daganbhuiyan",
+          "precision": "upazila"
+        }
+      ],
+      "mapDisplay": {
+        "mode": "area_highlight",
+        "exactCoordinatesAvailable": false,
+        "routeGeometryAvailable": false
+      },
+      "plannedOutputs": [
+        "Upgrade the R-148 regional highway section to the approved standard."
+      ],
+      "outcomes": {
+        "intended": "Improved standard of the regional road corridor connecting the listed upazilas.",
+        "measured": null,
+        "independentlyVerifiedOutcome": null
+      },
+      "progress": [],
+      "financials": {
+        "approvedCostLakh": 45702.04,
+        "revisedCostLakh": null,
+        "releaseLakh": null,
+        "reportedExpenditureLakh": null
+      },
+      "projectContracts": [],
+      "sourceStatus": "reviewed_source_extract",
+      "source": "https://rthd.gov.bd/pages/approved-projects",
+      "sourceTitle": "RTHD — Approved Projects",
+      "sourcePage": "Project listing row 9",
+      "sourceUpdatedAt": "2026-10-30",
+      "lastChecked": "2026-10-30",
+      "dataLimitations": [
+        "The original completion date has passed, but the approved-project listing alone does not establish current completion status.",
+        "No physical/financial progress or exact route geometry is supplied in this listing."
+      ]
+    }
+  ]
+}

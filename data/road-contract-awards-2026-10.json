@@ -1,0 +1,165 @@
+{
+  "schemaVersion": "lm-bg-procurement/1.0",
+  "snapshotDate": "2026-10-30",
+  "currency": "BDT",
+  "coverage": {
+    "source": "https://bppa.gov.bd/contract-award/contract-award-list.html",
+    "sourceTitle": "Bangladesh Public Procurement Authority — Contract Awards",
+    "importedRecords": 5,
+    "note": "These are five manually transcribed examples from BPPA's public contract-award pages, not a complete export of all government road contracts. The BPPA register is paginated and should be fully ingested before making an all-contractors claim.",
+    "privacy": "Only the supplier/legal entity name and award record are shown. Personal phone numbers and addresses from the source are intentionally omitted.",
+    "mapNote": "Use project-site geography only where the tender description or project document identifies it. The BPPA 'District' field may describe the procuring entity's administrative location; it is not automatically the construction site's district."
+  },
+  "records": [
+    {
+      "id": "BPPA-2026-09-02-41",
+      "reference": "e-GP/PMP Bridge/RRD-02/2025-2026",
+      "packageTitle": "Construction of 44.02 m PC Girder Bridge (Shafipur Bridge) at the 4th (p) km of Bangalhalia–Rajastali Road (Z-1814)",
+      "ministry": "Ministry of Road Transport and Bridges",
+      "agency": "Roads and Highways Department",
+      "procuringEntity": "Rangamati Road Division",
+      "procurementMethod": "NCT",
+      "advertisementDate": "2025-12-17",
+      "awardDate": "2026-09-02",
+      "publicationDistrict": "Rangamati",
+      "projectArea": [
+        {
+          "type": "district",
+          "name": "Rangamati",
+          "precision": "division/project-area level"
+        }
+      ],
+      "supplierNameAsPublished": "Mohammed Eunus & Brothers (Pvt.) Ltd.",
+      "contractValueOriginal": "121921744.000",
+      "contractValueBDT": 121921744,
+      "currency": "BDT",
+      "recordType": "works_contract",
+      "source": "https://bangla.bppa.gov.bd/contract-award/contract-award-list.html?page=4",
+      "sourceTitle": "BPPA Contract Awards, page 4, row 41",
+      "sourcePageRow": "Page 4 · row 41",
+      "mapDisplay": {
+        "mode": "district_area",
+        "exactCoordinatesAvailable": false
+      }
+    },
+    {
+      "id": "BPPA-2026-04-08-261",
+      "reference": "e-GP-67/EE/BRD/LTM/2025-2026",
+      "packageTitle": "Pavement repair and bituminous carpeting with seal coat works at the 30th and 31st (partial) km of Mokamtola (Bogura–Rangpur National Highway)–Sonatola–Horikhali–Hatsherpur–Sariakandi Road (Z-5035)",
+      "ministry": "Ministry of Road Transport and Bridges",
+      "agency": "Roads and Highways Department",
+      "procuringEntity": "Bogra Road Division",
+      "procurementMethod": "NCT",
+      "advertisementDate": "2026-03-12",
+      "awardDate": "2026-04-08",
+      "publicationDistrict": "Bogura",
+      "projectArea": [
+        {
+          "type": "district",
+          "name": "Bogura",
+          "precision": "district; road chainage in tender title"
+        }
+      ],
+      "supplierNameAsPublished": "M/s Karim And Brothers",
+      "contractValueOriginal": "2820486.107",
+      "contractValueBDT": 2820486.107,
+      "currency": "BDT",
+      "recordType": "works_contract",
+      "source": "https://bppa.gov.bd/contract-award/contract-award-list.html?page=26",
+      "sourceTitle": "BPPA Contract Awards, page 26, row 261",
+      "sourcePageRow": "Page 26 · row 261",
+      "mapDisplay": {
+        "mode": "district_area",
+        "exactCoordinatesAvailable": false
+      }
+    },
+    {
+      "id": "BPPA-2026-03-24-301",
+      "reference": "e-GP-13/EE/BRD/OTM/PMP-ROAD/2025-2026",
+      "packageTitle": "Periodic maintenance, partial widening, strengthening, surfacing and rigid pavement on Sherpur–Kaigari–Nandigram Road (Z-5034)",
+      "ministry": "Ministry of Road Transport and Bridges",
+      "agency": "Roads and Highways Department",
+      "procuringEntity": "Bogra Road Division",
+      "procurementMethod": "NCT",
+      "advertisementDate": "2025-11-13",
+      "awardDate": "2026-03-24",
+      "publicationDistrict": "Bogura",
+      "projectArea": [
+        {
+          "type": "district",
+          "name": "Bogura",
+          "precision": "district; road chainage in tender title"
+        }
+      ],
+      "supplierNameAsPublished": "Masud Hi-Tech Engineering Ltd.",
+      "contractValueOriginal": "260000000.000",
+      "contractValueBDT": 260000000,
+      "currency": "BDT",
+      "recordType": "works_contract",
+      "source": "https://bppa.gov.bd/contract-award/contract-award-list.html?page=30",
+      "sourceTitle": "BPPA Contract Awards, page 30, row 301",
+      "sourcePageRow": "Page 30 · row 301",
+      "mapDisplay": {
+        "mode": "district_area",
+        "exactCoordinatesAvailable": false
+      }
+    },
+    {
+      "id": "BPPA-2026-03-03-362",
+      "reference": "35.01.2690.078.07.014.25-1033",
+      "packageTitle": "Engineering Improvement on National Road Safety Demonstration Pilots — N4 and N6",
+      "ministry": "Ministry of Road Transport and Bridges",
+      "agency": "Roads and Highways Department",
+      "procuringEntity": "Bangladesh Road Safety Project",
+      "procurementMethod": "ICT",
+      "advertisementDate": "2025-04-30",
+      "awardDate": "2026-03-03",
+      "publicationDistrict": "Dhaka",
+      "projectArea": [],
+      "projectAreaNote": "Tender summary identifies N4 and N6 but does not give exact package coordinates or individual district chainages. The BPPA district column shows Dhaka; do not assume that this is the construction site.",
+      "supplierNameAsPublished": "MAHPL-CRBG JV",
+      "contractValueOriginal": "BDT 222,47,50,858.03",
+      "contractValueBDT": 2224750858.03,
+      "currency": "BDT",
+      "recordType": "works_contract",
+      "source": "https://bppa.gov.bd/contract-award/contract-award-list.html?page=36",
+      "sourceTitle": "BPPA Contract Awards, page 36, row 362",
+      "sourcePageRow": "Page 36 · row 362",
+      "mapDisplay": {
+        "mode": "not_geocoded",
+        "exactCoordinatesAvailable": false
+      }
+    },
+    {
+      "id": "BPPA-2026-01-27-441",
+      "reference": "EE/RANGA/RHD/EGP-12/2025-2026 LTM",
+      "packageTitle": "Construction of an RCC box culvert and ancillary works at Chattogram–Hathazari–Rangamati Road (N-106), Rangamati Road Division",
+      "ministry": "Ministry of Road Transport and Bridges",
+      "agency": "Roads and Highways Department",
+      "procuringEntity": "Rangamati Road Division",
+      "procurementMethod": "LTM",
+      "advertisementDate": "2025-12-15",
+      "awardDate": "2026-01-27",
+      "publicationDistrict": "Rangamati",
+      "projectArea": [
+        {
+          "type": "district",
+          "name": "Rangamati",
+          "precision": "district; chainage given in tender title"
+        }
+      ],
+      "supplierNameAsPublished": "M/S Miraz Enterprise",
+      "contractValueOriginal": "9487361.266",
+      "contractValueBDT": 9487361.266,
+      "currency": "BDT",
+      "recordType": "works_contract",
+      "source": "https://bppa.gov.bd/contract-award/contract-award-list.html?page=44",
+      "sourceTitle": "BPPA Contract Awards, page 44, row 441",
+      "sourcePageRow": "Page 44 · row 441",
+      "mapDisplay": {
+        "mode": "district_area",
+        "exactCoordinatesAvailable": false
+      }
+    }
+  ]
+}
