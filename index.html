@@ -1626,7 +1626,7 @@ async function ensureLeaflet(){
   }
   function renderDistrictDirectory(){
     const d=atlasData.districts;
-    if(!d||!Array.isArray(d.districts))return '<p class="atlas-empty-note">District directory is not available. The map's district boundary selector remains available.</p>';
+    if(!d||!Array.isArray(d.districts))return '<p class="atlas-empty-note">District directory is not available. The district boundary selector on the map remains available.</p>';
     let html='<div class="atlas-directory-heading"><h3>All 64 districts</h3><span>8 divisions · official portal directory</span></div>';
     html+='<input class="atlas-filter-input" type="search" data-district-filter placeholder="Filter districts by English or Bangla name…" aria-label="Filter all districts">';
     html+='<div class="atlas-district-directory">';
