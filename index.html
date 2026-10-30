@@ -1188,6 +1188,10 @@ async function ensureLeaflet(){
     if(!bounds.contains(event.latlng))return;
     if(activeProjectSpotId){
       const projectId=activeProjectSpotId;
+      if(!pointMatchesProjectDistrict(projectId,event.latlng)){
+        setStatus("That point is outside the project's source-listed district area, or its district boundary could not be matched. Choose a point inside the highlighted project district.",true);
+        return;
+      }
       activeProjectSpotId=null;
       projectSpotPoints[projectId]={lat:event.latlng.lat,lng:event.latlng.lng};
       setPoint(event.latlng,"Visitor-selected imagery point for "+projectId);
@@ -1705,6 +1709,37 @@ async function ensureLeaflet(){
     html+='</div><p class="atlas-small-note">A missing FY2024–25 actual means Table 4 does not itemize that line separately; it is not zero. Full ministry-level audited actuals are not yet imported.</p>';
     return html;
   }
+  function pointInRing(longitude,latitude,ring){
+    let inside=false;
+    for(let i=0,j=ring.length-1;i<ring.length;j=i++){
+      const xi=ring[i][0],yi=ring[i][1];
+      const xj=ring[j][0],yj=ring[j][1];
+      const crosses=((yi>latitude)!==(yj>latitude))&&
+        (longitude<(xj-xi)*(latitude-yi)/(yj-yi)+xi);
+      if(crosses)inside=!inside;
+    }
+    return inside;
+  }
+  function pointInProjectGeometry(longitude,latitude,geometry){
+    if(!geometry)return false;
+    const polygons=geometry.type==="Polygon"?[geometry.coordinates]:
+      (geometry.type==="MultiPolygon"?geometry.coordinates:[]);
+    return polygons.some(rings=>{
+      if(!rings||!rings.length||!pointInRing(longitude,latitude,rings[0]))return false;
+      return !rings.slice(1).some(hole=>pointInRing(longitude,latitude,hole));
+    });
+  }
+  function pointMatchesProjectDistrict(projectId,point){
+    const project=atlasData.projects?.projects?.find(item=>item.id===projectId);
+    if(!project||project.mapDisplay?.areaConflict)return false;
+    const districtNames=(project.administrativeAreas||[])
+      .filter(area=>area.type==="district").map(area=>normalise(area.name));
+    if(!districtNames.length||!cache.district?.records)return false;
+    return cache.district.records.some(record=>
+      districtNames.includes(normalise(record.name))&&
+      pointInProjectGeometry(point.lng,point.lat,record.feature?.geometry)
+    );
+  }
   function stopProjectTimeLapsePlayback(){
     if(projectTimeLapseTimer){window.clearInterval(projectTimeLapseTimer);projectTimeLapseTimer=null;}
     document.querySelectorAll("[data-project-time-play]").forEach(button=>{
@@ -1715,6 +1750,12 @@ async function ensureLeaflet(){
   function projectTimeLapseMarkup(project){
     const id=project.id;
     const state=projectTimeLapseStates[id];
+    if(project.mapDisplay?.areaConflict&&!state){
+      return '<div class="atlas-project-timelapse" data-project-timelapse="'+escapeHtml(id)+'">'+
+        '<div class="atlas-project-timelapse-head"><strong>Location time-lapse</strong><span>Location unresolved</span></div>'+
+        '<p>The official project register contains conflicting administrative-area labels. This project cannot be safely placed or selected for a location time-lapse until its source location is reconciled.</p>'+
+      '</div>';
+    }
     if(!state){
       const hasOfficialPoint=Number.isFinite(Number(project.latitude))&&Number.isFinite(Number(project.longitude));
       return '<div class="atlas-project-timelapse" data-project-timelapse="'+escapeHtml(id)+'">'+
@@ -1831,10 +1872,26 @@ async function ensureLeaflet(){
   }
   function startChoosingProjectSpot(projectId){
     stopProjectTimeLapsePlayback();
+    const project=atlasData.projects?.projects?.find(item=>item.id===projectId);
+    if(!project||project.mapDisplay?.areaConflict){
+      setStatus("This project's reported area needs clarification before a map time-lapse can be attached.",true);
+      return;
+    }
     activeProjectSpotId=projectId;
     activePanel="projects";
     renderSidePanel("projects");
-    setStatus("Now click the actual reported work site on the map for this project. Do not click the district centre unless that is the site.");
+    const districtNames=(project.administrativeAreas||[])
+      .filter(area=>area.type==="district").map(area=>normalise(area.name));
+    const districtRecords=(cache.district?.records||[]).filter(record=>districtNames.includes(normalise(record.name)));
+    if(districtRecords.length){
+      const areaBounds=L.latLngBounds([]);
+      districtRecords.forEach(record=>{
+        const layer=cache.district.layer.getLayers().find(path=>path._atlasRecord&&path._atlasRecord.id===record.id);
+        if(layer)areaBounds.extend(layer.getBounds());
+      });
+      if(areaBounds.isValid())map.fitBounds(areaBounds,{padding:[70,70],maxZoom:9});
+    }
+    setStatus("Choose the actual project work site inside the highlighted/source-listed district area. A district-centre click is not a project coordinate.");
     if(!document.body.classList.contains("sidebar-collapsed"))toggleRecordsPanel();
     window.setTimeout(()=>map.invalidateSize({pan:false}),320);
   }
