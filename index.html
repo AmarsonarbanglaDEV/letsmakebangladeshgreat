@@ -1818,32 +1818,66 @@ async function ensureLeaflet(){
     const label=failed.length
       ? ready+" of "+entries.length+" data files loaded · "+failed.length+" need attention"
       : loading?"Loading public datasets…":ready+" of "+entries.length+" data files loaded";
-    return '<div class="atlas-data-health" role="status" aria-live="polite"><div><strong>'+escapeHtml(label)+'</strong><small>'+entries.map(([key,v])=>escapeHtml(key)+": "+(v.status==="loaded"?"ready":v.status==="error"?"error":v.status==="loading"?"loading":"waiting")).join(" · ")+'</small></div>'+(failed.length?'<button type="button" data-retry-atlas-data>Retry failed files</button>':"")+'</div>';
+    const rows=entries.map(([key,v])=>{
+      const state=v.status==="loaded"?"ready":v.status==="error"?"failed":v.status==="loading"?"loading":"waiting";
+      const detail=v.status==="error"&&v.error?'<em>'+escapeHtml(v.error)+'</em>':"";
+      return '<span class="atlas-data-health-row"><b>'+escapeHtml(key)+'</b><i class="is-'+state+'">'+state+'</i>'+detail+'</span>';
+    }).join("");
+    return '<div class="atlas-data-health" role="status" aria-live="polite"><div><strong>'+escapeHtml(label)+'</strong><div class="atlas-data-health-list">'+rows+'</div></div>'+(failed.length?'<button type="button" data-retry-atlas-data>Retry failed files</button>':"")+'</div>';
+  }
+  function updateAtlasDataHealth(){
+    const current=el("sideContent")?.querySelector(".atlas-data-health");
+    if(current)current.outerHTML=atlasDataStatusMarkup();
+  }
+  function validateAtlasDataset(key,data){
+    if(!data||typeof data!=="object"||Array.isArray(data))throw new Error("Response is not a JSON object.");
+    const checks={
+      budget:()=>data.headline?.totalExpenditure&&Array.isArray(data.overallSectorBudget)&&Array.isArray(data.ministryBudget),
+      projects:()=>Array.isArray(data.projects)&&data.coverage?.rthdApprovedProjectRegister,
+      contracts:()=>Array.isArray(data.records)&&data.coverage,
+      districts:()=>Array.isArray(data.divisions)&&Array.isArray(data.districts)&&data.districts.length>0
+    };
+    if(!checks[key]||!checks[key]())throw new Error("JSON loaded, but its "+key+" dataset schema is incomplete or does not match this website.");
+    if(key==="districts"&&data.districts.length!==64)console.warn("District directory contains",data.districts.length,"records; expected 64.");
+    return data;
   }
   async function loadOneAtlasData(key,url){
     atlasDataState[key]={status:"loading",error:""};
-    renderSidePanel(activePanel);
+    updateAtlasDataHealth();
     let lastError=null;
     for(let attempt=1;attempt<=3;attempt++){
+      const controller=new AbortController();
+      const timeout=window.setTimeout(()=>controller.abort(),12000);
       try{
-        const target=new URL(url,document.baseURI).toString();
-        const response=await fetch(target,{cache:"no-store",headers:{Accept:"application/json"}});
-        if(!response.ok)throw new Error("HTTP "+response.status+" for "+url);
+        const target=new URL(url,window.location.href).toString();
+        const response=await fetch(target,{
+          method:"GET",cache:"no-store",credentials:"same-origin",
+          headers:{Accept:"application/json"},
+          signal:controller.signal
+        });
+        if(!response.ok)throw new Error("HTTP "+response.status+" while loading "+url);
         const type=(response.headers.get("content-type")||"").toLowerCase();
-        if(type.includes("text/html"))throw new Error("The server returned HTML instead of JSON for "+url+"; check the deployed data path.");
-        const data=await response.json();
-        if(!data||typeof data!=="object"||Array.isArray(data))throw new Error("Invalid JSON data structure in "+url);
+        if(type.includes("text/html")||(!type.includes("json")&&!type.includes("+json"))){
+          throw new Error("The server returned "+(type||"an unknown content type")+" instead of JSON for "+url+". Check the deployed data path and Pages output.");
+        }
+        const data=validateAtlasDataset(key,await response.json());
         atlasData[key]=data;
         atlasDataState[key]={status:"loaded",error:""};
+        updateAtlasDataHealth();
         return data;
       }catch(error){
-        lastError=error;
-        if(attempt<3)await new Promise(resolve=>window.setTimeout(resolve,350*attempt));
+        lastError=error&&error.name==="AbortError"
+          ?new Error("Request timed out after 12 seconds: "+url)
+          :error;
+        if(attempt<3)await new Promise(resolve=>window.setTimeout(resolve,500*attempt));
+      }finally{
+        window.clearTimeout(timeout);
       }
     }
     atlasData[key]=null;
     atlasDataState[key]={status:"error",error:lastError?.message||"Unknown data loading error"};
     console.error("Atlas dataset failed:",key,lastError);
+    updateAtlasDataHealth();
     return null;
   }
   function loadAtlasData(forceRetry=false){
