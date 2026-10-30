@@ -421,6 +421,7 @@ async function ensureLeaflet(){
     ward:["adm5_pcode","organisationunitid_wd","pcode","objectid","OBJECTID"]
   };
   const colors=["#c9e2c8","#c4dfe3","#e9d3b7","#d8d1ec","#e4ccda","#c6d9ef","#e9dfb1","#cde2cf"];
+  let map=null;
   const cache={};
   const searchCache=new Map();
   let language="en",activeLevel="district",currentLayer=null,countryMask=null,countryOutline=null,loadingCover=null;
@@ -430,6 +431,17 @@ async function ensureLeaflet(){
   let searchBusy=false;
   const el=id=>document.getElementById(id);
   const statusEl=el("mapStatus");
+  window.addEventListener("error",event=>{
+    const message=event&&event.message?event.message:"Unexpected browser error";
+    statusEl.textContent="Map script error: "+message;
+    statusEl.classList.add("error");
+  });
+  window.addEventListener("unhandledrejection",event=>{
+    const reason=event&&event.reason;
+    const message=reason&&reason.message?reason.message:String(reason||"Unknown asynchronous error");
+    statusEl.textContent="Map loading error: "+message;
+    statusEl.classList.add("error");
+  });
   const searchResultsEl=el("searchResults");
   const timelineSlider=el("timelineSlider");
   const timelinePlay=el("timelinePlay");
@@ -1269,7 +1281,10 @@ async function ensureLeaflet(){
       console.warn("Division outline preload failed",error);
     }
   }
-  start();
+  start().catch(error=>{
+    console.error("Map startup failed:",error);
+    setStatus("Map startup failed: "+(error&&error.message?error.message:String(error)),true);
+  });
 
   // Nominatim is queried only after the visitor submits the search form.
   // The public service does not permit client-side autocomplete; keep requests <= 1/second.
