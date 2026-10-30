@@ -797,6 +797,15 @@
       body:not(.sidebar-collapsed) .map-levels{left:9px;max-width:calc(100% - 125px)}
       body:not(.sidebar-collapsed) .map-status{left:9px;max-width:calc(100% - 18px)}
       body:not(.sidebar-collapsed) #sidebarRailToggle{opacity:0;pointer-events:none}
+    body:not(.sidebar-collapsed) .sidebar-menu-toggle{
+      background:rgba(179,239,82,.16);border-color:rgba(179,239,82,.38);color:#e7f4c7;
+    }
+    body:not(.sidebar-collapsed) .sidebar-menu-toggle:hover{
+      background:rgba(179,239,82,.23);border-color:rgba(179,239,82,.55);
+    }
+    body:not(.sidebar-collapsed) .sidebar-menu-toggle span{transform:none}
+    .sidebar-menu-toggle span{font-size:18px;font-weight:700}
+
     }
     @media(max-width:560px){
       .sidebar-close{top:10px;right:12px;width:31px;height:31px}
