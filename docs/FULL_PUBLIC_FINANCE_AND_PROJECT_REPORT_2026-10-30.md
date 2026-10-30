@@ -186,6 +186,17 @@ RTHD's progress PDF dated **28 February 2026** provides the following values:
 
 Do not merge these three percentages into one project-completion percentage. Financial progress is not physical progress. The 99.60% figure applies to the Uttara North–Motijheel section, not to the Kamalapur extension.
 
+The same PDF also lists package-level physical progress on printed page 4. These percentages refer to separate work packages, not the whole MRT-6 line:
+
+| Package | Description | Reported package progress |
+|---|---|---:|
+| CP-05 | 3.195 km viaduct and 3 elevated stations, Agargaon–Karwan Bazar | 100% |
+| CP-06 | 4.922 km viaduct and 4 stations, Karwan Bazar–Motijheel | 100% |
+| CP-07 | Electrical and mechanical systems procurement | 99.87% |
+| CP-08 | Rolling stock and depot equipment procurement | 98.21% |
+
+These are reported package progress values from the February 2026 RTHD update, not independent site certification or passenger-service outcomes. They must not be averaged with the section-level or financial percentages above.
+
 The same February 2026 report gives:
 
 - Original approved project total: **Tk 21,985.07 crore**.
