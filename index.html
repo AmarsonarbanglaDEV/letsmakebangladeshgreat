@@ -1778,7 +1778,7 @@ async function ensureLeaflet(){
     if(!state.items||!state.items.length){
       return '<div class="atlas-project-timelapse" data-project-timelapse="'+escapeHtml(id)+'">'+
         '<div class="atlas-project-timelapse-head"><strong>Location time-lapse</strong><span>No archive versions</span></div>'+
-        '<p>No distinct historical imagery versions were returned for this point and zoom level. Try choosing another point closer to the reported work site.</p>'+
+        '<p>'+escapeHtml(state.metadataText||"No distinct historical imagery versions were returned for this point and zoom level.")+'</p>'+
         '<p class="atlas-small-note">Selected point: '+state.point.lat.toFixed(5)+', '+state.point.lng.toFixed(5)+' · visitor-selected.</p>'+
         '<button type="button" class="atlas-choose-spot" data-choose-project-spot="'+escapeHtml(id)+'">Choose another spot</button>'+
       '</div>';
@@ -1997,6 +1997,11 @@ async function ensureLeaflet(){
           setStatus("This project has no valid source-backed point inside Bangladesh.",true);
           return;
         }
+        const projectHasDistrict=(project.administrativeAreas||[]).some(area=>area.type==="district");
+        if(projectHasDistrict&&!pointMatchesProjectDistrict(projectId,point)){
+          setStatus("The reported coordinate does not fall inside the project's listed district boundary. It is not being opened as a project site.",true);
+          return;
+        }
         activePanel="projects";
         map.setView(point,Math.max(map.getZoom(),14));
         setPoint(point,"Officially reported project coordinate for "+projectId);
@@ -2047,6 +2052,7 @@ async function ensureLeaflet(){
 
   function renderSidePanel(key){
     activePanel=modules[key]?key:"overview";
+    if(activePanel!=="projects")stopProjectTimeLapsePlayback();
     document.querySelectorAll(".sidebar-tab").forEach(button=>
       button.classList.toggle("active",button.dataset.panel===activePanel)
     );
