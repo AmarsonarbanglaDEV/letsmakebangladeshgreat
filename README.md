@@ -24,7 +24,7 @@ The first version is a static HTML/CSS/JavaScript site deployed through Cloudfla
 - Production preview: https://letsmakebangladeshgreat.pages.dev/
 - Repository: https://github.com/AmarsonarbanglaDEV/letsmakebangladeshgreat
 
-The current interface is a prototype. Its atlas is being extended with optional division, district, upazila, union and available-ward map levels, satellite imagery, point-based historical imagery lookup, and a searchable administrative-area directory. It does **not** yet contain a verified project, payment, funding or indicator database. Historical imagery begins in 2014 and local availability varies; this is not a complete 15-year record. Empty states are intentional; no project or financial figures are fabricated to populate the design.
+The current interface is a full-screen, Bangladesh-only map workspace. It opens in satellite mode, masks imagery outside Bangladesh using the national boundary, draws selectable administrative outlines, and offers a collapsible public-finance sidebar. Search supports local administrative areas plus submitted place-name searches restricted to Bangladesh. A video-style timeline can play the historical Esri World Imagery Wayback versions available for a selected point. This is still a prototype: the government-finance sidebar is structured but does **not** yet contain a verified project, payment, funding or indicator database. Historical imagery begins in 2014 and local availability varies; it is not a complete 15-year record.
 
 ## Evidence principles
 
@@ -49,11 +49,17 @@ Current prototype:
 - HTML
 - CSS
 - Vanilla JavaScript
-- Leaflet map library via CDN
-- Switchable division, district, upazila, union and available-ward map levels
-- Bilingual division / district directory, searchable deeper-level layers, distinct area colours and zoom / focus controls
-- Esri World Imagery satellite basemap and point-based World Imagery Wayback history lookup (2014 onward, where local imagery versions exist)
-- Division / district boundaries from DGHS GIS Feature Service BBS ADM1 / ADM2 layers; BBS 2022 upazila layer; DGHS All_Union and All_Wards_main layers
+- Leaflet interactive map library with a CDN fallback
+- Bangladesh ADM0 national mask / outline, plus switchable division, district, upazila, union and available-ward boundary layers
+- Official DGHS GIS / BBS ADM0, ADM1 and ADM2 layers, BBS 2022 upazila layer, DGHS All_Union and All_Wards_main layers; geoBoundaries gbOpen is a fallback where available
+- Esri World Imagery satellite tiles, clipped to the Bangladesh polygon, with a separate outline-only mode
+- Esri World Imagery Wayback point lookup, date slider and playback for available local archive versions (2014 onward)
+- Search for administrative areas in the loaded layer and search for other places in Bangladesh via OpenStreetMap Nominatim, only after form submission (no autocomplete)
+
+Not yet implemented:
+- Verified government financial / project database and area-to-project relationships
+- Ministry / agency / budget / audit / procurement record imports and review workflow
+- Upazila / union / ward browser validation and coverage review
 
 Planned capabilities:
 - PostgreSQL / Supabase for structured records
@@ -74,7 +80,7 @@ python -m http.server 8000
 
 Then visit http://localhost:8000.
 
-An internet connection is required for the Leaflet library, administrative boundary services, satellite tiles and historical imagery lookup. The Mouza / land-map link opens the official settlement portal; a complete national village / mouza polygon layer is not yet integrated.
+An internet connection is required for Leaflet, administrative boundary services, Esri satellite tiles, Wayback imagery and place search. Search text is sent to the public OpenStreetMap Nominatim service only when a visitor submits the form; do not enter personal or confidential information. The code avoids autocomplete and spaces queries by at least 1.1 seconds to respect the public service's published use policy. The Mouza / land-map link opens the official settlement portal; a complete national village / mouza polygon layer is not integrated.
 
 ## Contributing
 
