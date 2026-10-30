@@ -217,6 +217,8 @@ RTHD's approved-project portal reports **73 entries**. The following table cover
 | 8 | Upgrade the Ghonapara–Bangabandhu Sheikh Mujibur Rahman Mausoleum road section, including the Sheikh Lutfar Rahman Bridge approach | 347.04 | Gopalganj, Tungipara | 2022-10-01 to 2024-12-31 | Not available in register extract |
 | 10 | Upgrade the Itakhola–Mathkhola–Katiadi (R-211) and Nayapara–Araihazar–Narsingdi–Raipura (R-114) regional highways under Narsingdi Roads Division | 984.85 | Narsingdi, Narsingdi Sadar, Raipura, Shibpur, Manohardi | 2022-07-01 to 2025-06-30 | Not available in register extract |
 
+One row needs a location caution: the Ramerkanda–Laksharchar R-823 entry pairs **Munshiganj** with **Keraniganj** in the portal's area field. That is not a consistent district/upazila parent-child pairing. The atlas retains both raw labels but deliberately does not map this row until the source location is reconciled.
+
 These rows establish project identity, estimate, duration and listed area. They do **not** contain a payment ledger, latest physical progress, supplier award or exact GPS route. A planned end date that has passed is not enough to call a project delayed, completed, abandoned or terminated. The current status remains unconfirmed where a later dated official update is not attached.
 
 **Coverage:** 10 of the 73 entries on the first page are transcribed. The other 63 entries in the RTHD approved-project register are not in this pilot dataset. This is also not an inventory of every ministry's projects.
