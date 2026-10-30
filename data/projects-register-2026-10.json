@@ -8,14 +8,16 @@
       "source": "https://rthd.gov.bd/pages/approved-projects",
       "sourceTitle": "Road Transport and Highways Division — Approved Projects",
       "portalDisplayedTotal": 73,
-      "importedRecords": 3,
-      "note": "The official portal currently displays 73 approved-project entries. Three records below have been manually transcribed as a pilot. This is not a complete import of all 73 entries."
+      "importedRecords": 10,
+      "note": "Ten entries from the first page of the official list have been transcribed into this pilot register. The portal reports 73 approved-project entries in total; the remaining 63 entries have not been imported. This is not a complete national project register.",
+      "pageCoverage": "All ten entries displayed on page 1 of the 73-entry official register are represented; the separate MRT-6 mega-project record is maintained outside this approved-project list."
     },
     "rthdMegaProjectRegister": {
       "source": "https://eservices.rthd.gov.bd/mega_project.php",
       "sourceTitle": "Road Transport and Highways Division — Mega Projects",
       "importedRecords": 1,
-      "note": "The portal lists mega-project update files. The MRT Line-6 progress record below is transcribed from its dated official report."
+      "note": "The RTHD mega-project index shows a Line-6 report updated 12 October 2026. The metrics transcribed below are from the directly accessible February 2026 PDF; the October PDF is not yet extracted, so do not label those metrics current.",
+      "listingSnapshotDate": "2026-10-12"
     },
     "mapLocationPolicy": "Map project points only when a project document gives a usable site coordinate or route geometry. Otherwise show an administrative-area highlight and label the location precision; never place a false point at a district centre."
   },
@@ -64,7 +66,9 @@
         "thirdRevisionDuration": "July 2012 to December 2028",
         "source": "https://eservices.rthd.gov.bd/admin/docs/news/rthd_13.pdf",
         "sourceTitle": "RTHD — Dhaka Mass Rapid Transit Development Project (Line-6), progress up to February 2026",
-        "sourcePage": "Printed pages 1–4; approval/revision table on page 2"
+        "sourcePage": "Printed pages 1–4; approval/revision table on page 2",
+        "sourceUpdatedAt": "2026-02-28",
+        "note": "RTHD's mega-project index later showed a Line-6 update dated 12 October 2026. This February PDF is an older detail extract, not the latest report."
       },
       "progress": [
         {
@@ -74,7 +78,8 @@
           "reportedAt": "2026-02-28",
           "source": "https://eservices.rthd.gov.bd/admin/docs/news/rthd_13.pdf",
           "sourcePage": "Printed page 4",
-          "scope": "This percentage applies to the Uttara North–Motijheel section, not the entire extension to Kamalapur."
+          "scope": "This percentage applies to the Uttara North–Motijheel section, not the entire extension to Kamalapur.",
+          "currentness": "Older snapshot; newer October 2026 RTHD report is indexed but not yet transcribed."
         },
         {
           "metric": "physical",
@@ -83,7 +88,8 @@
           "reportedAt": "2026-02-28",
           "source": "https://eservices.rthd.gov.bd/admin/docs/news/rthd_13.pdf",
           "sourcePage": "Printed page 4",
-          "scope": "The 1.16 km extension and Kamalapur station section."
+          "scope": "The 1.16 km extension and Kamalapur station section.",
+          "currentness": "Older snapshot; newer October 2026 RTHD report is indexed but not yet transcribed."
         },
         {
           "metric": "financial",
@@ -92,7 +98,44 @@
           "reportedAt": "2026-02-28",
           "source": "https://eservices.rthd.gov.bd/admin/docs/news/rthd_13.pdf",
           "sourcePage": "Printed page 4",
-          "scope": "Financial progress reported by RTHD against the third revised allocation; not physical completion."
+          "scope": "Financial progress reported by RTHD against the third revised allocation; not physical completion.",
+          "currentness": "Older snapshot; newer October 2026 RTHD report is indexed but not yet transcribed."
+        },
+        {
+          "metric": "physical",
+          "label": "CP-05 · 3.195 km viaduct and 3 elevated stations · Agargaon–Karwan Bazar",
+          "percent": 100,
+          "reportedAt": "2026-02-28",
+          "source": "https://eservices.rthd.gov.bd/admin/docs/news/rthd_13.pdf",
+          "sourcePage": "Printed page 4",
+          "scope": "RTHD reports the civil-works package as 100% physically complete. This is a package-level measure, not the whole MRT-6 project."
+        },
+        {
+          "metric": "physical",
+          "label": "CP-06 · 4.922 km viaduct and 4 stations · Karwan Bazar–Motijheel",
+          "percent": 100,
+          "reportedAt": "2026-02-28",
+          "source": "https://eservices.rthd.gov.bd/admin/docs/news/rthd_13.pdf",
+          "sourcePage": "Printed page 4",
+          "scope": "RTHD reports the civil-works package as 100% physically complete. This is a package-level measure, not the whole MRT-6 project."
+        },
+        {
+          "metric": "physical",
+          "label": "CP-07 · Electrical and mechanical systems procurement",
+          "percent": 99.87,
+          "reportedAt": "2026-02-28",
+          "source": "https://eservices.rthd.gov.bd/admin/docs/news/rthd_13.pdf",
+          "sourcePage": "Printed page 4",
+          "scope": "Physical progress reported for the electrical and mechanical systems package."
+        },
+        {
+          "metric": "physical",
+          "label": "CP-08 · Rolling stock and depot equipment procurement",
+          "percent": 98.21,
+          "reportedAt": "2026-02-28",
+          "source": "https://eservices.rthd.gov.bd/admin/docs/news/rthd_13.pdf",
+          "sourcePage": "Printed page 4",
+          "scope": "Physical progress reported for rolling stock and depot equipment; not passenger-service outcome or independent verification."
         }
       ],
       "annualFinanceUnit": "BDT lakh",
@@ -179,7 +222,9 @@
         "No surveyed project route geometry has been imported; only the official district/corridor description is shown on the map.",
         "Physical and financial progress percentages are separate and dated 28 February 2026.",
         "The partial FY2025-26 expenditure is not a full-year actual.",
-        "Passenger ridership, journey-time, farebox, safety and emissions outcomes are not extracted from this progress report."
+        "Passenger ridership, journey-time, farebox, safety and emissions outcomes are not extracted from this progress report.",
+        "RTHD's mega-project index lists a Line-6 report dated 12 October 2026. This dataset's quantified physical and financial progress still comes from the February 2026 PDF and needs replacement after extracting the October report.",
+        "Additional package-level progress bars (CP-05 to CP-08) are transcribed from printed page 4 of the February 2026 report. These are separate package measures and must not be averaged into one overall completion figure."
       ]
     },
     {
@@ -406,6 +451,480 @@
       "dataLimitations": [
         "The original completion date has passed, but the approved-project listing alone does not establish current completion status.",
         "No physical/financial progress or exact route geometry is supplied in this listing."
+      ]
+    },
+    {
+      "id": "RTHD-ULIPUR-CHILMARI-LINK",
+      "kind": "local_roads",
+      "registerRow": 2,
+      "name": "Ulipur (Helipad Mor)–Chilmari (Gunai Gachh) link road construction, 3.20 km",
+      "originalTitleBn": "উলিপুর (হেলিপ্যাড মোড়)-চিলমারি (গুনাইগাছ) সংযোগ সড়ক নির্মাণ প্রকল্পের আওতায় প্রস্তাবিত সড়কের দৈর্ঘ্য : ৩.২০ কিলোমিটার",
+      "ministry": "Road Transport and Bridges",
+      "implementingAgency": "Roads and Highways Department",
+      "modelType": "highway",
+      "modelLabel": "Conceptual road schematic",
+      "modelNotice": "Illustrative diagram only. This is not a surveyed road alignment, engineering design or as-built model.",
+      "approvedProjectCostLakh": 6825.49,
+      "currency": "BDT",
+      "originalUnit": "lakh taka",
+      "implementationStart": "2023-01-01",
+      "plannedCompletion": "2025-06-30",
+      "approvalDate": "2023-07-18",
+      "administrativeAreas": [
+        {
+          "type": "district",
+          "name": "Kurigram",
+          "precision": "district"
+        },
+        {
+          "type": "upazila",
+          "name": "Ulipur",
+          "precision": "upazila"
+        }
+      ],
+      "mapDisplay": {
+        "mode": "administrative_area_highlight",
+        "exactCoordinatesAvailable": false,
+        "routeGeometryAvailable": false
+      },
+      "plannedOutputs": [
+        "Construct a 3.20 km link road between Ulipur (Helipad Mor) and Chilmari (Gunai Gachh)."
+      ],
+      "outcomes": {
+        "intended": "Construct a 3.20 km link road between Ulipur (Helipad Mor) and Chilmari (Gunai Gachh).",
+        "measured": null,
+        "independentlyVerifiedOutcome": null
+      },
+      "financials": {
+        "approvedCostLakh": 6825.49,
+        "revisedCostLakh": null,
+        "releaseLakh": null,
+        "reportedExpenditureLakh": null
+      },
+      "progress": [],
+      "projectContracts": [],
+      "source": "https://rthd.gov.bd/pages/approved-projects",
+      "sourceTitle": "RTHD — Approved Projects",
+      "sourcePage": "Project listing row 2",
+      "sourceStatus": "reviewed_source_extract",
+      "sourceUpdatedAt": "2026-10-30",
+      "lastChecked": "2026-10-30",
+      "status": "unconfirmed_from_approval_register",
+      "dataLimitations": [
+        "This approval-list row provides estimated approved cost, duration, approval date and area. It does not provide a current payment ledger, latest physical progress, or supplier award.",
+        "A passed planned completion date does not independently establish that the project is delayed, complete or abandoned.",
+        "The portal's project-area field supports administrative area highlighting only. No exact route geometry or point has been imported."
+      ]
+    },
+    {
+      "id": "RTHD-BARABHANGA-BRIDGE-SYLHET",
+      "kind": "local_roads",
+      "registerRow": 3,
+      "name": "Construction of Barabhanga Bridge at the 25th kilometre of the Sylhet (Telikhal)–Sultanpur–Balaganj Road (Z-2013)",
+      "originalTitleBn": "সিলেট (তেলিখাল)-সুলতানপুর-বালাগঞ্জ (জেড-২০১৩) সড়কের ২৫তম কিলোমিটারে বড়ভাঙ্গা সেতু নির্মাণ",
+      "ministry": "Road Transport and Bridges",
+      "implementingAgency": "Roads and Highways Department",
+      "modelType": "highway",
+      "modelLabel": "Conceptual road schematic",
+      "modelNotice": "Illustrative diagram only. This is not a surveyed road alignment, engineering design or as-built model.",
+      "approvedProjectCostLakh": 12676.92,
+      "currency": "BDT",
+      "originalUnit": "lakh taka",
+      "implementationStart": "2023-07-01",
+      "plannedCompletion": "2026-06-30",
+      "approvalDate": "2023-08-29",
+      "administrativeAreas": [
+        {
+          "type": "district",
+          "name": "Sylhet",
+          "precision": "district"
+        },
+        {
+          "type": "upazila",
+          "name": "Balaganj",
+          "precision": "upazila"
+        }
+      ],
+      "mapDisplay": {
+        "mode": "administrative_area_highlight",
+        "exactCoordinatesAvailable": false,
+        "routeGeometryAvailable": false
+      },
+      "plannedOutputs": [
+        "Construct Barabhanga Bridge at the specified chainage on the Z-2013 road."
+      ],
+      "outcomes": {
+        "intended": "Construct Barabhanga Bridge at the specified chainage on the Z-2013 road.",
+        "measured": null,
+        "independentlyVerifiedOutcome": null
+      },
+      "financials": {
+        "approvedCostLakh": 12676.92,
+        "revisedCostLakh": null,
+        "releaseLakh": null,
+        "reportedExpenditureLakh": null
+      },
+      "progress": [],
+      "projectContracts": [],
+      "source": "https://rthd.gov.bd/pages/approved-projects",
+      "sourceTitle": "RTHD — Approved Projects",
+      "sourcePage": "Project listing row 3",
+      "sourceStatus": "reviewed_source_extract",
+      "sourceUpdatedAt": "2026-10-30",
+      "lastChecked": "2026-10-30",
+      "status": "unconfirmed_from_approval_register",
+      "dataLimitations": [
+        "This approval-list row provides estimated approved cost, duration, approval date and area. It does not provide a current payment ledger, latest physical progress, or supplier award.",
+        "A passed planned completion date does not independently establish that the project is delayed, complete or abandoned.",
+        "The portal's project-area field supports administrative area highlighting only. No exact route geometry or point has been imported."
+      ]
+    },
+    {
+      "id": "RTHD-RAMERKANDA-LAKSHARCHAR-R823",
+      "kind": "local_roads",
+      "registerRow": 4,
+      "name": "Development of Ramerkanda–Laksharchar (Rohitpur Bazar) Link Road (R-823)",
+      "originalTitleBn": "রামেরকান্দা-লাকিরচর (রোহিতপুর বাজার) সংযোগ সড়ক (আর-৮২৩) উন্নয়ন",
+      "ministry": "Road Transport and Bridges",
+      "implementingAgency": "Roads and Highways Department",
+      "modelType": "highway",
+      "modelLabel": "Conceptual road schematic",
+      "modelNotice": "Illustrative diagram only. This is not a surveyed road alignment, engineering design or as-built model.",
+      "approvedProjectCostLakh": 51456.91,
+      "currency": "BDT",
+      "originalUnit": "lakh taka",
+      "implementationStart": "2023-07-01",
+      "plannedCompletion": "2025-12-31",
+      "approvalDate": "2023-08-29",
+      "administrativeAreas": [
+        {
+          "type": "district",
+          "name": "Munshiganj",
+          "precision": "raw RTHD page-one area field; conflict with Keraniganj entry"
+        },
+        {
+          "type": "upazila",
+          "name": "Keraniganj",
+          "precision": "raw RTHD page-one area field; parent-district conflict"
+        }
+      ],
+      "mapDisplay": {
+        "mode": "not_geocoded_pending_area_reconciliation",
+        "exactCoordinatesAvailable": false,
+        "routeGeometryAvailable": false,
+        "areaConflict": true,
+        "note": "The RTHD register row pairs Munshiganj with Keraniganj. These do not form a consistent district/upazila hierarchy; do not highlight or pin either until the source record is reconciled."
+      },
+      "plannedOutputs": [
+        "Develop the Ramerkanda–Laksharchar (Rohitpur Bazar) link road."
+      ],
+      "outcomes": {
+        "intended": "Develop the Ramerkanda–Laksharchar (Rohitpur Bazar) link road.",
+        "measured": null,
+        "independentlyVerifiedOutcome": null
+      },
+      "financials": {
+        "approvedCostLakh": 51456.91,
+        "revisedCostLakh": null,
+        "releaseLakh": null,
+        "reportedExpenditureLakh": null
+      },
+      "progress": [],
+      "projectContracts": [],
+      "source": "https://rthd.gov.bd/pages/approved-projects",
+      "sourceTitle": "RTHD — Approved Projects",
+      "sourcePage": "Project listing row 4",
+      "sourceStatus": "reviewed_source_extract",
+      "sourceUpdatedAt": "2026-10-30",
+      "lastChecked": "2026-10-30",
+      "status": "unconfirmed_from_approval_register",
+      "dataLimitations": [
+        "This approval-list row provides estimated approved cost, duration, approval date and area. It does not provide a current payment ledger, latest physical progress, or supplier award.",
+        "A passed planned completion date does not independently establish that the project is delayed, complete or abandoned.",
+        "The portal's project-area field supports administrative area highlighting only. No exact route geometry or point has been imported.",
+        "Location warning: the published row pairs Munshiganj with Keraniganj, which do not form a consistent parent/child administrative pairing. The map deliberately does not geocode this row pending source reconciliation."
+      ]
+    },
+    {
+      "id": "RTHD-BHULTA-ARAIHAZAR-BANCHHARAMPUR-R203-R220",
+      "kind": "local_roads",
+      "registerRow": 5,
+      "name": "Widening and development of the Bhulta–Araihazar–Banchharampur–Nabinagar–Shibpur–Radhika regional highway (R-203) and Sarail–Nasirnagar–Lakhai regional highway (R-220)",
+      "originalTitleBn": "ভূলতা-আড়াইহাজার-বাঞ্ছারামপুর-নবীনগর-শিবপুর-রাধিকা আঞ্চলিক মহাসড়ক (আর-২০৩, কড়ইকান্দি হতে বাঞ্ছারামপুর-নবীনগর পর্যন্ত) ও সরাইল-নাসিরনগর-লাখাই আঞ্চলিক মহাসড়ক (আর-২২০, সরাইল হতে বলভদ্র সেতু পর্যন্ত) সড়ক প্রশস্তকরণ ও উন্নয়ন",
+      "ministry": "Road Transport and Bridges",
+      "implementingAgency": "Roads and Highways Department",
+      "modelType": "highway",
+      "modelLabel": "Conceptual road schematic",
+      "modelNotice": "Illustrative diagram only. This is not a surveyed road alignment, engineering design or as-built model.",
+      "approvedProjectCostLakh": 153222,
+      "currency": "BDT",
+      "originalUnit": "lakh taka",
+      "implementationStart": "2022-07-01",
+      "plannedCompletion": "2025-06-30",
+      "approvalDate": "2023-04-04",
+      "administrativeAreas": [
+        {
+          "type": "district",
+          "name": "Brahmanbaria",
+          "precision": "district"
+        },
+        {
+          "type": "upazila",
+          "name": "Banchharampur",
+          "precision": "upazila"
+        },
+        {
+          "type": "upazila",
+          "name": "Nabinagar",
+          "precision": "upazila"
+        },
+        {
+          "type": "upazila",
+          "name": "Sarail",
+          "precision": "upazila"
+        },
+        {
+          "type": "upazila",
+          "name": "Nasirnagar",
+          "precision": "upazila"
+        }
+      ],
+      "mapDisplay": {
+        "mode": "administrative_area_highlight",
+        "exactCoordinatesAvailable": false,
+        "routeGeometryAvailable": false
+      },
+      "plannedOutputs": [
+        "Widen and develop the specified sections of the R-203 and R-220 regional highways."
+      ],
+      "outcomes": {
+        "intended": "Widen and develop the specified sections of the R-203 and R-220 regional highways.",
+        "measured": null,
+        "independentlyVerifiedOutcome": null
+      },
+      "financials": {
+        "approvedCostLakh": 153222,
+        "revisedCostLakh": null,
+        "releaseLakh": null,
+        "reportedExpenditureLakh": null
+      },
+      "progress": [],
+      "projectContracts": [],
+      "source": "https://rthd.gov.bd/pages/approved-projects",
+      "sourceTitle": "RTHD — Approved Projects",
+      "sourcePage": "Project listing row 5",
+      "sourceStatus": "reviewed_source_extract",
+      "sourceUpdatedAt": "2026-10-30",
+      "lastChecked": "2026-10-30",
+      "status": "unconfirmed_from_approval_register",
+      "dataLimitations": [
+        "This approval-list row provides estimated approved cost, duration, approval date and area. It does not provide a current payment ledger, latest physical progress, or supplier award.",
+        "A passed planned completion date does not independently establish that the project is delayed, complete or abandoned.",
+        "The portal's project-area field supports administrative area highlighting only. No exact route geometry or point has been imported."
+      ]
+    },
+    {
+      "id": "RTHD-GALACHIPA-BRIDGE-Z8806",
+      "kind": "local_roads",
+      "registerRow": 6,
+      "name": "Construction of Galachipa Bridge over the Rabnabad River at the 70th kilometre of the Lebukhali–Bauphal–Galachipa–Amragachia District Highway (Z-8806)",
+      "originalTitleBn": "লেবুখালী-বাউফল-গলাচিপা-আমড়াগাছিয়া জেলা মহাসড়কের (জেড-৮৮০৬) এর ৭০তম কিলোমিটারে রাবনাবাদ নদীর উপর গলাচিপা সেতু নির্মাণ",
+      "ministry": "Road Transport and Bridges",
+      "implementingAgency": "Roads and Highways Department",
+      "modelType": "highway",
+      "modelLabel": "Conceptual road schematic",
+      "modelNotice": "Illustrative diagram only. This is not a surveyed road alignment, engineering design or as-built model.",
+      "approvedProjectCostLakh": 52125.99,
+      "currency": "BDT",
+      "originalUnit": "lakh taka",
+      "implementationStart": "2023-01-01",
+      "plannedCompletion": "2025-12-31",
+      "approvalDate": "2022-11-22",
+      "administrativeAreas": [
+        {
+          "type": "district",
+          "name": "Patuakhali",
+          "precision": "district"
+        },
+        {
+          "type": "upazila",
+          "name": "Galachipa",
+          "precision": "upazila"
+        }
+      ],
+      "mapDisplay": {
+        "mode": "administrative_area_highlight",
+        "exactCoordinatesAvailable": false,
+        "routeGeometryAvailable": false
+      },
+      "plannedOutputs": [
+        "Construct the Galachipa Bridge over the Rabnabad River at the stated chainage."
+      ],
+      "outcomes": {
+        "intended": "Construct the Galachipa Bridge over the Rabnabad River at the stated chainage.",
+        "measured": null,
+        "independentlyVerifiedOutcome": null
+      },
+      "financials": {
+        "approvedCostLakh": 52125.99,
+        "revisedCostLakh": null,
+        "releaseLakh": null,
+        "reportedExpenditureLakh": null
+      },
+      "progress": [],
+      "projectContracts": [],
+      "source": "https://rthd.gov.bd/pages/approved-projects",
+      "sourceTitle": "RTHD — Approved Projects",
+      "sourcePage": "Project listing row 6",
+      "sourceStatus": "reviewed_source_extract",
+      "sourceUpdatedAt": "2026-10-30",
+      "lastChecked": "2026-10-30",
+      "status": "unconfirmed_from_approval_register",
+      "dataLimitations": [
+        "This approval-list row provides estimated approved cost, duration, approval date and area. It does not provide a current payment ledger, latest physical progress, or supplier award.",
+        "A passed planned completion date does not independently establish that the project is delayed, complete or abandoned.",
+        "The portal's project-area field supports administrative area highlighting only. No exact route geometry or point has been imported."
+      ]
+    },
+    {
+      "id": "RTHD-GHONAPARA-MAUSOLEUM-ROAD",
+      "kind": "local_roads",
+      "registerRow": 8,
+      "name": "Upgrade the Ghonapara–Bangabandhu Sheikh Mujibur Rahman Mausoleum road section, including the Sheikh Lutfar Rahman Bridge approach",
+      "originalTitleBn": "ঘোনাপাড়া হতে জাতির পিতা বঙ্গবন্ধু শেখ মুজিবুর রহমান এঁর সমাধিসৌধ (শেখ লুৎফর রহমান সেতু এ্যাপ্রোচসহ) সড়কাংশ যথাযথ মান ও প্রশস্ততায় উন্নীতকরণ",
+      "ministry": "Road Transport and Bridges",
+      "implementingAgency": "Roads and Highways Department",
+      "modelType": "highway",
+      "modelLabel": "Conceptual road schematic",
+      "modelNotice": "Illustrative diagram only. This is not a surveyed road alignment, engineering design or as-built model.",
+      "approvedProjectCostLakh": 34704.02,
+      "currency": "BDT",
+      "originalUnit": "lakh taka",
+      "implementationStart": "2022-10-01",
+      "plannedCompletion": "2024-12-31",
+      "approvalDate": "2022-10-11",
+      "administrativeAreas": [
+        {
+          "type": "district",
+          "name": "Gopalganj",
+          "precision": "district"
+        },
+        {
+          "type": "upazila",
+          "name": "Tungipara",
+          "precision": "upazila"
+        }
+      ],
+      "mapDisplay": {
+        "mode": "administrative_area_highlight",
+        "exactCoordinatesAvailable": false,
+        "routeGeometryAvailable": false
+      },
+      "plannedOutputs": [
+        "Upgrade the identified road section to the approved standard and width."
+      ],
+      "outcomes": {
+        "intended": "Upgrade the identified road section to the approved standard and width.",
+        "measured": null,
+        "independentlyVerifiedOutcome": null
+      },
+      "financials": {
+        "approvedCostLakh": 34704.02,
+        "revisedCostLakh": null,
+        "releaseLakh": null,
+        "reportedExpenditureLakh": null
+      },
+      "progress": [],
+      "projectContracts": [],
+      "source": "https://rthd.gov.bd/pages/approved-projects",
+      "sourceTitle": "RTHD — Approved Projects",
+      "sourcePage": "Project listing row 8",
+      "sourceStatus": "reviewed_source_extract",
+      "sourceUpdatedAt": "2026-10-30",
+      "lastChecked": "2026-10-30",
+      "status": "unconfirmed_from_approval_register",
+      "dataLimitations": [
+        "This approval-list row provides estimated approved cost, duration, approval date and area. It does not provide a current payment ledger, latest physical progress, or supplier award.",
+        "A passed planned completion date does not independently establish that the project is delayed, complete or abandoned.",
+        "The portal's project-area field supports administrative area highlighting only. No exact route geometry or point has been imported."
+      ]
+    },
+    {
+      "id": "RTHD-NARSINGDI-R211-R114",
+      "kind": "local_roads",
+      "registerRow": 10,
+      "name": "Upgrade the Itakhola–Mathkhola–Katiadi (R-211) and Nayapara–Araihazar–Narsingdi–Raipura (R-114) regional highways under Narsingdi Roads Division",
+      "originalTitleBn": "নরসিংদী সড়ক বিভাগ এর আওতায় ইটাখোলা-মঠখোলা-কটিয়াদী সড়ক (আর-২১১) ও নয়াপাড়া-আড়াইহাজার নরসিংদী-রায়পুরা (আর-১১৪) দুইটি আঞ্চলিক মহাসড়ক যথাযথমানে প্রশস্ততায় উন্নীতকরণ",
+      "ministry": "Road Transport and Bridges",
+      "implementingAgency": "Roads and Highways Department",
+      "modelType": "highway",
+      "modelLabel": "Conceptual road schematic",
+      "modelNotice": "Illustrative diagram only. This is not a surveyed road alignment, engineering design or as-built model.",
+      "approvedProjectCostLakh": 98484.72,
+      "currency": "BDT",
+      "originalUnit": "lakh taka",
+      "implementationStart": "2022-07-01",
+      "plannedCompletion": "2025-06-30",
+      "approvalDate": "2022-07-19",
+      "administrativeAreas": [
+        {
+          "type": "district",
+          "name": "Narsingdi",
+          "precision": "district"
+        },
+        {
+          "type": "upazila",
+          "name": "Narsingdi Sadar",
+          "precision": "upazila"
+        },
+        {
+          "type": "upazila",
+          "name": "Raipura",
+          "precision": "upazila"
+        },
+        {
+          "type": "upazila",
+          "name": "Shibpur",
+          "precision": "upazila"
+        },
+        {
+          "type": "upazila",
+          "name": "Manohardi",
+          "precision": "upazila"
+        }
+      ],
+      "mapDisplay": {
+        "mode": "administrative_area_highlight",
+        "exactCoordinatesAvailable": false,
+        "routeGeometryAvailable": false
+      },
+      "plannedOutputs": [
+        "Widen and upgrade the specified R-211 and R-114 regional highway sections."
+      ],
+      "outcomes": {
+        "intended": "Widen and upgrade the specified R-211 and R-114 regional highway sections.",
+        "measured": null,
+        "independentlyVerifiedOutcome": null
+      },
+      "financials": {
+        "approvedCostLakh": 98484.72,
+        "revisedCostLakh": null,
+        "releaseLakh": null,
+        "reportedExpenditureLakh": null
+      },
+      "progress": [],
+      "projectContracts": [],
+      "source": "https://rthd.gov.bd/pages/approved-projects",
+      "sourceTitle": "RTHD — Approved Projects",
+      "sourcePage": "Project listing row 10",
+      "sourceStatus": "reviewed_source_extract",
+      "sourceUpdatedAt": "2026-10-30",
+      "lastChecked": "2026-10-30",
+      "status": "unconfirmed_from_approval_register",
+      "dataLimitations": [
+        "This approval-list row provides estimated approved cost, duration, approval date and area. It does not provide a current payment ledger, latest physical progress, or supplier award.",
+        "A passed planned completion date does not independently establish that the project is delayed, complete or abandoned.",
+        "The portal's project-area field supports administrative area highlighting only. No exact route geometry or point has been imported."
       ]
     }
   ]

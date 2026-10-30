@@ -23,7 +23,9 @@
     "Ministry actuals are shown only where the budget speech's Table 4 provides an identifiable ministry/division row. A missing value means not itemized in this table, not zero.",
     "The Ministry of Defence is listed separately from the Armed Forces Division. Their FY2026-27 allocations are 42,497 and 44 crore respectively; the combined arithmetic total is 42,541 crore.",
     "Table 2 reports FY2024-25 total expenditure of 631,273 crore; Table 4's sectoral totals sum to 631,276 crore. The 3-crore cross-table difference is retained as a source discrepancy, not silently reconciled.",
-    "Sector categories in Table 4 are budget classification groups; they are not directly comparable with programme-specific outcomes."
+    "Sector categories in Table 4 are budget classification groups; they are not directly comparable with programme-specific outcomes.",
+    "The FY2026-27 budget speech Table 2 sets Annual Development Programme at Tk 300,000 crore. A separate IMED-reported implementation denominator cited by UNB for the July–September FY2026-27 progress rate is Tk 308,924.86 crore; keep the two published bases separate until their composition is reconciled.",
+    "Table 2 reports FY2024-25 total expenditure as Tk 631,273 crore and ADP expenditure as Tk 142,326 crore. Table 3 / Table 4 show Tk 142,327 crore ADP and Tk 631,276 crore total respectively. These source-table differences are retained rather than silently adjusted."
   ],
   "headline": {
     "totalRevenueIncome": {
@@ -86,7 +88,8 @@
       "revisedFY2025_26": 183574,
       "budgetFY2025_26": 207629,
       "actualFY2024_25": 145899,
-      "sharePct": 29.74
+      "sharePct": 29.74,
+      "note": "Includes human resource and food/social safety classifications; it is not a direct outcome score."
     },
     {
       "name": "Physical Infrastructure",
@@ -94,7 +97,8 @@
       "revisedFY2025_26": 164510,
       "budgetFY2025_26": 190360,
       "actualFY2024_25": 148047,
-      "sharePct": 18.66
+      "sharePct": 18.66,
+      "note": "Includes agriculture/rural development, energy, communications and other items as classified in Table 4."
     },
     {
       "name": "General Services",
@@ -102,7 +106,8 @@
       "revisedFY2025_26": 210615,
       "budgetFY2025_26": 178517,
       "actualFY2024_25": 102297,
-      "sharePct": 26.13
+      "sharePct": 26.13,
+      "subheading": "Includes public order and safety plus other general services; not a defence-only figure."
     },
     {
       "name": "Interest Payments",
@@ -935,7 +940,10 @@
       "publicationDate": "2026-10-25",
       "source": "https://imed.gov.bd/pages/news",
       "sourceTitle": "IMED news: FY2026-27 ADP financial progress through September 2026",
-      "note": "National ADP aggregate only; not individual project progress."
+      "note": "National ADP aggregate only. IMED's FY2026-27 implementation denominator reported by UNB is Tk 308,924.86 crore, distinct from the Tk 300,000 crore Annual Development Programme in the budget speech Table 2. Reconciliation of the two bases is pending.",
+      "reportedExpenditureCrore": 12017.54,
+      "implementationDenominatorCrore": 308924.86,
+      "denominatorSource": "UNB report quoting IMED: https://unb.com.bd/category/bangladesh/adp-implementation-drops-to-389pc-in-july-september/198705"
     },
     {
       "fiscalYear": "2026-27",
@@ -969,5 +977,35 @@
     "defense": "The budget speech Table 5 lists Ministry of Defence and Armed Forces Division as separate lines. Their FY2026-27 allocations are displayed separately and may be arithmetically summed with the separate-line warning. The budget speech does not supply a matching Ministry of Defence actual in the Table 4 sector breakdown.",
     "progressBars": "A bar is shown only when an official source provides a dated percentage for that named project and that specific progress measure. Financial progress and physical progress are independent measures.",
     "projectOutcomes": "Planned outputs are transcribed from approved project documents. Achieved outcomes require dated official service/output data or independent measurement. A completion claim is not the same as independent outcome verification."
-  }
+  },
+  "macroTargets": [
+    {
+      "target": "GDP growth",
+      "value": 6.5,
+      "unit": "percent",
+      "fiscalYear": "2026-27",
+      "type": "budget_speech_target",
+      "source": "https://nbr.gov.bd/uploads/budget/Budget_Speech_English.pdf",
+      "sourcePage": "Printed page 5"
+    },
+    {
+      "target": "Inflation",
+      "value": 7.5,
+      "unit": "percent",
+      "fiscalYear": "2026-27",
+      "type": "budget_speech_target",
+      "source": "https://nbr.gov.bd/uploads/budget/Budget_Speech_English.pdf",
+      "sourcePage": "Printed page 5"
+    },
+    {
+      "target": "Economy size",
+      "value": 1,
+      "unit": "trillion USD",
+      "targetYear": 2034,
+      "type": "long_term_aspiration_in_budget_speech",
+      "source": "https://nbr.gov.bd/uploads/budget/Budget_Speech_English.pdf",
+      "sourcePage": "Printed page 5"
+    }
+  ],
+  "defenceOutcomeNote": "The budget speech allocates Tk 42,497 crore to the Ministry of Defence and Tk 44 crore to the Armed Forces Division. It does not pair those lines with a measurable defence-specific output/outcome table. Do not claim a spending result such as readiness, procurement delivered, service quality or operational capability from the allocation alone. A separate performance/outcome dataset is required."
 }
