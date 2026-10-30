@@ -10,24 +10,23 @@ The platform is an information and research tool. It does not determine guilt, a
 
 The public experience has three principal exploration screens:
 
-### A. Bangladesh Atlas
-- A Bangladesh-only administrative map showing either the eight division polygons or all 64 district polygons; do not show surrounding countries or a global basemap in this view.
-- A visible Division / District level switch, with all 64 districts listed and searchable in English and Bangla.
-- Each district polygon receives its own stable, distinct display colour, and its official name is available in the directory and map tooltip.
-- Zoom in, zoom out and fit-Bangladesh controls, plus focus-to-area when a division or district is selected.
-- Division boundaries from the DGHS GIS Feature Service using the BBS ADM1 administrative-boundary dataset; district boundaries from the matching BBS ADM2 administrative-boundary dataset.
-- Optional Division, District, Upazila, Union and available Ward map levels. The current prototype uses the BBS 2022 upazila boundary layer, DGHS All_Union polygon service and DGHS All_Wards_main service; show actual returned coverage rather than assuming a headline total.
-- A separate Mouza / land-record link to the official settlement portal. Do not treat a ward as a village or mouza, and do not draw national village boundaries until a documented, licensed dataset is available.
-- Satellite basemap toggle using Esri World Imagery.
-- Point selection on the map and a local historical imagery timeline using Esri World Imagery Wayback versions where available. The archive starts in February 2014, so it does not provide a complete 15-year sequence.
-- Separate toggles for funding facts, projects, public assets, historical locations, audit observations and environment records.
-- Search by project, administrative area, ministry, agency and source.
-- Map features must identify their geometry source, dataset date, precision and limitations. Historical imagery must identify the archive version, local capture date if known, provider and pixel resolution where metadata is available. The initial map is restricted to Bangladesh and uses no world basemap.
+### A. Bangladesh Map Workspace
+- Make the map the whole public interface; remove the separate long homepage as the main navigation surface.
+- Open on Esri World Imagery satellite tiles. A national ADM0 polygon masks imagery outside Bangladesh; the map's pan bounds stay within Bangladesh. If the country mask and documented fallbacks fail, disable satellite display rather than leave neighbouring countries visible as part of the product.
+- Draw a clear country outline, with selectable boundary levels for Division (8), District (64), Upazila, Union and available Ward polygons.
+- Fetch the authoritative layer metadata first and use its actual object-ID field for paginated queries. Do not hard-code `OBJECTID`: the BBS ADM1 / ADM2 layers expose a `fid` identifier field.
+- Use BBS / DGHS ADM0, ADM1 and ADM2 layers; BBS 2022 Upazila Boundary layer; DGHS All_Union and All_Wards_main; geoBoundaries gbOpen (CC BY 4.0) as a documented fallback when a layer is unavailable.
+- Display the actual feature count returned by each source. Do not imply the headline total is complete when coverage or matching is partial. A ward is not the same as a village or mouza.
+- Provide a map search for addresses and place names limited to Bangladesh. The current prototype searches local administrative records first, then submits the search phrase to OpenStreetMap Nominatim on Enter only; do not implement Nominatim autocomplete and respect its public rate limit and attribution.
+- Provide a collapsible sidebar for Area Overview, Budget, Ministries, Projects / ADP, Procurement, Audit, Environment, Indicators and Sources. These are information panels, not proof that financial data is already imported.
+- Keep map zoom, fit-to-Bangladesh, satellite / outline mode and focus-to-selected-area controls.
+- Point selection on the map opens a point-based Esri World Imagery Wayback history search. Provide a slider and playback for the local archive versions returned for that point and zoom.
+- The Wayback archive begins in 2014; availability and imagery capture dates vary by place. It is not a continuous 15-year dataset. Display the archive release date separately from image acquisition date / provider / resolution metadata when the provider supplies it.
+- Keep Esri imagery attribution and boundary-source / dataset notes visible.
 
-A location marker is not proof that money was spent at that point. Transfers, budget allocations and project expenditure must not be conflated.
+A location marker or a satellite image is not proof that money was spent at that point. Transfers, budget allocations and project expenditure must not be conflated.
 
-Historical imagery is visual context only. It may help identify visible land-use or construction changes, but it cannot establish corruption, intent, contract values, payment, quality, ownership or misuse of public money. Compare imagery dates with project approval and completion schedules, procurement records, audited expenditure, official responses and independent site evidence. Wayback basemap release dates are not necessarily the local image acquisition dates; display acquisition metadata separately when the provider supplies it.
-
+Historical imagery is visual context only. It may help identify visible land-use or construction changes, but it cannot establish corruption, intent, contract values, payment, quality, ownership or misuse of public money. Compare imagery dates with project approval and completion schedules, procurement records, audited expenditure, official responses and independent site evidence.
 ### B. Division / District Development Card
 Each administrative profile may show:
 - Name in English and Bangla.
@@ -199,6 +198,6 @@ Private case tracking, confidential notes, personal details and restricted origi
 
 ## 12. Current implementation boundary
 
-The current site is a static prototype. The Bangladesh map can switch between division polygons from the DGHS GIS Feature Service (BBS ADM1 dataset) and 64 district polygons from its BBS ADM2 dataset. The district directory includes English and Bangla names, individual display colours, search and zoom/focus controls. These boundaries are geographic reference data, not project locations or evidence of expenditure. The project, funding, tree, global-indicator and audit sections intentionally show no published records until a verified dataset exists.
+The current site is a map-first static prototype. Its satellite basemap is clipped to Bangladesh using an ADM0 country polygon, and the national outline / division / district / optional deeper administrative layers are drawn from documented GIS services. A dynamic metadata lookup discovers each service's object-ID field to avoid a failed query caused by assuming OBJECTID. The sidebar contains structured finance, ministries, projects, procurement, audit, environment, indicators and source panels, but these are intentionally unpopulated until verified records are imported. Nominatim search runs only after form submission and is restricted to Bangladesh. Wayback playback shows only the local archive versions available for the selected point; it does not constitute a complete 15-year record. Administrative boundaries and imagery are geographic context, not project locations or proof of expenditure.
 
 A private owner console, authenticated submissions, database, evidence storage and publication system are future work and must not be represented as operational until implemented and tested.
