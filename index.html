@@ -248,6 +248,130 @@
     @media(prefers-reduced-motion:reduce){
       *,*:before,*:after{transition:none!important;animation:none!important;scroll-behavior:auto!important}
     }
+
+    /* Hisaab-inspired full-screen atlas layout: map first, contextual panels second. */
+    body{background:#081923;color:#122b46}
+    .topbar{
+      position:absolute;top:18px;left:24px;right:24px;height:62px;
+      padding:0 16px;gap:18px;border:1px solid rgba(208,225,227,.18);
+      border-radius:19px;background:rgba(8,25,35,.78);color:#eef4f2;
+      box-shadow:0 14px 42px rgba(0,0,0,.3);backdrop-filter:blur(22px);
+      -webkit-backdrop-filter:blur(22px)
+    }
+    .brand-symbol{background:#b3ef52;color:#102a2d;box-shadow:none}
+    .brand-name{color:#f1f6f1;letter-spacing:.06em}
+    .brand-name small{color:#b9c9c6}
+    .icon-btn{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.17);color:#eef4f2}
+    .icon-btn:hover{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.32)}
+    .search-form{height:44px;background:rgba(245,249,250,.96);border-color:rgba(255,255,255,.35);box-shadow:0 7px 18px rgba(0,0,0,.15)}
+    .lang-btn{height:38px;background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);color:#f1f6f1}
+    .lang-btn:hover{background:rgba(255,255,255,.18)}
+    .workspace{position:absolute;inset:0;width:100%;height:100dvh;display:block;overflow:hidden}
+    .map-area{position:absolute;inset:0;min-width:0;min-height:0;background:#081923;overflow:hidden}
+    #map{position:absolute;inset:0;width:100%;height:100%;background:#081923;clip-path:none;-webkit-clip-path:none}
+    .sidebar{
+      position:absolute;top:98px;left:24px;bottom:22px;width:min(372px,calc(100vw - 48px));
+      max-height:calc(100dvh - 120px);border:1px solid rgba(255,255,255,.76);
+      border-radius:24px;background:rgba(247,249,252,.96);
+      box-shadow:0 18px 70px rgba(0,0,0,.3);backdrop-filter:blur(24px);
+      -webkit-backdrop-filter:blur(24px);overflow:hidden;z-index:900;
+      transform:translateX(0);transition:transform .28s cubic-bezier(.2,.8,.2,1),opacity .2s
+    }
+    body.sidebar-collapsed .workspace{display:block}
+    body.sidebar-collapsed .sidebar{
+      width:min(372px,calc(100vw - 48px));transform:translateX(calc(-100% - 36px));
+      border:1px solid rgba(255,255,255,.76);opacity:.98
+    }
+    .sidebar-head{padding:19px 19px 14px;border-bottom:1px solid #dce5ef}
+    .eyebrow{color:#2967ff}
+    .sidebar-head h1{font-size:23px;color:#122b46}
+    .sidebar-head p{color:#526c87}
+    .selected-area{background:#eaf1fc;border-color:#d6e2f1}
+    .selected-top small,#selectedPath{color:#526c87}
+    #selectedAreaName{color:#122b46}
+    #selectedAreaBn{color:#2967ff}
+    .sidebar-tabs{gap:5px;padding:11px 14px;background:rgba(242,246,251,.9);border-bottom:1px solid #dce5ef}
+    .sidebar-tab{border-radius:10px;background:transparent;color:#526c87}
+    .sidebar-tab.active{background:#2967ff;color:#fff;box-shadow:0 4px 12px rgba(41,103,255,.2)}
+    .side-content{color:#122b46}
+    .data-card{background:#fff;border-color:#dce5ef}
+    .data-status{background:#eaf1fc;border-color:#d7e3f2;color:#526c87}
+    .data-source{background:#fff;border-color:#dce5ef}
+    .method-note{background:#eef3fa;border-left-color:#2967ff;color:#526c87}
+    .atlas-rail{
+      position:absolute;z-index:760;top:50%;left:24px;transform:translateY(-50%);
+      display:grid;gap:7px;padding:8px;border:1px solid rgba(255,255,255,.82);
+      border-radius:19px;background:rgba(247,249,252,.94);backdrop-filter:blur(22px);
+      box-shadow:0 12px 40px rgba(0,0,0,.24)
+    }
+    .atlas-rail button{
+      width:42px;height:42px;border:0;border-radius:12px;background:transparent;
+      color:#18334c;font-size:20px;font-weight:800;display:grid;place-items:center
+    }
+    .atlas-rail button:hover{background:#e5edfd;color:#2967ff}
+    .map-levels{top:98px;left:84px;max-width:calc(100% - 420px);background:rgba(247,249,252,.93);border:1px solid rgba(255,255,255,.7);box-shadow:0 12px 35px rgba(0,0,0,.2)}
+    .level-btn{color:#526c87}
+    .level-btn.active{background:#2967ff;color:#fff}
+    .map-top-controls{top:98px;right:24px}
+    .map-pill{background:rgba(247,249,252,.94);color:#18334c;border-color:rgba(255,255,255,.7)}
+    .map-pill.active{background:#122b46;color:#fff;border-color:#122b46}
+    .map-controls{
+      right:24px;top:50%;transform:translateY(-50%);padding:7px;gap:7px;
+      border:1px solid rgba(255,255,255,.82);border-radius:18px;
+      background:rgba(247,249,252,.94);backdrop-filter:blur(22px);
+      box-shadow:0 12px 40px rgba(0,0,0,.22)
+    }
+    .map-control{width:42px;height:42px;background:transparent;border:0;box-shadow:none}
+    .map-control:hover{background:#e5edfd}
+    .map-status{top:auto;left:84px;bottom:24px;max-width:min(440px,calc(100% - 640px));background:rgba(8,25,35,.78);border-color:rgba(255,255,255,.16);color:#d8e5e5;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+    .map-status.error{background:#fff5e3;color:#825a17;border-color:#eed8ad}
+    .timeline{
+      left:auto;right:24px;bottom:22px;width:min(540px,calc(100% - 600px));
+      background:rgba(247,249,252,.96);border-color:rgba(255,255,255,.8);
+      box-shadow:0 15px 45px rgba(0,0,0,.24)
+    }
+    .timeline-title{color:#2967ff}
+    .timeline-current{color:#122b46}
+    .timeline-disclaimer,.timeline-meta{color:#526c87}
+    .map-attribution{left:84px;right:auto;bottom:7px;color:rgba(233,242,242,.7);text-shadow:0 1px 4px #081923}
+    .map-attribution a{color:#eaf2f0}
+    .search-results{box-shadow:0 16px 42px rgba(0,0,0,.22)}
+    @media(max-width:900px){
+      .topbar{top:10px;left:10px;right:10px;height:56px;padding:0 9px;gap:8px}
+      .workspace{height:100dvh;display:block}
+      .sidebar{top:78px;left:10px;bottom:10px;width:min(372px,calc(100vw - 20px));max-height:calc(100dvh - 88px)}
+      body.sidebar-collapsed .sidebar{width:min(372px,calc(100vw - 20px));transform:translateX(calc(-100% - 24px))}
+      .brand-name{display:none}
+      .map-levels{top:78px;left:10px;max-width:calc(100% - 130px)}
+      .map-top-controls{top:78px;right:10px}
+      .map-controls{right:10px;top:50%;transform:translateY(-50%)}
+      .atlas-rail{left:10px;top:auto;bottom:180px;transform:none}
+      .timeline{left:10px;right:10px;bottom:10px;width:auto;padding:10px 12px}
+      .map-status{left:10px;bottom:155px;max-width:calc(100% - 20px)}
+      .map-attribution{left:10px;bottom:2px}
+    }
+    @media(max-width:560px){
+      .topbar{grid-template-columns:auto minmax(0,1fr) auto;gap:6px;padding:0 7px}
+      .brand-area{gap:6px}
+      .icon-btn{width:34px;height:34px}
+      .brand-symbol{width:30px;height:30px}
+      .search-form{height:37px}
+      #mapSearch{font-size:10px}
+      .lang-btn{font-size:9px;padding:0 7px;height:32px}
+      .map-levels{max-width:calc(100% - 100px);gap:1px;padding:3px}
+      .level-btn{font-size:9px;padding:7px 7px}
+      .map-pill{height:33px;padding:0 8px;font-size:9px}
+      .timeline-top{align-items:flex-start;flex-direction:column;gap:3px}
+      .timeline{padding:9px 10px}
+      .timeline-main{grid-template-columns:32px minmax(0,1fr) auto;gap:7px}
+      .history-load{font-size:9px;padding:8px}
+      .atlas-rail{bottom:188px}
+      .map-attribution{font-size:8px}
+    }
+    @media(prefers-reduced-motion:reduce){
+      .sidebar,.topbar,.atlas-rail,.map-pill,.map-control{transition:none!important}
+    }
+
   </style>
 </head>
 <body>
@@ -316,6 +440,11 @@
 
   <section class="map-area" aria-label="Bangladesh interactive map">
     <div id="map" role="application" aria-label="Satellite map of Bangladesh with administrative boundaries"></div>
+
+    <nav class="atlas-rail rail-left" aria-label="Atlas navigation">
+      <button id="sidebarRailToggle" type="button" aria-label="Open public records panel" title="Public records">▤</button>
+      <button id="searchFocus" type="button" aria-label="Focus map search" title="Search places">⌕</button>
+    </nav>
 
     <div class="map-levels" role="group" aria-label="Administrative boundary level">
       <button class="level-btn" data-level="division" type="button">Division</button>
@@ -424,8 +553,8 @@ async function ensureLeaflet(){
   let map=null;
   const cache={};
   const searchCache=new Map();
-  let language="en",activeLevel="district",currentLayer=null,countryMask=null,countryOutline=null,loadingCover=null;
-  let fallbackDivisionLayer=null;
+  let language="en",activeLevel="district",currentLayer=null,countryClipData=null,countryOutline=null;
+  let fallbackDivisionLayer=null,clipFrameScheduled=0;
   let satellite=null,historicalLayer=null,outlineMode=false,lastPoint=null,pointMarker=null;
   let waybackCore=null,waybackItems=[],waybackIndex=0,playTimer=null,lastSearchAt=0;
   let geocodeResults=[];
@@ -710,38 +839,120 @@ async function ensureLeaflet(){
     }
   }
 
-  function geometryRings(geometry){
+  function polygonRings(geometry){
     if(!geometry)return [];
-    if(geometry.type==="Polygon")return geometry.coordinates.length?[geometry.coordinates[0]]:[];
-    if(geometry.type==="MultiPolygon")return geometry.coordinates.map(poly=>poly[0]).filter(Boolean);
+    if(geometry.type==="Polygon")return geometry.coordinates||[];
+    if(geometry.type==="MultiPolygon")return (geometry.coordinates||[]).flat();
     return [];
   }
-  function installBangladeshMask(data){
-    const holes=[];
+
+  // Hisaab's renderer clips the country silhouette in screen/camera space
+  // before writing its CSS path. This 2D Leaflet adaptation clips each projected
+  // ring to the viewport first, avoiding giant off-screen paths when zoomed in.
+  function clipScreenRing(points,width,height){
+    const planes=[
+      point=>point.x,
+      point=>width-point.x,
+      point=>point.y,
+      point=>height-point.y
+    ];
+    let clipped=points;
+    for(const distance of planes){
+      if(!clipped.length)break;
+      const next=[];
+      let previous=clipped[clipped.length-1];
+      let a=distance(previous);
+      for(const current of clipped){
+        const b=distance(current);
+        if((a>=0)!==(b>=0)){
+          const t=a/(a-b);
+          next.push({
+            x:previous.x+t*(current.x-previous.x),
+            y:previous.y+t*(current.y-previous.y)
+          });
+        }
+        if(b>=0)next.push(current);
+        previous=current;
+        a=b;
+      }
+      clipped=next;
+    }
+    return clipped;
+  }
+
+  function countryScreenPath(data){
+    const paths=[];
+    const size=map.getSize();
     (data.features||[]).forEach(feature=>{
-      geometryRings(feature.geometry).forEach(ring=>{
-        holes.push(ring.map(coord=>[coord[1],coord[0]]));
+      polygonRings(feature.geometry).forEach(ring=>{
+        const projected=ring.map(coord=>map.latLngToContainerPoint([coord[1],coord[0]]))
+          .filter(point=>Number.isFinite(point.x)&&Number.isFinite(point.y));
+        if(projected.length<3)return;
+        const points=clipScreenRing(projected,size.x,size.y);
+        if(points.length<3)return;
+        const simplified=[];
+        let previous=null;
+        points.forEach(point=>{
+          if(!previous||Math.hypot(point.x-previous.x,point.y-previous.y)>=.65){
+            simplified.push(point);
+            previous=point;
+          }
+        });
+        if(simplified.length<3)return;
+        const commands=simplified.map((point,index)=>
+          (index?"L":"M")+point.x.toFixed(1)+" "+point.y.toFixed(1)
+        );
+        paths.push(commands.join("")+"Z");
       });
     });
-    if(!holes.length)throw new Error("Country outline geometry has no polygon rings.");
-    if(loadingCover&&map.hasLayer(loadingCover))map.removeLayer(loadingCover);
-    if(countryMask&&map.hasLayer(countryMask))map.removeLayer(countryMask);
-    const outside=[
-      [0,55],[0,125],[40,125],[40,55],[0,55]
-    ];
-    countryMask=L.polygon([outside].concat(holes),{
-      pane:"maskPane",renderer:maskRenderer,smoothFactor:1.5,
-      stroke:false,fill:true,fillColor:"#f3f3ed",fillOpacity:1,
-      interactive:false,fillRule:"evenodd"
-    }).addTo(map);
+    // When the camera is outside Bangladesh, an empty clip is safer than
+    // revealing neighbouring countries. The path is recalculated as the user pans.
+    if(!paths.length)return 'path(evenodd, "M0 0")';
+    return 'path(evenodd, "'+paths.join("")+'")';
+  }
+
+  function updateCountryClip(){
+    if(!countryClipData||!map)return;
+    const clip=countryScreenPath(countryClipData);
+    if(!window.CSS||!CSS.supports("clip-path",clip)){
+      throw new Error("This browser does not support the country-boundary map clip.");
+    }
+    const node=map.getContainer();
+    node.style.clipPath=clip;
+    node.style.webkitClipPath=clip;
+    node.dataset.countryClip="active";
+  }
+
+  function scheduleCountryClip(){
+    if(!countryClipData||clipFrameScheduled)return;
+    clipFrameScheduled=window.requestAnimationFrame(()=>{
+      clipFrameScheduled=0;
+      try{updateCountryClip();}
+      catch(error){
+        console.error("Country silhouette update failed:",error);
+        setStatus("Country mask could not be drawn safely. Satellite imagery is being disabled. "+error.message,true);
+        if(satellite&&map.hasLayer(satellite))map.removeLayer(satellite);
+        outlineMode=true;
+      }
+    });
+  }
+
+  function installBangladeshMask(data){
+    if(!data||!Array.isArray(data.features)||!data.features.length){
+      throw new Error("The national boundary response contains no features.");
+    }
+    countryClipData=data;
     if(countryOutline&&map.hasLayer(countryOutline))map.removeLayer(countryOutline);
     countryOutline=L.geoJSON(data,{
       pane:"countryPane",renderer:countryRenderer,interactive:false,
       smoothFactor:1.5,
-      style:{color:"#ddf2b2",weight:3.5,opacity:1,fill:false}
+      style:{color:"#d5e4cd",weight:1.2,opacity:.82,fill:false}
     }).addTo(map);
     const countryBounds=countryOutline.getBounds();
-    if(countryBounds.isValid())map.fitBounds(countryBounds.pad(.11),{padding:[25,25]});
+    if(!countryBounds.isValid())throw new Error("The national boundary has invalid map bounds.");
+    map.fitBounds(countryBounds.pad(.11),{padding:[25,25],animate:false});
+    updateCountryClip();
+    scheduleCountryClip();
   }
   async function loadCountryBoundary(){
     setStatus("Loading Bangladesh outline from the boundary service…");
@@ -755,54 +966,61 @@ async function ensureLeaflet(){
       return true;
     }catch(error){
       console.error("Bangladesh national outline failed:",error);
-      if(loadingCover&&map.hasLayer(loadingCover))map.removeLayer(loadingCover);
       if(satellite&&map.hasLayer(satellite))map.removeLayer(satellite);
+      if(countryOutline&&map.hasLayer(countryOutline))map.removeLayer(countryOutline);
       outlineMode=true;
       el("satelliteToggle").classList.remove("active");
-      el("satelliteToggle").disabled=true;
-      el("satelliteToggle").title="Satellite imagery is disabled until a verified national boundary is available.";
       el("outlineToggle").classList.add("active");
       try{
-        // Show division polygons as a real map layer, not as national mask holes.
-        // This keeps a useful Bangladesh outline visible without exposing nearby
-        // countries when the country-level service is unavailable.
+        // Hisaab-style screen-space clipping can use the eight division polygons
+        // as the country footprint while retaining their shared borders visibly.
         const divisions=await fetchLayer("division");
+        countryClipData=divisions;
         const fallback=makeRecordsAndLayer(divisions,"division",false);
         fallbackDivisionLayer=fallback.layer;
         fallbackDivisionLayer.addTo(map);
         const divisionBounds=fallbackDivisionLayer.getBounds();
-        if(divisionBounds.isValid())map.fitBounds(divisionBounds.pad(.11),{padding:[25,25]});
-        setStatus("National boundary unavailable. Showing division outlines; satellite is safely disabled. "+error.message,true);
-        return false;
+        if(!divisionBounds.isValid())throw new Error("Division outline bounds are invalid.");
+        map.fitBounds(divisionBounds.pad(.11),{padding:[25,25],animate:false});
+        updateCountryClip();
+        outlineMode=false;
+        if(satellite&&!map.hasLayer(satellite))satellite.addTo(map);
+        el("satelliteToggle").disabled=false;
+        el("satelliteToggle").classList.add("active");
+        el("outlineToggle").classList.remove("active");
+        el("satelliteToggle").title="Satellite imagery is clipped to the combined division footprint.";
+        setStatus("National boundary service unavailable. Showing the eight division outlines as a verified fallback. "+error.message,true);
+        return true;
       }catch(divisionError){
         console.error("Division outline fallback also failed:",divisionError);
+        countryClipData=null;
+        map.getContainer().style.clipPath="";
+        map.getContainer().style.webkitClipPath="";
+        if(satellite&&map.hasLayer(satellite))map.removeLayer(satellite);
+        el("satelliteToggle").disabled=true;
+        el("satelliteToggle").title="Satellite imagery is unavailable until the boundary can be loaded.";
         map.fitBounds(bounds,{padding:[25,25]});
-        setStatus("Boundary data is unavailable, so the outline map could not be drawn. "+divisionError.message,true);
+        setStatus("Boundary data is unavailable, so satellite imagery remains off and the outline cannot be drawn. "+divisionError.message,true);
         return false;
       }
     }
   }
 
   map=L.map("map",{
-    center:[23.75,90.35],zoom:7,zoomControl:false,
+    center:[23.75,90.35],zoom:7,zoomControl:false,attributionControl:false,
     scrollWheelZoom:true,doubleClickZoom:true,
+    zoomAnimation:false,fadeAnimation:false,
     minZoom:6,maxZoom:19,maxBounds:bounds,maxBoundsViscosity:1,
     zoomSnap:.5,zoomDelta:.5,preferCanvas:true
   });
   window.atlasMap=map;
-  map.createPane("maskPane");map.getPane("maskPane").style.zIndex=350;map.getPane("maskPane").style.pointerEvents="none";
-  map.createPane("countryPane");map.getPane("countryPane").style.zIndex=430;map.getPane("countryPane").style.pointerEvents="none";
+  map.createPane("countryPane");map.getPane("countryPane").style.zIndex=420;map.getPane("countryPane").style.pointerEvents="none";
   map.createPane("boundaryPane");map.getPane("boundaryPane").style.zIndex=450;
-  // The mask surrounds the viewport. Use SVG with no geometry clipping so
-  // the outer ring cannot disappear when it encloses the entire map view.
-  const maskRenderer=L.svg({pane:"maskPane"});
   const countryRenderer=L.svg({pane:"countryPane"});
   const adminRenderer=L.canvas({pane:"boundaryPane",padding:0.5});
-  // Keep the map neutral until a valid Bangladesh mask is ready.
-  loadingCover=L.rectangle(bounds,{
-    pane:"maskPane",stroke:false,fill:true,fillColor:"#e6e9df",
-    fillOpacity:1,interactive:false
-  }).addTo(map);
+  map.getContainer().style.background="#081923";
+  map.getContainer().style.willChange="clip-path";
+  map.on("move zoom resize viewreset",scheduleCountryClip);
 
   satellite=L.tileLayer(
     "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
@@ -811,6 +1029,10 @@ async function ensureLeaflet(){
   // Satellite imagery is added only after the country mask has been installed.
   const boundaryFallback=()=>{outlineMode=true;if(satellite&&map.hasLayer(satellite))map.removeLayer(satellite);if(historicalLayer&&map.hasLayer(historicalLayer))map.removeLayer(historicalLayer);el("outlineToggle").classList.add("active");el("satelliteToggle").classList.remove("active");};
   el("satelliteToggle").addEventListener("click",()=>{
+    if(!countryClipData){
+      setStatus("Satellite imagery is disabled until a Bangladesh boundary is available.",true);
+      return;
+    }
     outlineMode=false;
     if(historicalLayer&&map.hasLayer(historicalLayer))map.removeLayer(historicalLayer);
     if(!map.hasLayer(satellite))satellite.addTo(map);
@@ -1266,12 +1488,20 @@ async function ensureLeaflet(){
     button.addEventListener("click",()=>renderSidePanel(button.dataset.panel));
   });
 
-  if(window.matchMedia&&window.matchMedia("(max-width:900px)").matches){
-    document.body.classList.add("sidebar-collapsed");
-  }
-  el("sidebarToggle").addEventListener("click",()=>{
+  // Hisaab-style clean opening: the map is the first screen; records open on demand.
+  document.body.classList.add("sidebar-collapsed");
+  function toggleRecordsPanel(){
     document.body.classList.toggle("sidebar-collapsed");
-    window.setTimeout(()=>map.invalidateSize({pan:false}),280);
+    window.setTimeout(()=>{
+      map.invalidateSize({pan:false});
+      scheduleCountryClip();
+    },300);
+  }
+  el("sidebarToggle").addEventListener("click",toggleRecordsPanel);
+  el("sidebarRailToggle").addEventListener("click",toggleRecordsPanel);
+  el("searchFocus").addEventListener("click",()=>{
+    el("mapSearch").focus();
+    el("mapSearch").scrollIntoView({block:"nearest",behavior:"smooth"});
   });
   document.querySelectorAll("[data-level]").forEach(button=>
     button.addEventListener("click",()=>switchLevel(button.dataset.level))
