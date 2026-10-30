@@ -1,0 +1,973 @@
+{
+  "schemaVersion": "lm-bg-budget/1.0",
+  "title": "Bangladesh national budget and public expenditure",
+  "fiscalYear": "2026-27",
+  "unit": "BDT crore",
+  "publicationDate": "2026-06-11",
+  "source": {
+    "institution": "Finance Division, Ministry of Finance, Government of Bangladesh",
+    "documentTitle": "National Budget Speech FY2026-27 — Journey Towards a Democratic, Humane and Inclusive Economy",
+    "url": "https://nbr.gov.bd/uploads/budget/Budget_Speech_English.pdf",
+    "pageReferences": [
+      "Annex A, Table 2, printed page 185",
+      "Annex A, Table 3, printed pages 186–187",
+      "Annex A, Table 4, printed pages 188–189",
+      "Annex A, Table 5, printed pages 190–191"
+    ],
+    "published": "2026-06-11",
+    "accessed": "2026-10-30"
+  },
+  "accountingNotes": [
+    "Budget allocations are approved/planned amounts; they are not proof of expenditure.",
+    "The 2026-27 budget is shown beside the FY2025-26 revised estimate and original budget.",
+    "Ministry actuals are shown only where the budget speech's Table 4 provides an identifiable ministry/division row. A missing value means not itemized in this table, not zero.",
+    "The Ministry of Defence is listed separately from the Armed Forces Division. Their FY2026-27 allocations are 42,497 and 44 crore respectively; the combined arithmetic total is 42,541 crore.",
+    "Table 2 reports FY2024-25 total expenditure of 631,273 crore; Table 4's sectoral totals sum to 631,276 crore. The 3-crore cross-table difference is retained as a source discrepancy, not silently reconciled.",
+    "Sector categories in Table 4 are budget classification groups; they are not directly comparable with programme-specific outcomes."
+  ],
+  "headline": {
+    "totalRevenueIncome": {
+      "budgetFY2026_27": 695000,
+      "revisedFY2025_26": 588000,
+      "budgetFY2025_26": 564000,
+      "actualFY2024_25": 437029
+    },
+    "totalExpenditure": {
+      "budgetFY2026_27": 938000,
+      "revisedFY2025_26": 788000,
+      "budgetFY2025_26": 790000,
+      "actualFY2024_25": 631273,
+      "actualFY2024_25_sectorTable": 631276
+    },
+    "operatingRecurrentExpenditure": {
+      "budgetFY2026_27": 551087,
+      "revisedFY2025_26": 513362,
+      "budgetFY2025_26": 498783,
+      "actualFY2024_25": 461743
+    },
+    "developmentExpenditure": {
+      "budgetFY2026_27": 316075,
+      "revisedFY2025_26": 214862,
+      "budgetFY2025_26": 245609,
+      "actualFY2024_25": 152449
+    },
+    "annualDevelopmentProgramme": {
+      "budgetFY2026_27": 300000,
+      "revisedFY2025_26": 200000,
+      "budgetFY2025_26": 230000,
+      "actualFY2024_25": 142326
+    },
+    "budgetDeficit": {
+      "budgetFY2026_27": 243000,
+      "revisedFY2025_26": 200000,
+      "budgetFY2025_26": 226000,
+      "actualFY2024_25": 194244
+    },
+    "financing": {
+      "externalIncludingGrants": {
+        "budgetFY2026_27": 116000,
+        "revisedFY2025_26": 63000,
+        "budgetFY2025_26": 101000,
+        "actualFY2024_25": 60430
+      },
+      "domestic": {
+        "budgetFY2026_27": 127000,
+        "revisedFY2025_26": 137000,
+        "budgetFY2025_26": 125000,
+        "actualFY2024_25": 125383
+      }
+    },
+    "sourceTable": "Table 2, printed page 185"
+  },
+  "overallSectorBudget": [
+    {
+      "name": "Social Infrastructure",
+      "budgetFY2026_27": 279001,
+      "revisedFY2025_26": 183574,
+      "budgetFY2025_26": 207629,
+      "actualFY2024_25": 145899,
+      "sharePct": 29.74
+    },
+    {
+      "name": "Physical Infrastructure",
+      "budgetFY2026_27": 174988,
+      "revisedFY2025_26": 164510,
+      "budgetFY2025_26": 190360,
+      "actualFY2024_25": 148047,
+      "sharePct": 18.66
+    },
+    {
+      "name": "General Services",
+      "budgetFY2026_27": 245117,
+      "revisedFY2025_26": 210615,
+      "budgetFY2025_26": 178517,
+      "actualFY2024_25": 102297,
+      "sharePct": 26.13
+    },
+    {
+      "name": "Interest Payments",
+      "budgetFY2026_27": 127500,
+      "revisedFY2025_26": 127000,
+      "budgetFY2025_26": 122000,
+      "actualFY2024_25": 136123,
+      "sharePct": 13.59
+    },
+    {
+      "name": "PPP Subsidy and Liability",
+      "budgetFY2026_27": 95209,
+      "revisedFY2025_26": 96701,
+      "budgetFY2025_26": 82420,
+      "actualFY2024_25": 98396,
+      "sharePct": 10.15
+    },
+    {
+      "name": "Net Lending and Other Expenditure",
+      "budgetFY2026_27": 16185,
+      "revisedFY2025_26": 5600,
+      "budgetFY2025_26": 9074,
+      "actualFY2024_25": 514,
+      "sharePct": 1.73
+    }
+  ],
+  "adpSectorBudget": [
+    {
+      "name": "Human Resource",
+      "budgetFY2026_27": 128426,
+      "revisedFY2025_26": 45805,
+      "budgetFY2025_26": 69473,
+      "actualFY2024_25": 33464,
+      "actualFY2023_24": 45955
+    },
+    {
+      "name": "Agriculture and Rural Development",
+      "budgetFY2026_27": 53789,
+      "revisedFY2025_26": 57745,
+      "budgetFY2025_26": 55706,
+      "actualFY2024_25": 47402,
+      "actualFY2023_24": 57409
+    },
+    {
+      "name": "Energy Infrastructure",
+      "budgetFY2026_27": 17193,
+      "revisedFY2025_26": 16810,
+      "budgetFY2025_26": 22370,
+      "actualFY2024_25": 22014,
+      "actualFY2023_24": 28477
+    },
+    {
+      "name": "Communication Infrastructure",
+      "budgetFY2026_27": 49111,
+      "revisedFY2025_26": 37438,
+      "budgetFY2025_26": 57846,
+      "actualFY2024_25": 29790,
+      "actualFY2023_24": 48173
+    },
+    {
+      "name": "Other ADP sectors",
+      "budgetFY2026_27": 51481,
+      "revisedFY2025_26": 42202,
+      "budgetFY2025_26": 24605,
+      "actualFY2024_25": 9657,
+      "actualFY2023_24": 16472
+    }
+  ],
+  "adpDivisionBudget": [
+    {
+      "name": "Ministry of Primary and Mass Education",
+      "budget": 21441,
+      "revised": 8061,
+      "previousBudget": 11398,
+      "actualFY2024_25": 7429,
+      "actualFY2023_24": 7231
+    },
+    {
+      "name": "Health Services Division",
+      "budget": 26806,
+      "revised": 3117,
+      "previousBudget": 11617,
+      "actualFY2024_25": 2001,
+      "actualFY2023_24": 7366
+    },
+    {
+      "name": "Secondary and Higher Education Division",
+      "budget": 20835,
+      "revised": 6190,
+      "previousBudget": 13625,
+      "actualFY2024_25": 4753,
+      "actualFY2023_24": 4965
+    },
+    {
+      "name": "Local Government Division",
+      "budget": 33735,
+      "revised": 38566,
+      "previousBudget": 36099,
+      "actualFY2024_25": 30701,
+      "actualFY2023_24": 36713
+    },
+    {
+      "name": "Ministry of Water Resources",
+      "budget": 7833,
+      "revised": 10582,
+      "previousBudget": 8490,
+      "actualFY2024_25": 9895,
+      "actualFY2023_24": 11733
+    },
+    {
+      "name": "Ministry of Agriculture",
+      "budget": 7946,
+      "revised": 4044,
+      "previousBudget": 6333,
+      "actualFY2024_25": 3411,
+      "actualFY2023_24": 4199
+    },
+    {
+      "name": "Power Division",
+      "budget": 14939,
+      "revised": 15531,
+      "previousBudget": 20284,
+      "actualFY2024_25": 21095,
+      "actualFY2023_24": 27314
+    },
+    {
+      "name": "Ministry of Railway",
+      "budget": 5440,
+      "revised": 4924,
+      "previousBudget": 7715,
+      "actualFY2024_25": 2980,
+      "actualFY2023_24": 11177
+    },
+    {
+      "name": "Road Transport and Highways Division",
+      "budget": 30741,
+      "revised": 19950,
+      "previousBudget": 32330,
+      "actualFY2024_25": 13766,
+      "actualFY2023_24": 19890
+    },
+    {
+      "name": "Bridges Division",
+      "budget": 2898,
+      "revised": 5319,
+      "previousBudget": 6012,
+      "actualFY2024_25": 4176,
+      "actualFY2023_24": 7485
+    }
+  ],
+  "ministryBudget": [
+    {
+      "code": 101,
+      "name": "President’s Office",
+      "budgetFY2026_27": 34,
+      "revisedFY2025_26": 30,
+      "budgetFY2025_26": 34,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 102,
+      "name": "National Parliament",
+      "budgetFY2026_27": 291,
+      "revisedFY2025_26": 249,
+      "budgetFY2025_26": 232,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 103,
+      "name": "Prime Minister’s Office",
+      "budgetFY2026_27": 3846,
+      "revisedFY2025_26": 3485,
+      "budgetFY2025_26": 3556,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 104,
+      "name": "Cabinet Division",
+      "budgetFY2026_27": 105,
+      "revisedFY2025_26": 132,
+      "budgetFY2025_26": 116,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 105,
+      "name": "Bangladesh Supreme Court",
+      "budgetFY2026_27": 291,
+      "revisedFY2025_26": 270,
+      "budgetFY2025_26": 250,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 106,
+      "name": "Election Commission Secretariat",
+      "budgetFY2026_27": 4401,
+      "revisedFY2025_26": 4346,
+      "budgetFY2025_26": 2956,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 107,
+      "name": "Ministry of Public Administration",
+      "budgetFY2026_27": 5067,
+      "revisedFY2025_26": 4610,
+      "budgetFY2025_26": 5019,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 108,
+      "name": "Bangladesh Public Service Commission",
+      "budgetFY2026_27": 138,
+      "revisedFY2025_26": 179,
+      "budgetFY2025_26": 149,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 109,
+      "name": "Finance Division",
+      "budgetFY2026_27": 319802,
+      "revisedFY2025_26": 289998,
+      "budgetFY2025_26": 261383,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 110,
+      "name": "Office of the Comptroller and Auditor General of Bangladesh",
+      "budgetFY2026_27": 377,
+      "revisedFY2025_26": 237,
+      "budgetFY2025_26": 284,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 111,
+      "name": "Internal Resources Division",
+      "budgetFY2026_27": 4656,
+      "revisedFY2025_26": 2965,
+      "budgetFY2025_26": 3126,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 112,
+      "name": "Financial Institutions Division",
+      "budgetFY2026_27": 3566,
+      "revisedFY2025_26": 5212,
+      "budgetFY2025_26": 3521,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 113,
+      "name": "Economic Relations Division",
+      "budgetFY2026_27": 23249,
+      "revisedFY2025_26": 22628,
+      "budgetFY2025_26": 22584,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 114,
+      "name": "Planning Division",
+      "budgetFY2026_27": 36251,
+      "revisedFY2025_26": 28402,
+      "budgetFY2025_26": 10906,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 115,
+      "name": "Implementation Monitoring and Evaluation Division",
+      "budgetFY2026_27": 231,
+      "revisedFY2025_26": 205,
+      "budgetFY2025_26": 183,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 116,
+      "name": "Statistics and Informatics Division",
+      "budgetFY2026_27": 672,
+      "revisedFY2025_26": 417,
+      "budgetFY2025_26": 467,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 117,
+      "name": "Ministry of Commerce",
+      "budgetFY2026_27": 328,
+      "revisedFY2025_26": 910,
+      "budgetFY2025_26": 608,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 118,
+      "name": "Ministry of Foreign Affairs",
+      "budgetFY2026_27": 1844,
+      "revisedFY2025_26": 1764,
+      "budgetFY2025_26": 1704,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 119,
+      "name": "Ministry of Defence",
+      "budgetFY2026_27": 42497,
+      "revisedFY2025_26": 40662,
+      "budgetFY2025_26": 40851,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 120,
+      "name": "Armed Forces Division",
+      "budgetFY2026_27": 44,
+      "revisedFY2025_26": 40,
+      "budgetFY2025_26": 47,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 121,
+      "name": "Law and Justice Division",
+      "budgetFY2026_27": 2188,
+      "revisedFY2025_26": 2160,
+      "budgetFY2025_26": 2075,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 122,
+      "name": "Ministry of Home Affairs",
+      "budgetFY2026_27": 31099,
+      "revisedFY2025_26": 27173,
+      "budgetFY2025_26": 27001,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 123,
+      "name": "Legislative and Parliamentary Affairs Division",
+      "budgetFY2026_27": 49,
+      "revisedFY2025_26": 48,
+      "budgetFY2025_26": 47,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 124,
+      "name": "Ministry of Primary and Mass Education",
+      "budgetFY2026_27": 46738,
+      "revisedFY2025_26": 31719,
+      "budgetFY2025_26": 35403,
+      "actualFY2024_25": 25887,
+      "actualFY2023_24": 26231,
+      "actualAvailability": "reported_in_Table_4"
+    },
+    {
+      "code": 125,
+      "name": "Secondary and Higher Education Division",
+      "budgetFY2026_27": 57302,
+      "revisedFY2025_26": 41754,
+      "budgetFY2025_26": 47564,
+      "actualFY2024_25": 36474,
+      "actualFY2023_24": 32276,
+      "actualAvailability": "reported_in_Table_4"
+    },
+    {
+      "code": 126,
+      "name": "Ministry of Science and Technology",
+      "budgetFY2026_27": 18115,
+      "revisedFY2025_26": 12704,
+      "budgetFY2025_26": 12869,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 127,
+      "name": "Health Services Division",
+      "budgetFY2026_27": 49387,
+      "revisedFY2025_26": 21934,
+      "budgetFY2025_26": 31022,
+      "actualFY2024_25": 14763,
+      "actualFY2023_24": 18932,
+      "actualAvailability": "reported_in_Table_4"
+    },
+    {
+      "code": 128,
+      "name": "Information and Communication Technology Division",
+      "budgetFY2026_27": 2049,
+      "revisedFY2025_26": 2866,
+      "budgetFY2025_26": 2144,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 129,
+      "name": "Ministry of Social Welfare",
+      "budgetFY2026_27": 30443,
+      "revisedFY2025_26": 13453,
+      "budgetFY2025_26": 13991,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 130,
+      "name": "Ministry of Women and Children Affairs",
+      "budgetFY2026_27": 5196,
+      "revisedFY2025_26": 5371,
+      "budgetFY2025_26": 5078,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 131,
+      "name": "Ministry of Labour and Employment",
+      "budgetFY2026_27": 467,
+      "revisedFY2025_26": 389,
+      "budgetFY2025_26": 438,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 132,
+      "name": "Ministry of Housing and Public Works",
+      "budgetFY2026_27": 5079,
+      "revisedFY2025_26": 4822,
+      "budgetFY2025_26": 5110,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 133,
+      "name": "Ministry of Information and Broadcasting",
+      "budgetFY2026_27": 1190,
+      "revisedFY2025_26": 1223,
+      "budgetFY2025_26": 1110,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 134,
+      "name": "Ministry of Cultural Affairs",
+      "budgetFY2026_27": 826,
+      "revisedFY2025_26": 753,
+      "budgetFY2025_26": 824,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 135,
+      "name": "Ministry of Religious Affairs",
+      "budgetFY2026_27": 2955,
+      "revisedFY2025_26": 2403,
+      "budgetFY2025_26": 2183,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 136,
+      "name": "Ministry of Youth and Sports",
+      "budgetFY2026_27": 2586,
+      "revisedFY2025_26": 1804,
+      "budgetFY2025_26": 2423,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 137,
+      "name": "Local Government Division",
+      "budgetFY2026_27": 40246,
+      "revisedFY2025_26": 44243,
+      "budgetFY2025_26": 42433,
+      "actualFY2024_25": 35972,
+      "actualFY2023_24": 42024,
+      "actualAvailability": "reported_in_Table_4"
+    },
+    {
+      "code": 138,
+      "name": "Rural Development and Co-operatives Division",
+      "budgetFY2026_27": 1106,
+      "revisedFY2025_26": 990,
+      "budgetFY2025_26": 1100,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 139,
+      "name": "Ministry of Industries",
+      "budgetFY2026_27": 1692,
+      "revisedFY2025_26": 1582,
+      "budgetFY2025_26": 1891,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 140,
+      "name": "Ministry of Expatriates’ Welfare and Overseas Employment",
+      "budgetFY2026_27": 880,
+      "revisedFY2025_26": 931,
+      "budgetFY2025_26": 855,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 141,
+      "name": "Ministry of Textiles and Jute",
+      "budgetFY2026_27": 512,
+      "revisedFY2025_26": 480,
+      "budgetFY2025_26": 480,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 142,
+      "name": "Energy and Mineral Resources Division",
+      "budgetFY2026_27": 2349,
+      "revisedFY2025_26": 1366,
+      "budgetFY2025_26": 2178,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 143,
+      "name": "Ministry of Agriculture",
+      "budgetFY2026_27": 28881,
+      "revisedFY2025_26": 24825,
+      "budgetFY2025_26": 27224,
+      "actualFY2024_25": 23891,
+      "actualFY2023_24": 31971,
+      "actualAvailability": "reported_in_Table_4"
+    },
+    {
+      "code": 144,
+      "name": "Ministry of Fisheries and Livestock",
+      "budgetFY2026_27": 2728,
+      "revisedFY2025_26": 3346,
+      "budgetFY2025_26": 3392,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 145,
+      "name": "Ministry of Environment, Forest and Climate Change",
+      "budgetFY2026_27": 2240,
+      "revisedFY2025_26": 1837,
+      "budgetFY2025_26": 2144,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 146,
+      "name": "Ministry of Land",
+      "budgetFY2026_27": 2439,
+      "revisedFY2025_26": 2401,
+      "budgetFY2025_26": 2304,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 147,
+      "name": "Ministry of Water Resources",
+      "budgetFY2026_27": 10533,
+      "revisedFY2025_26": 13382,
+      "budgetFY2025_26": 11204,
+      "actualFY2024_25": 12254,
+      "actualFY2023_24": 14113,
+      "actualAvailability": "reported_in_Table_4"
+    },
+    {
+      "code": 148,
+      "name": "Ministry of Food",
+      "budgetFY2026_27": 11726,
+      "revisedFY2025_26": 8955,
+      "budgetFY2025_26": 9004,
+      "actualFY2024_25": 7332,
+      "actualFY2023_24": 6415,
+      "actualAvailability": "reported_in_Table_4"
+    },
+    {
+      "code": 149,
+      "name": "Ministry of Disaster Management and Relief",
+      "budgetFY2026_27": 10350,
+      "revisedFY2025_26": 9069,
+      "budgetFY2025_26": 10362,
+      "actualFY2024_25": 6750,
+      "actualFY2023_24": 9836,
+      "actualAvailability": "reported_in_Table_4"
+    },
+    {
+      "code": 150,
+      "name": "Road Transport and Highways Division",
+      "budgetFY2026_27": 36918,
+      "revisedFY2025_26": 25685,
+      "budgetFY2025_26": 38496,
+      "actualFY2024_25": 18030,
+      "actualFY2023_24": 24819,
+      "actualAvailability": "reported_in_Table_4"
+    },
+    {
+      "code": 151,
+      "name": "Ministry of Railway",
+      "budgetFY2026_27": 9940,
+      "revisedFY2025_26": 9153,
+      "budgetFY2025_26": 11944,
+      "actualFY2024_25": 6850,
+      "actualFY2023_24": 14736,
+      "actualAvailability": "reported_in_Table_4"
+    },
+    {
+      "code": 152,
+      "name": "Ministry of Shipping",
+      "budgetFY2026_27": 9080,
+      "revisedFY2025_26": 6828,
+      "budgetFY2025_26": 10279,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 153,
+      "name": "Ministry of Civil Aviation and Tourism",
+      "budgetFY2026_27": 1884,
+      "revisedFY2025_26": 1300,
+      "budgetFY2025_26": 2455,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 154,
+      "name": "Posts and Telecommunications Division",
+      "budgetFY2026_27": 2141,
+      "revisedFY2025_26": 1987,
+      "budgetFY2025_26": 2148,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 155,
+      "name": "Ministry of Chittagong Hill Tracts Affairs",
+      "budgetFY2026_27": 1457,
+      "revisedFY2025_26": 1359,
+      "budgetFY2025_26": 1362,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 156,
+      "name": "Power Division",
+      "budgetFY2026_27": 14996,
+      "revisedFY2025_26": 15586,
+      "budgetFY2025_26": 20342,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 157,
+      "name": "Ministry of Liberation War Affairs",
+      "budgetFY2026_27": 7515,
+      "revisedFY2025_26": 7452,
+      "budgetFY2025_26": 7330,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 158,
+      "name": "Anti-Corruption Commission",
+      "budgetFY2026_27": 197,
+      "revisedFY2025_26": 203,
+      "budgetFY2025_26": 191,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 159,
+      "name": "Bridges Division",
+      "budgetFY2026_27": 2908,
+      "revisedFY2025_26": 5326,
+      "budgetFY2025_26": 6022,
+      "actualFY2024_25": 4179,
+      "actualFY2023_24": 7489,
+      "actualAvailability": "reported_in_Table_4"
+    },
+    {
+      "code": 160,
+      "name": "Technical and Madrasa Education Division",
+      "budgetFY2026_27": 18457,
+      "revisedFY2025_26": 12396,
+      "budgetFY2025_26": 12678,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 161,
+      "name": "Security Services Division",
+      "budgetFY2026_27": 0,
+      "revisedFY2025_26": 3880,
+      "budgetFY2025_26": 4038,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    },
+    {
+      "code": 162,
+      "name": "Health Education and Family Welfare Division",
+      "budgetFY2026_27": 13466,
+      "revisedFY2025_26": 6121,
+      "budgetFY2025_26": 10886,
+      "actualFY2024_25": null,
+      "actualFY2023_24": null,
+      "actualAvailability": "not_itemized_in_the_ministry_table"
+    }
+  ],
+  "selectedComparisons": [
+    {
+      "name": "Ministry of Defence",
+      "code": 119,
+      "budgetFY2026_27": 42497,
+      "revisedFY2025_26": 40662,
+      "budgetFY2025_26": 40851,
+      "actualFY2024_25": null,
+      "actualNote": "Not separately itemized in Table 4; do not treat the General Services actual as the Ministry of Defence actual."
+    },
+    {
+      "name": "Armed Forces Division",
+      "code": 120,
+      "budgetFY2026_27": 44,
+      "revisedFY2025_26": 40,
+      "budgetFY2025_26": 47,
+      "actualFY2024_25": null,
+      "actualNote": "Not separately itemized in Table 4."
+    },
+    {
+      "name": "Defence portfolio — sum of the two Table 5 lines",
+      "budgetFY2026_27": 42541,
+      "revisedFY2025_26": 40702,
+      "budgetFY2025_26": 40898,
+      "actualFY2024_25": null,
+      "actualNote": "Arithmetic sum of the Ministry of Defence and Armed Forces Division budget lines; not a published audited actual."
+    },
+    {
+      "name": "Road Transport and Highways Division",
+      "budgetFY2026_27": 36918,
+      "revisedFY2025_26": 25685,
+      "budgetFY2025_26": 38496,
+      "actualFY2024_25": 18030,
+      "actualFY2023_24": 24819
+    },
+    {
+      "name": "Local Government Division",
+      "budgetFY2026_27": 40246,
+      "revisedFY2025_26": 44243,
+      "budgetFY2025_26": 42433,
+      "actualFY2024_25": 35972,
+      "actualFY2023_24": 42024
+    },
+    {
+      "name": "Health Services Division",
+      "budgetFY2026_27": 49387,
+      "revisedFY2025_26": 21934,
+      "budgetFY2025_26": 31022,
+      "actualFY2024_25": 14763,
+      "actualFY2023_24": 18932
+    }
+  ],
+  "adpImplementation": [
+    {
+      "fiscalYear": "2026-27",
+      "period": "July–September 2026",
+      "financialImplementationPct": 3.89,
+      "publicationDate": "2026-10-25",
+      "source": "https://imed.gov.bd/pages/news",
+      "sourceTitle": "IMED news: FY2026-27 ADP financial progress through September 2026",
+      "note": "National ADP aggregate only; not individual project progress."
+    },
+    {
+      "fiscalYear": "2026-27",
+      "period": "July–August 2026",
+      "financialImplementationPct": 1.85,
+      "publicationDate": "2026-09-21",
+      "source": "https://imed.gov.bd/pages/news",
+      "sourceTitle": "IMED news: FY2026-27 ADP financial progress through August 2026",
+      "note": "National ADP aggregate only."
+    },
+    {
+      "fiscalYear": "2026-27",
+      "period": "July 2026",
+      "financialImplementationPct": 0.69,
+      "publicationDate": "2026-08-24",
+      "source": "https://imed.gov.bd/pages/news",
+      "sourceTitle": "IMED news: FY2026-27 ADP financial progress for July 2026",
+      "note": "National ADP aggregate only."
+    },
+    {
+      "fiscalYear": "2025-26",
+      "period": "Full fiscal year July 2025–June 2026",
+      "financialImplementationPct": 67.52,
+      "publicationDate": "2026-07-30",
+      "source": "https://imed.gov.bd/pages/reports",
+      "sourceTitle": "IMED: FY2025-26 ADP implementation progress through June 2026",
+      "note": "National ADP aggregate only; not individual project progress."
+    }
+  ],
+  "methodology": {
+    "defense": "The budget speech Table 5 lists Ministry of Defence and Armed Forces Division as separate lines. Their FY2026-27 allocations are displayed separately and may be arithmetically summed with the separate-line warning. The budget speech does not supply a matching Ministry of Defence actual in the Table 4 sector breakdown.",
+    "progressBars": "A bar is shown only when an official source provides a dated percentage for that named project and that specific progress measure. Financial progress and physical progress are independent measures.",
+    "projectOutcomes": "Planned outputs are transcribed from approved project documents. Achieved outcomes require dated official service/output data or independent measurement. A completion claim is not the same as independent outcome verification."
+  }
+}
