@@ -413,7 +413,7 @@ async function ensureLeaflet(){
   const colors=["#c9e2c8","#c4dfe3","#e9d3b7","#d8d1ec","#e4ccda","#c6d9ef","#e9dfb1","#cde2cf"];
   const cache={};
   const searchCache=new Map();
-  let language="en",activeLevel="district",currentLayer=null,countryMask=null,countryOutline=null;
+  let language="en",activeLevel="district",currentLayer=null,countryMask=null,countryOutline=null,loadingCover=null;
   let satellite=null,historicalLayer=null,outlineMode=false,lastPoint=null,pointMarker=null;
   let waybackCore=null,waybackItems=[],waybackIndex=0,playTimer=null,lastSearchAt=0;
   let geocodeResults=[];
@@ -668,6 +668,7 @@ async function ensureLeaflet(){
       });
     });
     if(!holes.length)throw new Error("Country outline geometry has no polygon rings.");
+    if(loadingCover&&map.hasLayer(loadingCover))map.removeLayer(loadingCover);
     if(countryMask&&map.hasLayer(countryMask))map.removeLayer(countryMask);
     const outside=[
       [0,55],[0,125],[40,125],[40,55],[0,55]
@@ -727,6 +728,11 @@ async function ensureLeaflet(){
   map.createPane("maskPane");map.getPane("maskPane").style.zIndex=350;map.getPane("maskPane").style.pointerEvents="none";
   map.createPane("countryPane");map.getPane("countryPane").style.zIndex=430;map.getPane("countryPane").style.pointerEvents="none";
   map.createPane("boundaryPane");map.getPane("boundaryPane").style.zIndex=450;
+  // Keep the satellite canvas covered until the national polygon arrives.
+  loadingCover=L.rectangle(bounds,{
+    pane:"maskPane",stroke:false,fill:true,fillColor:"#e6e9df",
+    fillOpacity:1,interactive:false
+  }).addTo(map);
 
   satellite=L.tileLayer(
     "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
