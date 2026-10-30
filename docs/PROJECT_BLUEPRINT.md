@@ -16,12 +16,17 @@ The public experience has three principal exploration screens:
 - Each district polygon receives its own stable, distinct display colour, and its official name is available in the directory and map tooltip.
 - Zoom in, zoom out and fit-Bangladesh controls, plus focus-to-area when a division or district is selected.
 - Division boundaries from the DGHS GIS Feature Service using the BBS ADM1 administrative-boundary dataset; district boundaries from the matching BBS ADM2 administrative-boundary dataset.
-- Optional upazila and union layers when data quality permits.
+- Optional Division, District, Upazila, Union and available Ward map levels. The current prototype uses the BBS 2022 upazila boundary layer, DGHS All_Union polygon service and DGHS All_Wards_main service; show actual returned coverage rather than assuming a headline total.
+- A separate Mouza / land-record link to the official settlement portal. Do not treat a ward as a village or mouza, and do not draw national village boundaries until a documented, licensed dataset is available.
+- Satellite basemap toggle using Esri World Imagery.
+- Point selection on the map and a local historical imagery timeline using Esri World Imagery Wayback versions where available. The archive starts in February 2014, so it does not provide a complete 15-year sequence.
 - Separate toggles for funding facts, projects, public assets, historical locations, audit observations and environment records.
 - Search by project, administrative area, ministry, agency and source.
-- Map features must identify their geometry source, dataset date, precision and limitations. The initial map is restricted to Bangladesh and uses no world basemap.
+- Map features must identify their geometry source, dataset date, precision and limitations. Historical imagery must identify the archive version, local capture date if known, provider and pixel resolution where metadata is available. The initial map is restricted to Bangladesh and uses no world basemap.
 
 A location marker is not proof that money was spent at that point. Transfers, budget allocations and project expenditure must not be conflated.
+
+Historical imagery is visual context only. It may help identify visible land-use or construction changes, but it cannot establish corruption, intent, contract values, payment, quality, ownership or misuse of public money. Compare imagery dates with project approval and completion schedules, procurement records, audited expenditure, official responses and independent site evidence. Wayback basemap release dates are not necessarily the local image acquisition dates; display acquisition metadata separately when the provider supplies it.
 
 ### B. Division / District Development Card
 Each administrative profile may show:

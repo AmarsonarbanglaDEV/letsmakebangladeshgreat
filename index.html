@@ -319,6 +319,59 @@
       .area-list-label small{font-size:8px}
     }
 
+  
+    /* Expanded administrative levels, satellite and historical imagery controls */
+    .map-level-switch-wide{display:flex;flex-wrap:wrap;gap:4px}
+    .map-level-switch-wide button{padding:8px 12px;font-size:10px}
+    .map-style-toolbar{display:flex;align-items:center;gap:12px;padding:12px 18px;background:#f9fbf7;border-bottom:1px solid var(--line);color:#607267;font-size:10px;font-weight:800}
+    .map-style-toolbar .map-level-switch{margin-left:auto}
+    .map-external-link,.wayback-link{color:#26744e;font-size:10px;font-weight:800;text-decoration:underline;text-underline-offset:3px;white-space:nowrap}
+    .map-wrap #map{height:600px;background:#eaf0e8}
+    .history-panel{padding:20px 22px;background:#fcfdf9;border-top:1px solid var(--line)}
+    .history-heading{display:flex;align-items:center;justify-content:space-between;gap:20px}
+    .history-heading h4{font-size:16px;letter-spacing:-.035em;margin:4px 0}
+    .history-heading p{font-size:11px;line-height:1.65;color:var(--muted);margin:0}
+    .history-load-btn{background:#fff!important;color:#244b35!important;border-color:#dbe5d9!important;box-shadow:none!important;padding:10px 14px!important;white-space:nowrap}
+    .history-load-btn:disabled,.history-play:disabled{opacity:.45;cursor:not-allowed}
+    .history-point{margin-top:13px;padding:9px 11px;border-radius:10px;background:#f0f4ee;color:#627268;font-size:10px}
+    .history-timeline{display:grid;grid-template-columns:36px minmax(80px,1fr) 112px;align-items:center;gap:11px;margin-top:14px}
+    .history-play{width:34px;height:34px;border:1px solid #dce6d9;border-radius:50%;background:#fff;color:#1b6949;font-weight:800;cursor:pointer}
+    #historySlider{width:100%;accent-color:#1c704c;cursor:pointer}
+    #historyReleaseLabel{font-size:11px;text-align:right;color:#244d35;font-variant-numeric:tabular-nums}
+    .history-capture{font-size:10px;color:#576d5f;margin-top:10px;min-height:15px}
+    .history-note{font-size:10px;color:#829087;line-height:1.65;margin-top:9px}
+    .wayback-link{display:inline-block;margin-top:10px}
+    .map-directory-note{font-size:10px;line-height:1.65;color:#89958d;margin:15px 0 0}
+    .admin-record-button{display:flex;align-items:center;gap:8px;width:100%;padding:9px;border:1px solid #e4e9e1;border-radius:11px;background:#fffefa;color:#22352a;text-align:left;font-size:10px;font-weight:750;cursor:pointer;transition:background .16s,border-color .16s,transform .16s}
+    .admin-record-button:hover,.admin-record-button.active{border-color:#9fbea4;background:#edf5eb;transform:translateY(-1px)}
+    .admin-record-dot{width:12px;height:12px;flex:0 0 12px;border:1px solid rgba(30,55,35,.18);border-radius:4px}
+    .admin-record-label{min-width:0;display:block;overflow-wrap:anywhere;line-height:1.35}
+    .admin-record-label small{display:block;margin-top:2px;color:#87938a;font-size:9px;font-weight:500}
+    .admin-record-group{margin:0 0 16px}
+    .admin-record-group h4{display:flex;justify-content:space-between;gap:8px;margin:0 0 8px;color:#42614d;font-size:10px;font-weight:850;letter-spacing:.07em;text-transform:uppercase}
+    .admin-record-group h4 small{font-size:9px;color:#8b988f;letter-spacing:0}
+    .admin-record-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+    .leaflet-tooltip.area-tooltip{padding:6px 9px;border:1px solid #dae5d7;border-radius:9px;background:rgba(255,254,250,.96);color:#203c2c;font:700 11px/1.45 "DM Sans","Noto Sans Bengali",system-ui,sans-serif;box-shadow:0 6px 18px rgba(20,48,37,.12)}
+    .leaflet-tooltip.area-tooltip:before{border-top-color:#dae5d7}
+    @media(max-width:920px){.map-level-switch-wide{flex:1}.map-level-switch-wide button{flex:1}}
+    @media(max-width:620px){
+      .map-level-switch-wide{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:100%}
+      .map-level-switch-wide button{padding:8px 6px;font-size:9px}
+      .map-style-toolbar{flex-wrap:wrap;padding:11px 12px;gap:8px}
+      .map-style-toolbar .map-level-switch{margin-left:auto}
+      .map-external-link{width:100%}
+      .map-wrap #map{height:490px}
+      .history-panel{padding:16px}
+      .history-heading{align-items:flex-start;flex-direction:column;gap:10px}
+      .history-load-btn{align-self:flex-start}
+      .history-timeline{grid-template-columns:34px minmax(70px,1fr) 92px;gap:7px}
+      #historyReleaseLabel{font-size:9px}
+      .division-panel{padding:18px}
+      #divisionList{max-height:470px}
+      .admin-record-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .admin-record-button{font-size:9px;padding:8px 7px}
+    }
+
   </style>
 </head>
 <body>
@@ -400,45 +453,76 @@
   <section class="section alt" id="atlas">
     <div class="wrap">
       <div class="section-head">
-        <div><span class="kicker">01 / Bangladesh atlas</span><h2 data-en="Explore all of Bangladesh" data-bn="পুরো বাংলাদেশ ঘুরে দেখুন">Explore all of Bangladesh</h2></div>
-        <p class="lead" data-en="Switch between all 8 divisions and all 64 districts. Each district has its own colour, name and selectable boundary. These are administrative areas, not project or spending locations." data-bn="৮টি বিভাগ ও ৬৪টি জেলার মধ্যে পরিবর্তন করুন। প্রতিটি জেলার আলাদা রং, নাম ও নির্বাচনযোগ্য সীমানা রয়েছে। এগুলো প্রশাসনিক এলাকা—প্রকল্প বা ব্যয়ের অবস্থান নয়।">Switch between all 8 divisions and all 64 districts. Each district has its own colour, name and selectable boundary. These are administrative areas, not project or spending locations.</p>
+        <div><span class="kicker">01 / Bangladesh atlas</span><h2 data-en="Explore every level of Bangladesh" data-bn="বাংলাদেশের প্রতিটি প্রশাসনিক স্তর দেখুন">Explore every level of Bangladesh</h2></div>
+        <p class="lead" data-en="Move from divisions down to districts, upazilas, unions and available ward boundaries. These layers show administrative geography, not project locations or proof of expenditure." data-bn="বিভাগ থেকে জেলা, উপজেলা, ইউনিয়ন ও উপলব্ধ ওয়ার্ড সীমানা পর্যন্ত দেখুন। এগুলো প্রশাসনিক মানচিত্র—প্রকল্পের অবস্থান বা ব্যয়ের প্রমাণ নয়।">Move from divisions down to districts, upazilas, unions and available ward boundaries. These layers show administrative geography, not project locations or proof of expenditure.</p>
       </div>
       <div class="atlas-grid">
         <div class="panel">
           <div class="panel-top">
-            <h3 data-en="Bangladesh administrative map" data-bn="বাংলাদেশের প্রশাসনিক মানচিত্র">Bangladesh administrative map</h3>
-            <span class="tag" id="mapCount">64 districts · 8 divisions</span>
+            <h3 data-en="Bangladesh map" data-bn="বাংলাদেশের মানচিত্র">Bangladesh map</h3>
+            <span class="tag" id="mapCount">64 districts</span>
           </div>
           <div class="atlas-map-toolbar">
-            <div class="map-level-switch" role="group" aria-label="Choose map level">
-              <button type="button" id="divisionModeBtn" data-en="Divisions · 8" data-bn="বিভাগ · ৮">Divisions · 8</button>
-              <button type="button" id="districtModeBtn" class="active" data-en="Districts · 64" data-bn="জেলা · ৬৪">Districts · 64</button>
+            <div class="map-level-switch map-level-switch-wide" role="group" aria-label="Choose administrative map level">
+              <button type="button" data-level="division" data-en="Division" data-bn="বিভাগ">Division</button>
+              <button type="button" data-level="district" class="active" data-en="District" data-bn="জেলা">District</button>
+              <button type="button" data-level="upazila" data-en="Upazila" data-bn="উপজেলা">Upazila</button>
+              <button type="button" data-level="union" data-en="Union" data-bn="ইউনিয়ন">Union</button>
+              <button type="button" data-level="ward" data-en="Ward" data-bn="ওয়ার্ড">Ward</button>
             </div>
             <div class="map-zoom-controls" aria-label="Map zoom controls">
               <button type="button" id="zoomIn" aria-label="Zoom in" title="Zoom in">+</button>
               <button type="button" id="zoomOut" aria-label="Zoom out" title="Zoom out">−</button>
-              <button type="button" id="zoomFit" aria-label="Fit all Bangladesh" title="Fit all Bangladesh">⌂</button>
+              <button type="button" id="zoomFit" aria-label="Fit Bangladesh" title="Fit Bangladesh">⌂</button>
             </div>
           </div>
-          <div class="map-wrap">
-            <div id="map" role="application" aria-label="Interactive map of Bangladesh showing divisions or all 64 districts"></div>
-            <div class="map-legend" id="mapLegend"><span class="legend-swatch district"></span> District area · individual colours<br><span class="legend-swatch selected"></span> Selected district</div>
-            <div class="map-status" id="mapStatus" role="status" aria-live="polite">Loading official administrative boundaries…</div>
+          <div class="map-style-toolbar">
+            <span data-en="Map appearance" data-bn="মানচিত্রের ধরন">Map appearance</span>
+            <div class="map-level-switch">
+              <button type="button" id="baseBoundariesBtn" class="active" data-en="Boundaries" data-bn="সীমানা">Boundaries</button>
+              <button type="button" id="baseSatelliteBtn" data-en="Satellite" data-bn="স্যাটেলাইট">Satellite</button>
+            </div>
+            <a href="https://settlement.gov.bd/map/mapsearch" target="_blank" rel="noopener" class="map-external-link" data-en="Mouza / land map ↗" data-bn="মৌজা / ভূমি মানচিত্র ↗">Mouza / land map ↗</a>
           </div>
-          <div class="map-foot" data-en="Boundary source: DGHS GIS Feature Service, BBS administrative-boundary dataset (ADM1 / ADM2). The directory lists 64 districts. Map geometry is administrative reference data only." data-bn="সীমানার সূত্র: DGHS GIS Feature Service, BBS প্রশাসনিক সীমানা ডেটাসেট (ADM1 / ADM2)। তালিকায় ৬৪টি জেলা রয়েছে। মানচিত্রের জ্যামিতি শুধু প্রশাসনিক তথ্য।">Boundary source: DGHS GIS Feature Service, BBS administrative-boundary dataset (ADM1 / ADM2). The directory lists 64 districts. Map geometry is administrative reference data only.</div>
+          <div class="map-wrap">
+            <div id="map" role="application" aria-label="Interactive Bangladesh administrative map. Click to select an area or a point."></div>
+            <div class="map-legend" id="mapLegend"><span class="legend-swatch district"></span> District boundary<br><span class="legend-swatch selected"></span> Selected area</div>
+            <div class="map-status" id="mapStatus" role="status" aria-live="polite">Loading district boundaries…</div>
+          </div>
+          <div class="history-panel">
+            <div class="history-heading">
+              <div>
+                <span class="kicker" data-en="Satellite history" data-bn="স্যাটেলাইট ইতিহাস">Satellite history</span>
+                <h4 data-en="Compare imagery at a point" data-bn="নির্বাচিত স্থানের ছবি তুলনা করুন">Compare imagery at a point</h4>
+                <p data-en="Click any point on the map, then find the archived imagery available there." data-bn="মানচিত্রে একটি স্থানে ক্লিক করুন, তারপর সেখানে সংরক্ষিত স্যাটেলাইট ছবি খুঁজুন।">Click any point on the map, then find the archived imagery available there.</p>
+              </div>
+              <button type="button" class="btn secondary history-load-btn" id="loadHistoryBtn" disabled data-en="Find history" data-bn="ইতিহাস খুঁজুন">Find history</button>
+            </div>
+            <div class="history-point" id="historyPoint">No point selected yet.</div>
+            <div class="history-timeline">
+              <button type="button" id="historyPlayBtn" class="history-play" disabled aria-label="Play historical imagery">▶</button>
+              <input id="historySlider" type="range" min="0" max="0" value="0" disabled aria-label="Historical imagery timeline">
+              <strong id="historyReleaseLabel">No archive loaded</strong>
+            </div>
+            <div class="history-capture" id="historyCapture">Imagery capture date and provider will appear when metadata is available.</div>
+            <div class="history-note" data-en="Archive versions begin in February 2014, so this is not a complete 15-year record. Availability and image dates vary by point; a basemap release date is not necessarily the photo capture date. Satellite images can help compare visible land-use or construction changes, but they cannot prove corruption, intent, contract values or misuse of public money." data-bn="আর্কাইভের সংস্করণ ২০১৪ সালের ফেব্রুয়ারি থেকে শুরু, তাই এটি পূর্ণ ১৫ বছরের রেকর্ড নয়। স্থানভেদে ছবি ও ধারণের তারিখ ভিন্ন হতে পারে। স্যাটেলাইট ছবি ভূমি ব্যবহার বা নির্মাণের দৃশ্যমান পরিবর্তন তুলনা করতে সাহায্য করে, কিন্তু দুর্নীতি, উদ্দেশ্য, চুক্তিমূল্য বা সরকারি অর্থের অপব্যবহার প্রমাণ করতে পারে না।">Archive versions begin in February 2014, so this is not a complete 15-year record. Availability and image dates vary by point; a basemap release date is not necessarily the photo capture date. Satellite images can help compare visible land-use or construction changes, but they cannot prove corruption, intent, contract values or misuse of public money.</div>
+            <a class="wayback-link" href="https://livingatlas.arcgis.com/wayback/" target="_blank" rel="noopener">Open Esri World Imagery Wayback ↗</a>
+          </div>
+          <div class="map-foot" id="mapSourceNote">Administrative layers: DGHS GIS Feature Service, BBS ADM1 / ADM2 and DGHS ADM4 / ward layers; upazila polygons: BBS 2022 layer. Satellite imagery: Esri World Imagery / Wayback. See each layer's source and coverage note.</div>
         </div>
         <aside class="panel">
           <div class="division-panel">
             <span class="kicker" id="selectedKicker">Selected area</span>
-            <h3 id="divisionName">Choose a district</h3>
-            <div class="division-bn" id="divisionBangla">একটি জেলা নির্বাচন করুন</div>
-            <div class="division-placeholder" id="divisionNote">Choose a coloured area on the map or select a district from the directory. No project or funding location is implied.</div>
-            <div class="detail-row"><span data-en="Administrative level" data-bn="প্রশাসনিক স্তর">Administrative level</span><strong id="areaLevel">District</strong></div>
-            <div class="detail-row"><span data-en="Parent division" data-bn="অন্তর্ভুক্ত বিভাগ">Parent division</span><strong id="parentDivision">—</strong></div>
+            <h3 id="divisionName">Choose an area</h3>
+            <div class="division-bn" id="divisionBangla">মানচিত্র বা তালিকা থেকে নির্বাচন করুন</div>
+            <div class="division-placeholder" id="divisionNote">Choose a coloured area from the map or directory. No project or spending location is implied.</div>
+            <div class="detail-row"><span data-en="Administrative level" data-bn="প্রশাসনিক স্তর">Administrative level</span><strong id="areaLevel">—</strong></div>
+            <div class="detail-row"><span data-en="Parent area" data-bn="উপরের প্রশাসনিক এলাকা">Parent area</span><strong id="parentDivision">—</strong></div>
             <div class="detail-row"><span data-en="Reviewed project records" data-bn="যাচাইকৃত প্রকল্পের নথি">Reviewed project records</span><strong>Not yet published</strong></div>
             <div class="detail-row"><span data-en="Funding facts" data-bn="অর্থায়নের তথ্য">Funding facts</span><strong>Not yet published</strong></div>
-            <div style="margin-top:18px"><input class="search" id="divisionSearch" type="search" placeholder="Search all 64 districts / জেলা খুঁজুন" aria-label="Search divisions and districts"></div>
+            <div style="margin-top:18px"><input class="search" id="divisionSearch" type="search" placeholder="Search districts / জেলা খুঁজুন" aria-label="Search administrative areas"></div>
             <div class="division-list" id="divisionList" aria-label="Administrative area directory"></div>
+            <p class="map-directory-note" id="mapDirectoryNote">Select a map level to load its available boundaries. Detailed ward coverage varies. Village and mouza boundaries are not represented as wards.</p>
           </div>
         </aside>
       </div>
@@ -603,222 +687,413 @@
   const divisionColors=["#d5e9c4","#c9e2df","#f0d8bc","#d8d4ed","#e8d5df","#c9dced","#e9e1b6","#d1e3c8"];
   const divisionAliases={barisal:"barishal",chittagong:"chattogram"};
   const districtAliases={barisal:"barishal",chittagong:"chattogram",comilla:"cumilla",jesore:"jashore",jessore:"jashore",bogra:"bogura",nawabganj:"chapainawabganj",coxbazar:"coxsbazar"};
+
   const list=document.getElementById("divisionList");
   const search=document.getElementById("divisionSearch");
   const name=document.getElementById("divisionName");
   const bn=document.getElementById("divisionBangla");
   const note=document.getElementById("divisionNote");
-  const modeDivisionBtn=document.getElementById("divisionModeBtn");
-  const modeDistrictBtn=document.getElementById("districtModeBtn");
   const mapStatus=document.getElementById("mapStatus");
-  let language="en",mode="district",selectedDivision=null,selectedDistrict=null;
-  let districtLayer=null,divisionLayer=null,selectedMapLayer=null;
-  const districtLayers={},divisionLayers={};
-  const bangladeshBounds=window.L&&window.L.latLngBounds?window.L.latLngBounds([[20.5906,88.0086],[26.6346,92.6804]]):null;
+  const levelButtons=[...document.querySelectorAll("[data-level]")];
+  const mapCount=document.getElementById("mapCount");
+  const legend=document.getElementById("mapLegend");
+  const levelInfo={
+    division:{label:"Division",bn:"বিভাগ",expected:8,url:"https://gis.dghs.gov.bd/server/rest/services/Hosted/bgd_admbnda_adm1_bbs_20201113/FeatureServer/0/query"},
+    district:{label:"District",bn:"জেলা",expected:64,url:"https://gis.dghs.gov.bd/server/rest/services/Hosted/bgd_admbnda_adm2_bbs_20201113/FeatureServer/0/query"},
+    upazila:{label:"Upazila",bn:"উপজেলা",expected:"BBS 2022",url:"https://www.arcgisbd.com/server/rest/services/ADB005/CRIIPS/MapServer/122/query"},
+    union:{label:"Union",bn:"ইউনিয়ন",expected:"Source coverage",url:"https://gis.dghs.gov.bd/server/rest/services/Hosted/All_Union/FeatureServer/0/query"},
+    ward:{label:"Ward",bn:"ওয়ার্ড",expected:"Available wards",url:"https://gis.dghs.gov.bd/server/rest/services/Hosted/All_Wards_main/FeatureServer/0/query"}
+  };
+  const fieldNames={
+    division:["adm1_en","division","division_name","name"],
+    district:["adm2_en","district","district_name","name"],
+    upazila:["upazila","adm3_en","upazila_name","name"],
+    union:["union_","union","adm4_en","union_name","name"],
+    ward:["ward_name","ward","adm5_en","name"]
+  };
+  const parentNames={
+    division:[],
+    district:["adm1_en","division","division_name"],
+    upazila:["district","adm2_en","district_name"],
+    union:["upazila","adm3_en","upazila_name","district"],
+    ward:["union_","union","upazila","district"]
+  };
+  const sourceNote={
+    division:"DGHS GIS Feature Service · BBS ADM1",
+    district:"DGHS GIS Feature Service · BBS ADM2",
+    upazila:"BBS 2022 Upazila Boundary · ArcGIS BD CRIIPS. Survey of Bangladesh's NSDI catalogue describes a separate 495-upazila map dataset (2023; work ongoing).",
+    union:"DGHS GIS Feature Service · All_Union (ADM4 attributes)",
+    ward:"DGHS GIS Feature Service · All_Wards_main. Coverage may include only available ward polygons; not a complete village-boundary dataset."
+  };
+  const aliases={barisal:"barishal",chittagong:"chattogram",comilla:"cumilla",jesore:"jashore",jessore:"jashore",bogra:"bogura",nawabganj:"chapainawabganj",coxbazar:"coxsbazar"};
+  let language="en",activeLevel="district",map=null,areaLayer=null;
+  let currentRecords=[],currentCache=null,selectedRecord=null;
+  const layerCache={};
+  let baseMode="boundaries",satelliteLayer=null,historicalLayer=null,historyItems=[],historyIndex=0,lastMapPoint=null,pointMarker=null,waybackCore=null,playTimer=null;
+  const pointLabel=document.getElementById("historyPoint");
+  const historyLoadBtn=document.getElementById("loadHistoryBtn");
+  const historySlider=document.getElementById("historySlider");
+  const historyPlayBtn=document.getElementById("historyPlayBtn");
+  const historyCapture=document.getElementById("historyCapture");
+  const historyReleaseLabel=document.getElementById("historyReleaseLabel");
+  const bangladeshBounds=window.L.latLngBounds([[20.5906,88.0086],[26.6346,92.6804]]);
 
-  function translated(name,bnName){return language==="bn"?(bnName||name):name;}
-  function setStatus(message,isError){mapStatus.textContent=message||"";mapStatus.classList.toggle("error",!!isError);}
-  function resolveDivisionId(value){const key=norm(value),fixed=divisionAliases[key]||key;return divisionById[fixed]?fixed:null;}
-  function resolveDistrictId(value){const key=norm(value),fixed=districtAliases[key]||key;return districtById[fixed]?fixed:null;}
-  function focusLayer(layer){if(layer&&window.atlasMap)window.atlasMap.fitBounds(layer.getBounds(),{padding:[28,28],maxZoom:10});}
-  function restoreDistrictStyles(){
-    if(!districtLayer)return;
-    districtLayer.eachLayer(layer=>{
-      const p=layer.feature&&layer.feature.properties?layer.feature.properties:{};
-      const d=districtById[resolveDistrictId(p.adm2_en||p.ADM2_EN)];
-      if(d){
-        const chosen=selectedDistrict&&selectedDistrict.id===d.id;
-        layer.setStyle({color:chosen?"#244b32":"#fffefa",weight:chosen?2.6:1.25,opacity:1,fillColor:chosen?"#d9ed8e":d.color,fillOpacity:chosen?1:.94});
-      }
-    });
+  function keyName(value){return String(value||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]/g,"");}
+  function getField(properties,candidates){
+    const props=properties||{},keys=Object.keys(props);
+    for(const candidate of candidates){
+      const target=keyName(candidate);
+      const match=keys.find(key=>keyName(key)===target);
+      if(match&&props[match]!==null&&props[match]!==undefined&&String(props[match]).trim()!=="")return String(props[match]).trim();
+    }
+    return "";
   }
-  function restoreDivisionStyles(){
-    if(!divisionLayer)return;
-    divisionLayer.eachLayer(layer=>{
-      const p=layer.feature&&layer.feature.properties?layer.feature.properties:{};
-      const d=divisionById[resolveDivisionId(p.adm1_en||p.ADM1_EN)];
-      const index=divisions.findIndex(x=>x.id===(d&&d.id));
-      const chosen=d&&selectedDivision&&selectedDivision.id===d.id;
-      layer.setStyle({color:chosen?"#315a3b":"#fffefa",weight:chosen?3:2,opacity:1,fillColor:chosen?"#d9ed8e":divisionColors[index<0?0:index],fillOpacity:chosen?1:.96});
+  function safeColor(value,index){
+    let hash=0;for(let i=0;i<String(value||index).length;i++)hash=(hash*31+String(value||index).charCodeAt(i))>>>0;
+    return "hsl("+((index*137.508+hash%31)%360).toFixed(0)+" 43% 82%)";
+  }
+  function setStatus(message,isError){
+    mapStatus.textContent=message||"";
+    mapStatus.classList.toggle("error",!!isError);
+  }
+  function currentLanguageName(record){
+    return language==="bn"?(record.bn||record.name):record.name;
+  }
+  function getRecord(feature,index,level){
+    const p=feature.properties||{},nameValue=getField(p,fieldNames[level])||getField(p,["name_en","name_english","shape_name","admin_name"]);
+    if(!nameValue)return null;
+    const division=getField(p,["adm1_en","division","division_name"]);
+    const district=getField(p,["adm2_en","district","district_name"]);
+    const upazila=getField(p,["adm3_en","upazila","upazila_name"]);
+    const unionName=getField(p,["adm4_en","union_","union","union_name"]);
+    const ward=getField(p,["ward_name","ward","adm5_en"]);
+    const codeFields={
+      division:["adm1_pcode","pcode","objectid","fid"],
+      district:["adm2_pcode","pcode","objectid","fid"],
+      upazila:["adm3_pcode","geocode","pcode","objectid","fid"],
+      union:["adm4_pcode","pcode","objectid","fid"],
+      ward:["adm5_pcode","organisationunitid_wd","pcode","objectid","fid"]
+    };
+    const code=getField(p,codeFields[level]||["pcode","objectid","fid"]);
+    const bnName=getField(p,["name_bn","adm1_bn","adm2_bn","adm3_bn","adm4_bn","adm5_bn","division_bn","district_bn","upazila_bn","union_bn","ward_bn"]);
+    const parent=getField(p,parentNames[level]||[]);
+    const ancestors=[division,district,upazila,unionName,ward].filter(Boolean);
+    const unique=[nameValue,...ancestors,code].join("|");
+    return {id:code||unique,name:nameValue,bn:bnName,division,district,upazila,union:unionName,ward,parent,level,index,color:safeColor(unique,index),feature};
+  }
+  async function fetchFeaturePages(baseUrl){
+    const all=[];let offset=0,requests=0;
+    while(requests<30){
+      const params=new URLSearchParams({
+        where:"1=1",outFields:"*",returnGeometry:"true",outSR:"4326",
+        f:"geojson",resultOffset:String(offset),resultRecordCount:"1500",orderByFields:"OBJECTID"
+      });
+      const response=await fetch(baseUrl+"?"+params.toString());
+      if(!response.ok)throw new Error("GIS service responded "+response.status);
+      const data=await response.json();
+      if(data.error)throw new Error(data.error.message||"GIS query failed");
+      if(!Array.isArray(data.features))throw new Error("GIS service did not return GeoJSON features");
+      all.push(...data.features);
+      if(data.features.length<1500)break;
+      offset+=data.features.length;requests++;
+    }
+    if(requests>=30)throw new Error("The layer returned too many pages to load safely.");
+    return {type:"FeatureCollection",features:all};
+  }
+  function buildRecords(data,level){
+    const records=[];
+    data.features.forEach((feature,index)=>{
+      const record=getRecord(feature,index,level);
+      if(record)records.push(record);
+    });
+    return records;
+  }
+  function tooltipText(record){
+    const parent=record.parent||record.district||record.division||"";
+    return record.name+(record.bn?" / "+record.bn:"")+(parent?" · "+parent:"");
+  }
+  function highlightStyles(layer,selectedId,level){
+    if(!layer)return;
+    layer.eachLayer(child=>{
+      const r=child._atlasRecord;
+      const chosen=r&&selectedId&&r.id===selectedId;
+      child.setStyle({color:chosen?"#193c2a":"#fffefa",weight:chosen?3:(level==="division"?2:1.15),fillColor:chosen?"#d9ed8e":r.color,fillOpacity:chosen?1:.91});
     });
   }
   function updatePanel(){
-    const level=document.getElementById("areaLevel"),parent=document.getElementById("parentDivision"),kicker=document.getElementById("selectedKicker");
-    if(selectedDistrict){
-      const parentDivision=divisionById[selectedDistrict.divisionId];
-      name.textContent=selectedDistrict.name;bn.textContent=selectedDistrict.bn;
-      level.textContent=language==="bn"?"জেলা":"District";
-      parent.textContent=parentDivision?translated(parentDivision.name,parentDivision.bn):"—";
-      kicker.textContent=language==="bn"?"নির্বাচিত জেলা":"Selected district";
-      note.textContent=language==="bn"
-        ?"এটি "+selectedDistrict.bn+" জেলার প্রশাসনিক সীমানা। প্রকল্প, অর্থায়ন বা ব্যয়ের যাচাইকৃত তথ্য এখনো প্রকাশিত হয়নি।"
-        :"This is the administrative boundary of "+selectedDistrict.name+" District. Verified project, funding and expenditure records have not yet been published.";
-    }else if(selectedDivision){
-      name.textContent=selectedDivision.name;bn.textContent=selectedDivision.bn;
-      level.textContent=language==="bn"?"বিভাগ":"Division";parent.textContent="—";
-      kicker.textContent=language==="bn"?"নির্বাচিত বিভাগ":"Selected division";
-      note.textContent=language==="bn"
-        ?selectedDivision.bn+" বিভাগের অধীন জেলাগুলো জেলা মোডে দেখা যাবে। এখানে কোনো প্রকল্প বা ব্যয়ের অবস্থান বোঝানো হচ্ছে না।"
-        :"This is the administrative boundary of "+selectedDivision.name+" Division. Switch to Districts to explore its districts. No project or spending location is implied.";
+    const level=levelInfo[activeLevel];
+    if(selectedRecord){
+      name.textContent=selectedRecord.name;
+      bn.textContent=selectedRecord.bn||selectedRecord.name;
+      document.getElementById("areaLevel").textContent=language==="bn"?level.bn:level.label;
+      document.getElementById("parentDivision").textContent=selectedRecord.parent||selectedRecord.district||selectedRecord.division||"—";
+      document.getElementById("selectedKicker").textContent=language==="bn"?"নির্বাচিত এলাকা":"Selected area";
+      const loc=[selectedRecord.division,selectedRecord.district,selectedRecord.upazila,selectedRecord.union,selectedRecord.ward].filter(Boolean).join(" · ");
+      note.textContent=(language==="bn"?"প্রশাসনিক পথ: ":"Administrative path: ")+loc+". "+(language==="bn"?"এটি প্রকল্প বা ব্যয়ের প্রমাণ নয়।":"This boundary is not evidence of a project or expenditure location.");
     }else{
-      name.textContent=language==="bn"?"একটি জেলা নির্বাচন করুন":"Choose a district";
+      name.textContent=language==="bn"?"একটি এলাকা নির্বাচন করুন":"Choose an area";
       bn.textContent=language==="bn"?"মানচিত্র বা তালিকা থেকে নির্বাচন করুন":"Select from the map or directory";
-      level.textContent=mode==="district"?(language==="bn"?"জেলা":"District"):(language==="bn"?"বিভাগ":"Division");
-      parent.textContent="—";kicker.textContent=language==="bn"?"নির্বাচিত এলাকা":"Selected area";
-      note.textContent=language==="bn"
-        ?"রঙিন মানচিত্রের এলাকা বা ডিরেক্টরি থেকে একটি জেলা নির্বাচন করুন।"
-        :"Choose a coloured area on the map or select a district from the directory. No project or funding location is implied.";
+      document.getElementById("areaLevel").textContent=language==="bn"?level.bn:level.label;
+      document.getElementById("parentDivision").textContent="—";
+      document.getElementById("selectedKicker").textContent=language==="bn"?"নির্বাচিত এলাকা":"Selected area";
+      note.textContent=language==="bn"?"রঙিন প্রশাসনিক এলাকা নির্বাচন করুন। প্রকল্প বা ব্যয়ের অবস্থান বোঝানো হচ্ছে না।":"Choose a coloured administrative area. No project or spending location is implied.";
     }
   }
-  function matchesArea(values,filter){
-    const q=String(filter||"").trim().toLowerCase();
-    if(!q)return true;
-    const joined=values.map(v=>String(v||"")).join(" ").toLowerCase();
-    return joined.includes(q)||norm(joined).includes(norm(q));
+  function setMapCount(records,level){
+    const labels={division:"divisions",district:"districts",upazila:"upazilas",union:"unions",ward:"available ward areas"};
+    const bns={division:"বিভাগ",district:"জেলা",upazila:"উপজেলা",union:"ইউনিয়ন",ward:"উপলব্ধ ওয়ার্ড"};
+    mapCount.textContent=(language==="bn"?records.length+" "+bns[level]:records.length+" "+labels[level]);
   }
   function renderList(filter){
     list.innerHTML="";
-    if(mode==="division"){
-      const grid=document.createElement("div");grid.className="division-only-grid";
-      divisions.forEach((d,i)=>{
-        if(!matchesArea([d.name,d.bn],filter))return;
-        const button=document.createElement("button");button.type="button";
-        button.className="area-list-button"+(selectedDivision&&selectedDivision.id===d.id?" active":"");
-        const dot=document.createElement("span");dot.className="area-color-dot";dot.style.background=divisionColors[i];
-        const label=document.createElement("span");label.className="area-list-label";label.textContent=d.name;
-        const local=document.createElement("small");local.textContent=d.bn;label.appendChild(local);
-        button.append(dot,label);button.addEventListener("click",()=>selectDivision(d,true));grid.appendChild(button);
-      });
-      list.appendChild(grid);return;
+    const q=String(filter||"").trim().toLowerCase();
+    const searchKey=keyName(q);
+    const matches=currentRecords.filter(record=>{
+      const values=[record.name,record.bn,record.division,record.district,record.upazila,record.union,record.ward].join(" ").toLowerCase();
+      return !q||values.includes(q)||keyName(values).includes(searchKey);
+    });
+    if(!matches.length){
+      const empty=document.createElement("p");empty.className="map-directory-note";
+      empty.textContent=language==="bn"?"কোনো মিল পাওয়া যায়নি।":"No matching areas found.";
+      list.appendChild(empty);return;
     }
-    divisions.forEach(division=>{
-      const members=districts.filter(d=>d.divisionId===division.id&&matchesArea([d.name,d.bn,division.name,division.bn],filter));
-      if(!members.length)return;
-      const group=document.createElement("section");group.className="area-group";
-      const heading=document.createElement("h4");heading.className="area-group-title";
-      const title=document.createElement("span");title.textContent=translated(division.name,division.bn);
-      const count=document.createElement("small");count.textContent=members.length+" / "+districts.filter(d=>d.divisionId===division.id).length;
-      heading.append(title,count);
-      const grid=document.createElement("div");grid.className="area-list-grid";
-      members.forEach(d=>{
+    const visible=matches.slice(0,240);
+    const groups=new Map();
+    visible.forEach(record=>{
+      const groupName=record.division||record.district||record.upazila||record.parent||"Bangladesh";
+      if(!groups.has(groupName))groups.set(groupName,[]);
+      groups.get(groupName).push(record);
+    });
+    groups.forEach((records,groupName)=>{
+      const group=document.createElement("section");group.className="admin-record-group";
+      const heading=document.createElement("h4");
+      const label=document.createElement("span");label.textContent=groupName;
+      const count=document.createElement("small");count.textContent=records.length+" shown";
+      heading.append(label,count);
+      const grid=document.createElement("div");grid.className="admin-record-grid";
+      records.forEach(record=>{
         const button=document.createElement("button");button.type="button";
-        button.className="area-list-button"+(selectedDistrict&&selectedDistrict.id===d.id?" active":"");
-        const dot=document.createElement("span");dot.className="area-color-dot";dot.style.background=d.color;
-        const label=document.createElement("span");label.className="area-list-label";label.textContent=d.name;
-        const local=document.createElement("small");local.textContent=d.bn;label.appendChild(local);
-        button.append(dot,label);button.addEventListener("click",()=>selectDistrict(d,true));grid.appendChild(button);
+        button.className="admin-record-button"+(selectedRecord&&selectedRecord.id===record.id?" active":"");
+        const swatch=document.createElement("span");swatch.className="admin-record-dot";swatch.style.background=record.color;
+        const textWrap=document.createElement("span");textWrap.className="admin-record-label";textWrap.textContent=record.name;
+        const local=document.createElement("small");local.textContent=record.bn||record.parent||"";
+        textWrap.appendChild(local);button.append(swatch,textWrap);
+        button.addEventListener("click",()=>selectRecord(record,true));
+        grid.appendChild(button);
       });
       group.append(heading,grid);list.appendChild(group);
     });
-  }
-  function selectDivision(d,zoom){
-    selectedDivision=d;selectedDistrict=null;updatePanel();renderList(search.value);
-    if(divisionLayer){
-      restoreDivisionStyles();selectedMapLayer=divisionLayers[d.id]||null;
-      if(selectedMapLayer){selectedMapLayer.setStyle({color:"#315a3b",weight:3,fillColor:"#d9ed8e",fillOpacity:1});selectedMapLayer.bringToFront();if(zoom!==false)focusLayer(selectedMapLayer);}
+    if(matches.length>visible.length){
+      const hint=document.createElement("p");hint.className="map-directory-note";
+      hint.textContent=language==="bn"?"প্রথম "+visible.length+"টি ফলাফল দেখানো হচ্ছে। আরও নির্দিষ্ট করতে অনুসন্ধান লিখুন।":"Showing first "+visible.length+" results. Type a more specific search to narrow the list.";
+      list.appendChild(hint);
     }
   }
-  function selectDistrict(d,zoom){
-    selectedDistrict=d;selectedDivision=divisionById[d.divisionId]||null;updatePanel();renderList(search.value);
-    if(districtLayer){
-      restoreDistrictStyles();selectedMapLayer=districtLayers[d.id]||null;
-      if(selectedMapLayer){selectedMapLayer.setStyle({color:"#244b32",weight:2.6,fillColor:"#d9ed8e",fillOpacity:1});selectedMapLayer.bringToFront();if(zoom!==false)focusLayer(selectedMapLayer);}
-    }
-  }
-  function setMode(next){
-    mode=next;
-    if(window.atlasMap){
-      if(districtLayer&&map.hasLayer(districtLayer))map.removeLayer(districtLayer);
-      if(divisionLayer&&map.hasLayer(divisionLayer))map.removeLayer(divisionLayer);
-      const active=mode==="district"?districtLayer:divisionLayer;
-      if(active)active.addTo(map);
-    }
-    modeDivisionBtn.classList.toggle("active",mode==="division");
-    modeDistrictBtn.classList.toggle("active",mode==="district");
-    document.getElementById("mapCount").textContent=mode==="district"?"64 districts · 8 divisions":"8 administrative divisions";
-    document.getElementById("mapLegend").innerHTML=mode==="district"
-      ?(language==="bn"?"<span class='legend-swatch district'></span> ৬৪টি জেলার আলাদা রং<br><span class='legend-swatch selected'></span> নির্বাচিত জেলা":"<span class='legend-swatch district'></span> District area · individual colours<br><span class='legend-swatch selected'></span> Selected district")
-      :(language==="bn"?"<span class='legend-swatch'></span> বিভাগীয় এলাকা<br><span class='legend-swatch selected'></span> নির্বাচিত বিভাগ":"<span class='legend-swatch'></span> Division area<br><span class='legend-swatch selected'></span> Selected division");
-    search.placeholder=mode==="district"?(language==="bn"?"৬৪টি জেলা খুঁজুন":"Search all 64 districts / জেলা খুঁজুন"):(language==="bn"?"৮টি বিভাগ খুঁজুন":"Search 8 divisions / বিভাগ খুঁজুন");
-    if(mode==="division"&&selectedDistrict){selectedDivision=divisionById[selectedDistrict.divisionId]||null;selectedDistrict=null;}
-    if(mode==="district"&&selectedDivision){selectedDistrict=null;}
-    selectedMapLayer=null;
-    if(mode==="division"&&selectedDivision&&divisionLayers[selectedDivision.id]){
-      restoreDivisionStyles();selectedMapLayer=divisionLayers[selectedDivision.id];
-      selectedMapLayer.setStyle({color:"#315a3b",weight:3,fillColor:"#d9ed8e",fillOpacity:1});
-      selectedMapLayer.bringToFront();focusLayer(selectedMapLayer);
-    }else if(mode==="district"&&selectedDivision&&divisionLayers[selectedDivision.id]){
-      focusLayer(divisionLayers[selectedDivision.id]);
-    }else if(map){map.fitBounds(bangladeshBounds,{padding:[22,22]});}
+  function selectRecord(record,zoom){
+    selectedRecord=record;
     updatePanel();renderList(search.value);
+    if(areaLayer)highlightStyles(areaLayer,record.id,activeLevel);
+    const matching=areaLayer&&areaLayer.getLayers().find(layer=>layer._atlasRecord&&layer._atlasRecord.id===record.id);
+    if(matching&&zoom!==false)map.fitBounds(matching.getBounds(),{padding:[28,28],maxZoom:activeLevel==="ward"?16:12});
   }
-
-  let map=null;
-  if(window.L&&document.getElementById("map")){
-    map=window.L.map("map",{scrollWheelZoom:false,doubleClickZoom:true,zoomControl:false,minZoom:5.5,maxZoom:11,maxBounds:bangladeshBounds.pad(.08),maxBoundsViscosity:1,zoomSnap:.5,zoomDelta:1});
-    window.atlasMap=map;
-    map.fitBounds(bangladeshBounds,{padding:[22,22]});
-    document.getElementById("zoomIn").addEventListener("click",()=>map.zoomIn());
-    document.getElementById("zoomOut").addEventListener("click",()=>map.zoomOut());
-    document.getElementById("zoomFit").addEventListener("click",()=>map.fitBounds(bangladeshBounds,{padding:[22,22]}));
-
-    const divisionUrl="https://gis.dghs.gov.bd/server/rest/services/Hosted/bgd_admbnda_adm1_bbs_20201113/FeatureServer/0/query?where=1%3D1&outFields=*&returnGeometry=true&outSR=4326&f=geojson";
-    const districtUrl="https://gis.dghs.gov.bd/server/rest/services/Hosted/bgd_admbnda_adm2_bbs_20201113/FeatureServer/0/query?where=1%3D1&outFields=*&returnGeometry=true&outSR=4326&f=geojson";
-    const fetchGeoJSON=url=>fetch(url).then(response=>{if(!response.ok)throw new Error("Boundary service returned "+response.status);return response.json();});
-    Promise.all([fetchGeoJSON(divisionUrl),fetchGeoJSON(districtUrl)])
-      .then(([divisionData,districtData])=>{
-        if(!Array.isArray(divisionData.features)||!divisionData.features.length)throw new Error("Division polygons were not returned.");
-        divisionLayer=window.L.geoJSON(divisionData,{
+  async function loadLevel(level){
+    const info=levelInfo[level];
+    if(!layerCache[level]){
+      setStatus("Loading "+info.label.toLowerCase()+" boundaries…");
+      try{
+        const data=await fetchFeaturePages(info.url);
+        if(!data.features.length)throw new Error("No polygons were returned for this level.");
+        const records=buildRecords(data,level);
+        if(!records.length)throw new Error("The boundary layer has no readable name field.");
+        const recordForFeature=new WeakMap();
+        records.forEach(record=>recordForFeature.set(record.feature,record));
+        const geoLayer=window.L.geoJSON(data,{
           style:feature=>{
-            const p=feature.properties||{},id=resolveDivisionId(p.adm1_en||p.ADM1_EN),index=divisions.findIndex(d=>d.id===id);
-            return {color:"#fffefa",weight:2,opacity:1,fillColor:divisionColors[index<0?0:index],fillOpacity:.96};
+            const r=recordForFeature.get(feature);
+            return {color:"#fffefa",weight:level==="division"?2:1.15,opacity:1,fillColor:r?r.color:"#dfe9dd",fillOpacity:.91};
           },
           onEachFeature:(feature,layer)=>{
-            const p=feature.properties||{},id=resolveDivisionId(p.adm1_en||p.ADM1_EN),d=divisionById[id];
-            if(d){
-              divisionLayers[d.id]=layer;layer.bindTooltip(d.name+" / "+d.bn,{sticky:true,className:"area-tooltip"});
-              layer.on("click",()=>{if(mode==="division")selectDivision(d,true);});
-              layer.on("mouseover",()=>{if(!(selectedDivision&&selectedDivision.id===d.id&&mode==="division"))layer.setStyle({weight:3,fillOpacity:1});});
-              layer.on("mouseout",()=>{if(!(selectedDivision&&selectedDivision.id===d.id&&mode==="division"))restoreDivisionStyles();});
-            }
+            const record=recordForFeature.get(feature);
+            if(!record)return;
+            layer._atlasRecord=record;
+            layer.bindTooltip(tooltipText(record),{sticky:true,className:"area-tooltip"});
+            layer.on("click",()=>selectRecord(record,false));
+            layer.on("mouseover",()=>{if(!(selectedRecord&&selectedRecord.id===record.id))layer.setStyle({color:"#315a3b",weight:2.8,fillOpacity:1});});
+            layer.on("mouseout",()=>highlightStyles(geoLayer,selectedRecord&&selectedRecord.id,level));
           }
         });
-        if(!Array.isArray(districtData.features)||!districtData.features.length)throw new Error("District polygons were not returned.");
-        districtLayer=window.L.geoJSON(districtData,{
-          style:feature=>{
-            const p=feature.properties||{},d=districtById[resolveDistrictId(p.adm2_en||p.ADM2_EN)];
-            return {color:"#fffefa",weight:1.25,opacity:1,fillColor:d?d.color:"#dce8d8",fillOpacity:.94};
-          },
-          onEachFeature:(feature,layer)=>{
-            const p=feature.properties||{},d=districtById[resolveDistrictId(p.adm2_en||p.ADM2_EN)];
-            if(d){
-              districtLayers[d.id]=layer;
-              const parent=divisionById[d.divisionId];
-              layer.bindTooltip(d.name+" / "+d.bn+" · "+(parent?parent.name:""),{sticky:true,className:"area-tooltip"});
-              layer.on("click",()=>{if(mode==="district")selectDistrict(d,true);});
-              layer.on("mouseover",()=>{if(!(selectedDistrict&&selectedDistrict.id===d.id&&mode==="district"))layer.setStyle({weight:2.5,color:"#315a3b",fillOpacity:1});});
-              layer.on("mouseout",()=>{if(!(selectedDistrict&&selectedDistrict.id===d.id&&mode==="district"))restoreDistrictStyles();});
-            }else{
-              layer.bindTooltip((p.adm2_en||"District")+" · "+(p.adm1_en||""),{sticky:true,className:"area-tooltip"});
-            }
-          }
-        });
-        setMode("district");
-        if(districtData.features.length!==64)setStatus("Boundary service returned "+districtData.features.length+" shapes; directory includes all 64 districts.",true);
-        else setStatus("64 district boundaries loaded · BBS ADM2");
-        window.setTimeout(()=>{if(mapStatus.textContent.startsWith("64 district"))setStatus("");},4500);
-      })
-      .catch(error=>{
-        console.error("Bangladesh administrative boundaries failed to load:",error);
-        setStatus("Map boundaries could not load. The full 64-district directory remains available.",true);
-        renderList(search.value);
-      });
-  }else{
-    document.getElementById("map").innerHTML='<div style="padding:30px;color:#52635a">The map library is unavailable. The full district directory remains available.</div>';
+        layerCache[level]={data,records,layer:geoLayer};
+      }catch(error){
+        console.error("Could not load "+level+" boundaries",error);
+        setStatus("This boundary layer could not load: "+error.message,true);
+        return false;
+      }
+    }
+    currentCache=layerCache[level];
+    currentRecords=currentCache.records;
+    return true;
+  }
+  async function switchLevel(level){
+    if(!levelInfo[level])return;
+    activeLevel=level;selectedRecord=null;updatePanel();renderList(search.value);
+    levelButtons.forEach(button=>button.classList.toggle("active",button.dataset.level===level));
+    if(areaLayer&&map.hasLayer(areaLayer))map.removeLayer(areaLayer);
+    const loaded=await loadLevel(level);
+    if(!loaded){renderList(search.value);return;}
+    areaLayer=currentCache.layer;
+    areaLayer.addTo(map);
+    setMapCount(currentRecords,level);
+    document.getElementById("mapLegend").innerHTML="<span class='legend-swatch district'></span> "+(language==="bn"?"প্রশাসনিক সীমানা":"Administrative boundary")+"<br><span class='legend-swatch selected'></span> "+(language==="bn"?"নির্বাচিত এলাকা":"Selected area");
+    document.getElementById("mapDirectoryNote").textContent=level==="ward"
+      ?"Ward polygons are shown only where the source service supplies them. A ward is not the same as a village or mouza."
+      :"Colour areas are administrative boundaries only. They do not show spending, project progress or wrongdoing.";
+    search.placeholder=(language==="bn"?"অনুসন্ধান করুন: ":"Search ")+infoForSearch(level);
+    renderList(search.value);
+    const firstLoad= currentCache.records.length;
+    setStatus(firstLoad+" "+levelInfo[level].label.toLowerCase()+" polygons loaded · "+sourceNote[level]);
+    window.setTimeout(()=>{if(mapStatus.textContent.includes("polygons loaded"))setStatus("");},5000);
+    if(selectedRecord){
+      const found=currentRecords.find(r=>r.id===selectedRecord.id);
+      if(found)selectRecord(found,false);
+    }
+  }
+  function infoForSearch(level){
+    return {division:"divisions / বিভাগ",district:"districts / জেলা",upazila:"upazilas / উপজেলা",union:"unions / ইউনিয়ন",ward:"available wards / ওয়ার্ড"}[level];
   }
 
-  modeDivisionBtn.addEventListener("click",()=>setMode("division"));
-  modeDistrictBtn.addEventListener("click",()=>setMode("district"));
+  // Bangladesh map: administrative overlays are drawn without a global basemap.
+  map=window.L.map("map",{
+    scrollWheelZoom:false,doubleClickZoom:true,zoomControl:false,
+    minZoom:5.5,maxZoom:19,maxBounds:bangladeshBounds.pad(.08),
+    maxBoundsViscosity:1,zoomSnap:.5,zoomDelta:1
+  });
+  window.atlasMap=map;
+  map.fitBounds(bangladeshBounds,{padding:[22,22]});
+  document.getElementById("zoomIn").addEventListener("click",()=>map.zoomIn());
+  document.getElementById("zoomOut").addEventListener("click",()=>map.zoomOut());
+  document.getElementById("zoomFit").addEventListener("click",()=>map.fitBounds(bangladeshBounds,{padding:[22,22]}));
+  const currentSatelliteUrl="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
+  satelliteLayer=window.L.tileLayer(currentSatelliteUrl,{
+    maxZoom:19,attribution:"Tiles © Esri — imagery sources and contributors"
+  });
+  document.getElementById("baseBoundariesBtn").addEventListener("click",()=>{
+    baseMode="boundaries";
+    if(map.hasLayer(satelliteLayer))map.removeLayer(satelliteLayer);
+    if(historicalLayer&&map.hasLayer(historicalLayer))map.removeLayer(historicalLayer);
+    document.getElementById("baseBoundariesBtn").classList.add("active");
+    document.getElementById("baseSatelliteBtn").classList.remove("active");
+  });
+  document.getElementById("baseSatelliteBtn").addEventListener("click",()=>{
+    baseMode="satellite";
+    if(historicalLayer&&map.hasLayer(historicalLayer))map.removeLayer(historicalLayer);
+    if(!map.hasLayer(satelliteLayer))satelliteLayer.addTo(map);
+    document.getElementById("baseSatelliteBtn").classList.add("active");
+    document.getElementById("baseBoundariesBtn").classList.remove("active");
+  });
+  map.on("click",event=>{
+    lastMapPoint=event.latlng;
+    historyItems=[];
+    historySlider.disabled=true;historySlider.min="0";historySlider.max="0";historySlider.value="0";
+    historyPlayBtn.disabled=true;historyReleaseLabel.textContent="No archive loaded";
+    if(historicalLayer&&map.hasLayer(historicalLayer))map.removeLayer(historicalLayer);
+    if(baseMode==="historical"&&satelliteLayer&&!map.hasLayer(satelliteLayer))satelliteLayer.addTo(map);
+    stopHistoryPlay();
+    if(pointMarker)map.removeLayer(pointMarker);
+    pointMarker=window.L.circleMarker(lastMapPoint,{radius:7,color:"#fffefa",weight:3,fillColor:"#d27836",fillOpacity:1}).addTo(map);
+    pointLabel.textContent="Selected point: "+lastMapPoint.lat.toFixed(5)+", "+lastMapPoint.lng.toFixed(5)+" · Zoom "+map.getZoom();
+    historyLoadBtn.disabled=false;
+    historyCapture.textContent="Point selected. Choose “Find history” to check which archived images exist here.";
+    stopHistoryPlay();
+  });
+
+  async function getWaybackCore(){
+    if(!waybackCore)waybackCore=await import("https://esm.sh/@esri/wayback-core?bundle");
+    return waybackCore;
+  }
+  async function updateHistoryMetadata(item){
+    if(!lastMapPoint)return;
+    historyCapture.textContent="Checking image acquisition details…";
+    try{
+      const core=await getWaybackCore();
+      const metadata=await core.getMetadata({longitude:lastMapPoint.lng,latitude:lastMapPoint.lat},map.getZoom(),item.releaseNum);
+      const actualDate=metadata&&metadata.date?new Date(metadata.date).toISOString().slice(0,10):"Not supplied";
+      const resolution=metadata&&metadata.resolution?metadata.resolution+" m/pixel":"Resolution not supplied";
+      historyCapture.textContent="Image acquired: "+actualDate+" · Provider: "+(metadata.provider||"Not supplied")+" · "+resolution+". Archive version: "+item.releaseDateLabel+".";
+    }catch(error){
+      historyCapture.textContent="Image acquisition metadata is unavailable for this version. Archive version: "+item.releaseDateLabel+".";
+    }
+  }
+  function applyHistoryItem(index,withMetadata){
+    if(!historyItems.length)return;
+    historyIndex=Math.max(0,Math.min(index,historyItems.length-1));
+    const item=historyItems[historyIndex];
+    historySlider.value=String(historyIndex);
+    historyReleaseLabel.textContent=item.releaseDateLabel||item.itemTitle||"Archive version";
+    const template=String(item.itemURL||"")
+      .replace("{level}","{z}").replace("{row}","{y}").replace("{col}","{x}");
+    if(!template){
+      historyCapture.textContent="The archive did not provide a tile URL for this version.";
+      return;
+    }
+    if(historicalLayer&&map.hasLayer(historicalLayer))map.removeLayer(historicalLayer);
+    if(satelliteLayer&&map.hasLayer(satelliteLayer))map.removeLayer(satelliteLayer);
+    historicalLayer=window.L.tileLayer(template,{maxZoom:19,attribution:"Historical imagery © Esri and imagery providers"});
+    historicalLayer.addTo(map);
+    baseMode="historical";
+    document.getElementById("baseSatelliteBtn").classList.add("active");
+    document.getElementById("baseBoundariesBtn").classList.remove("active");
+    if(withMetadata!==false)updateHistoryMetadata(item);
+    else historyCapture.textContent="Showing archive version "+(item.releaseDateLabel||"")+" · pause or select a date to load image acquisition metadata.";
+  }
+  async function loadHistoryAtPoint(){
+    if(!lastMapPoint)return;
+    historyLoadBtn.disabled=true;
+    historyLoadBtn.textContent=language==="bn"?"খোঁজা হচ্ছে…":"Searching…";
+    historyCapture.textContent="Checking the local imagery archive for this exact point and zoom level…";
+    try{
+      const core=await getWaybackCore();
+      const items=await core.getWaybackItemsWithLocalChanges(
+        {longitude:lastMapPoint.lng,latitude:lastMapPoint.lat},
+        map.getZoom(),
+        {onlyUseSizeToFilterDuplicates:true}
+      );
+      if(!Array.isArray(items)||!items.length){
+        historyItems=[];historySlider.disabled=true;historyPlayBtn.disabled=true;
+        historyReleaseLabel.textContent="No local archive versions";
+        historyCapture.textContent="No distinct historical imagery versions were returned for this point and zoom level. Try zooming out or another nearby point.";
+        return;
+      }
+      historyItems=items.slice().sort((a,b)=>(a.releaseDatetime||0)-(b.releaseDatetime||0));
+      historySlider.min="0";historySlider.max=String(historyItems.length-1);historySlider.value=String(historyItems.length-1);historySlider.disabled=false;
+      historyPlayBtn.disabled=historyItems.length<2;
+      historyCapture.textContent=historyItems.length+" local archive versions found. Selecting a version…";
+      applyHistoryItem(historyItems.length-1);
+    }catch(error){
+      console.error("Historical imagery lookup failed",error);
+      historyItems=[];historySlider.disabled=true;historyPlayBtn.disabled=true;
+      historyReleaseLabel.textContent="Archive unavailable";
+      historyCapture.textContent="The historical imagery service could not be reached in this browser. You can still inspect the selected place in Esri's Wayback viewer using the link below.";
+    }finally{
+      historyLoadBtn.disabled=!lastMapPoint;
+      historyLoadBtn.textContent=language==="bn"?"ইতিহাস খুঁজুন":"Find history";
+    }
+  }
+  function stopHistoryPlay(){
+    if(playTimer){window.clearInterval(playTimer);playTimer=null;}
+    historyPlayBtn.textContent="▶";historyPlayBtn.setAttribute("aria-label","Play historical imagery");
+  }
+  historyLoadBtn.addEventListener("click",loadHistoryAtPoint);
+  historySlider.addEventListener("input",()=>{stopHistoryPlay();applyHistoryItem(Number(historySlider.value),true);});
+  historyPlayBtn.addEventListener("click",()=>{
+    if(playTimer){stopHistoryPlay();return;}
+    if(historyItems.length<2)return;
+    historyPlayBtn.textContent="Ⅱ";historyPlayBtn.setAttribute("aria-label","Pause historical imagery");
+    playTimer=window.setInterval(()=>{
+      const next=(historyIndex+1)%historyItems.length;
+      applyHistoryItem(next,false);
+    },1800);
+  });
+  document.querySelectorAll("[data-level]").forEach(button=>button.addEventListener("click",()=>switchLevel(button.dataset.level)));
   search.addEventListener("input",event=>renderList(event.target.value));
   document.getElementById("menuBtn").addEventListener("click",()=>document.getElementById("navlinks").classList.toggle("open"));
   document.querySelectorAll("#navlinks a").forEach(a=>a.addEventListener("click",()=>document.getElementById("navlinks").classList.remove("open")));
@@ -829,13 +1104,11 @@
     document.querySelectorAll("[data-en][data-bn]").forEach(el=>{el.textContent=el.getAttribute("data-"+language);});
     document.getElementById("langBtn").textContent=language==="en"?"বাংলা":"English";
     updatePanel();renderList(search.value);
-    search.placeholder=mode==="district"?(language==="en"?"Search all 64 districts / জেলা খুঁজুন":"৬৪টি জেলা খুঁজুন / Search districts"):(language==="en"?"Search 8 divisions / বিভাগ খুঁজুন":"৮টি বিভাগ খুঁজুন / Search divisions");
-    document.getElementById("mapLegend").innerHTML=mode==="district"
-      ?(language==="bn"?"<span class='legend-swatch district'></span> ৬৪টি জেলার আলাদা রং<br><span class='legend-swatch selected'></span> নির্বাচিত জেলা":"<span class='legend-swatch district'></span> District area · individual colours<br><span class='legend-swatch selected'></span> Selected district")
-      :(language==="bn"?"<span class='legend-swatch'></span> বিভাগীয় এলাকা<br><span class='legend-swatch selected'></span> নির্বাচিত বিভাগ":"<span class='legend-swatch'></span> Division area<br><span class='legend-swatch selected'></span> Selected division");
-    document.getElementById("mapCount").textContent=mode==="district"?(language==="bn"?"৬৪ জেলা · ৮ বিভাগ":"64 districts · 8 divisions"):(language==="bn"?"৮টি বিভাগ":"8 administrative divisions");
+    search.placeholder=(language==="bn"?"অনুসন্ধান করুন: ":"Search ")+infoForSearch(activeLevel);
+    if(lastMapPoint)pointLabel.textContent=(language==="bn"?"নির্বাচিত স্থান: ":"Selected point: ")+lastMapPoint.lat.toFixed(5)+", "+lastMapPoint.lng.toFixed(5)+" · Zoom "+map.getZoom();
   });
-  renderList("");updatePanel();
+  switchLevel("district");
+  window.addEventListener("beforeunload",stopHistoryPlay);
 })();
 </script>
 </body>

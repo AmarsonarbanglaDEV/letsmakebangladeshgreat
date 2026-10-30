@@ -14,9 +14,11 @@
 - [x] Individually coloured district polygons and selectable map areas.
 - [x] Zoom in, zoom out, fit-Bangladesh and focus-to-selected-area controls.
 - [ ] Pin and preserve a versioned copy of the administrative boundary dataset with attribution.
-- [ ] Add upazila navigation.
+- [ ] Browser-validate optional upazila (BBS 2022), union (DGHS All_Union) and ward (DGHS All_Wards_main) layers, including actual feature counts and name matching.
+- [ ] Browser-validate satellite basemap attribution, point selection and the Wayback history timeline / acquisition metadata.
+- [ ] Confirm the Mouza / land-record portal link and keep village / mouza polygons unpublished until a complete, licensed boundary source is documented.
 - [ ] Add thematic project, finance and public-asset map layers after reviewed datasets exist.
-- [ ] Add map-data coverage and precision notes.
+- [ ] Add map-data coverage, vintage, precision and imagery-coverage notes.
 
 ## Stage 2 — Source inventory
 - [ ] Inventory national budget documents by fiscal year.
