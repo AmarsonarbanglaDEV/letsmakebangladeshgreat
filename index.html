@@ -602,7 +602,7 @@
   const districtById=Object.fromEntries(districts.map(d=>[d.id,d]));
   const divisionColors=["#d5e9c4","#c9e2df","#f0d8bc","#d8d4ed","#e8d5df","#c9dced","#e9e1b6","#d1e3c8"];
   const divisionAliases={barisal:"barishal",chittagong:"chattogram"};
-  const districtAliases={barisal:"barishal",chittagong:"chattogram",comilla:"cumilla",jesore:"jashore",bogra:"bogura",nawabganj:"chapainawabganj"};
+  const districtAliases={barisal:"barishal",chittagong:"chattogram",comilla:"cumilla",jesore:"jashore",jessore:"jashore",bogra:"bogura",nawabganj:"chapainawabganj",coxbazar:"coxsbazar"};
   const list=document.getElementById("divisionList");
   const search=document.getElementById("divisionSearch");
   const name=document.getElementById("divisionName");
@@ -626,7 +626,10 @@
     districtLayer.eachLayer(layer=>{
       const p=layer.feature&&layer.feature.properties?layer.feature.properties:{};
       const d=districtById[resolveDistrictId(p.adm2_en||p.ADM2_EN)];
-      if(d)layer.setStyle({color:"#fffefa",weight:1.25,opacity:1,fillColor:d.color,fillOpacity:.94});
+      if(d){
+        const chosen=selectedDistrict&&selectedDistrict.id===d.id;
+        layer.setStyle({color:chosen?"#244b32":"#fffefa",weight:chosen?2.6:1.25,opacity:1,fillColor:chosen?"#d9ed8e":d.color,fillOpacity:chosen?1:.94});
+      }
     });
   }
   function restoreDivisionStyles(){
@@ -635,7 +638,8 @@
       const p=layer.feature&&layer.feature.properties?layer.feature.properties:{};
       const d=divisionById[resolveDivisionId(p.adm1_en||p.ADM1_EN)];
       const index=divisions.findIndex(x=>x.id===(d&&d.id));
-      layer.setStyle({color:"#fffefa",weight:2,opacity:1,fillColor:divisionColors[index<0?0:index],fillOpacity:.96});
+      const chosen=d&&selectedDivision&&selectedDivision.id===d.id;
+      layer.setStyle({color:chosen?"#315a3b":"#fffefa",weight:chosen?3:2,opacity:1,fillColor:chosen?"#d9ed8e":divisionColors[index<0?0:index],fillOpacity:chosen?1:.96});
     });
   }
   function updatePanel(){
@@ -666,12 +670,18 @@
         :"Choose a coloured area on the map or select a district from the directory. No project or funding location is implied.";
     }
   }
+  function matchesArea(values,filter){
+    const q=String(filter||"").trim().toLowerCase();
+    if(!q)return true;
+    const joined=values.map(v=>String(v||"")).join(" ").toLowerCase();
+    return joined.includes(q)||norm(joined).includes(norm(q));
+  }
   function renderList(filter){
-    list.innerHTML="";const q=norm(filter);
+    list.innerHTML="";
     if(mode==="division"){
       const grid=document.createElement("div");grid.className="division-only-grid";
       divisions.forEach((d,i)=>{
-        if(!norm(d.name+" "+d.bn).includes(q))return;
+        if(!matchesArea([d.name,d.bn],filter))return;
         const button=document.createElement("button");button.type="button";
         button.className="area-list-button"+(selectedDivision&&selectedDivision.id===d.id?" active":"");
         const dot=document.createElement("span");dot.className="area-color-dot";dot.style.background=divisionColors[i];
@@ -682,7 +692,7 @@
       list.appendChild(grid);return;
     }
     divisions.forEach(division=>{
-      const members=districts.filter(d=>d.divisionId===division.id&&norm(d.name+" "+d.bn+" "+division.name).includes(q));
+      const members=districts.filter(d=>d.divisionId===division.id&&matchesArea([d.name,d.bn,division.name,division.bn],filter));
       if(!members.length)return;
       const group=document.createElement("section");group.className="area-group";
       const heading=document.createElement("h4");heading.className="area-group-title";
@@ -820,7 +830,10 @@
     document.getElementById("langBtn").textContent=language==="en"?"বাংলা":"English";
     updatePanel();renderList(search.value);
     search.placeholder=mode==="district"?(language==="en"?"Search all 64 districts / জেলা খুঁজুন":"৬৪টি জেলা খুঁজুন / Search districts"):(language==="en"?"Search 8 divisions / বিভাগ খুঁজুন":"৮টি বিভাগ খুঁজুন / Search divisions");
-    setMode(mode);
+    document.getElementById("mapLegend").innerHTML=mode==="district"
+      ?(language==="bn"?"<span class='legend-swatch district'></span> ৬৪টি জেলার আলাদা রং<br><span class='legend-swatch selected'></span> নির্বাচিত জেলা":"<span class='legend-swatch district'></span> District area · individual colours<br><span class='legend-swatch selected'></span> Selected district")
+      :(language==="bn"?"<span class='legend-swatch'></span> বিভাগীয় এলাকা<br><span class='legend-swatch selected'></span> নির্বাচিত বিভাগ":"<span class='legend-swatch'></span> Division area<br><span class='legend-swatch selected'></span> Selected division");
+    document.getElementById("mapCount").textContent=mode==="district"?(language==="bn"?"৬৪ জেলা · ৮ বিভাগ":"64 districts · 8 divisions"):(language==="bn"?"৮টি বিভাগ":"8 administrative divisions");
   });
   renderList("");updatePanel();
 })();
