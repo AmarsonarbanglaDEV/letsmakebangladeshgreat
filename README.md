@@ -15,7 +15,7 @@ The platform is designed to help the public explore:
 - Official audit reports and documented observations
 - Public commitments, including environmental and tree-planting commitments
 - Bangladesh's economic, social, education, health, energy and environmental indicators in international context
-- Source-linked civic explainers and shareable "WE HAVE A PLAN" cards
+- Source-linked bilingual explainers and downloadable evidence receipts
 
 ## Current website
 
@@ -50,7 +50,7 @@ Current prototype:
 - CSS
 - Vanilla JavaScript
 - Leaflet map library via CDN
-- OpenStreetMap map tiles
+- Bangladesh eight-division boundary polygons from the DGHS GIS Feature Service (BBS ADM1 dataset)
 
 Planned capabilities:
 - PostgreSQL / Supabase for structured records
@@ -71,7 +71,7 @@ python -m http.server 8000
 
 Then visit http://localhost:8000.
 
-An internet connection is required for the Leaflet library and OpenStreetMap tiles.
+An internet connection is required for the Leaflet library and Bangladesh division boundary service.
 
 ## Contributing
 
