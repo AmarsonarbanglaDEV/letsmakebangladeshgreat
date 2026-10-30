@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Noto+Sans+Bengali:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+  <link id="leafletCss" rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
   <style>
     :root{
       --ink:#172820;--muted:#64736b;--forest:#123b2b;--forest2:#1a6445;
@@ -354,10 +354,35 @@
   </section>
 </main>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script>
-(function(){
+function loadLeafletScript(url){
+  return new Promise((resolve,reject)=>{
+    const script=document.createElement("script");
+    script.src=url;script.crossOrigin="anonymous";
+    script.onload=()=>resolve();
+    script.onerror=()=>reject(new Error("Could not load "+url));
+    document.head.appendChild(script);
+  });
+}
+async function ensureLeaflet(){
+  const css=document.getElementById("leafletCss");
+  if(css&&!css.sheet)css.href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css";
+  if(window.L)return;
+  try{await loadLeafletScript("https://unpkg.com/leaflet@1.9.4/dist/leaflet.js");}
+  catch(error){await loadLeafletScript("https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js");}
+  if(!window.L)throw new Error("Leaflet did not initialise");
+}
+</script>
+<script>
+(async function(){
   "use strict";
+  try{await ensureLeaflet();}
+  catch(error){
+    console.error("Map library unavailable",error);
+    document.getElementById("mapStatus").textContent="The interactive map library could not load. Check your connection and reload.";
+    document.getElementById("mapStatus").classList.add("error");
+    return;
+  }
 
   const bounds=L.latLngBounds([[19.75,87.45],[27.45,93.25]]);
   const levelInfo={
@@ -598,6 +623,7 @@
       currentLayer=built.layer;
       currentLayer.addTo(map);
       styleCurrentLayer();
+      refreshAreaLabels();
       el("mapStatus").classList.remove("error");
       setStatus(built.records.length+" "+levelInfo[level].label.toLowerCase()+" areas · "+built.sourceLabel);
       if(built.fallbackReason)setStatus("Backup boundary source used: "+built.fallbackReason,true);
@@ -723,6 +749,18 @@
     el("loadHistory").disabled=false;
     stopPlayback();
   }
+  function refreshAreaLabels(){
+    if(!currentLayer)return;
+    const zoom=map.getZoom();
+    const show=activeLevel==="division" ? zoom>=6 :
+      (activeLevel==="district" ? zoom>=8 : zoom>=10);
+    currentLayer.eachLayer(path=>{
+      if(!path.getTooltip())return;
+      if(show)path.openTooltip();
+      else path.closeTooltip();
+    });
+  }
+  map.on("zoomend",refreshAreaLabels);
   map.on("click",event=>{
     if(!bounds.contains(event.latlng))return;
     setPoint(event.latlng);
