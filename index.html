@@ -505,7 +505,7 @@
               <strong id="historyReleaseLabel">No archive loaded</strong>
             </div>
             <div class="history-capture" id="historyCapture">Imagery capture date and provider will appear when metadata is available.</div>
-            <div class="history-note" data-en="Archive versions begin in February 2014, so this is not a complete 15-year record. Availability and image dates vary by point; a basemap release date is not necessarily the photo capture date." data-bn="আর্কাইভের সংস্করণ ২০১৪ সালের ফেব্রুয়ারি থেকে শুরু, তাই এটি পূর্ণ ১৫ বছরের রেকর্ড নয়। স্থানভেদে ছবি ও তারিখ ভিন্ন হতে পারে; আর্কাইভ প্রকাশের তারিখ ছবির ধারণের তারিখ নাও হতে পারে।">Archive versions begin in February 2014, so this is not a complete 15-year record. Availability and image dates vary by point; a basemap release date is not necessarily the photo capture date.</div>
+            <div class="history-note" data-en="Archive versions begin in February 2014, so this is not a complete 15-year record. Availability and image dates vary by point; a basemap release date is not necessarily the photo capture date. Satellite images can help compare visible land-use or construction changes, but they cannot prove corruption, intent, contract values or misuse of public money." data-bn="আর্কাইভের সংস্করণ ২০১৪ সালের ফেব্রুয়ারি থেকে শুরু, তাই এটি পূর্ণ ১৫ বছরের রেকর্ড নয়। স্থানভেদে ছবি ও ধারণের তারিখ ভিন্ন হতে পারে। স্যাটেলাইট ছবি ভূমি ব্যবহার বা নির্মাণের দৃশ্যমান পরিবর্তন তুলনা করতে সাহায্য করে, কিন্তু দুর্নীতি, উদ্দেশ্য, চুক্তিমূল্য বা সরকারি অর্থের অপব্যবহার প্রমাণ করতে পারে না।">Archive versions begin in February 2014, so this is not a complete 15-year record. Availability and image dates vary by point; a basemap release date is not necessarily the photo capture date. Satellite images can help compare visible land-use or construction changes, but they cannot prove corruption, intent, contract values or misuse of public money.</div>
             <a class="wayback-link" href="https://livingatlas.arcgis.com/wayback/" target="_blank" rel="noopener">Open Esri World Imagery Wayback ↗</a>
           </div>
           <div class="map-foot" id="mapSourceNote">Administrative layers: DGHS GIS Feature Service, BBS ADM1 / ADM2 and DGHS ADM4 / ward layers; upazila polygons: BBS 2022 layer. Satellite imagery: Esri World Imagery / Wayback. See each layer's source and coverage note.</div>
@@ -985,6 +985,12 @@
   });
   map.on("click",event=>{
     lastMapPoint=event.latlng;
+    historyItems=[];
+    historySlider.disabled=true;historySlider.min="0";historySlider.max="0";historySlider.value="0";
+    historyPlayBtn.disabled=true;historyReleaseLabel.textContent="No archive loaded";
+    if(historicalLayer&&map.hasLayer(historicalLayer))map.removeLayer(historicalLayer);
+    if(baseMode==="historical"&&satelliteLayer&&!map.hasLayer(satelliteLayer))satelliteLayer.addTo(map);
+    stopHistoryPlay();
     if(pointMarker)map.removeLayer(pointMarker);
     pointMarker=window.L.circleMarker(lastMapPoint,{radius:7,color:"#fffefa",weight:3,fillColor:"#d27836",fillOpacity:1}).addTo(map);
     pointLabel.textContent="Selected point: "+lastMapPoint.lat.toFixed(5)+", "+lastMapPoint.lng.toFixed(5)+" · Zoom "+map.getZoom();
@@ -1010,7 +1016,7 @@
       historyCapture.textContent="Image acquisition metadata is unavailable for this version. Archive version: "+item.releaseDateLabel+".";
     }
   }
-  function applyHistoryItem(index){
+  function applyHistoryItem(index,withMetadata){
     if(!historyItems.length)return;
     historyIndex=Math.max(0,Math.min(index,historyItems.length-1));
     const item=historyItems[historyIndex];
@@ -1029,7 +1035,8 @@
     baseMode="historical";
     document.getElementById("baseSatelliteBtn").classList.add("active");
     document.getElementById("baseBoundariesBtn").classList.remove("active");
-    updateHistoryMetadata(item);
+    if(withMetadata!==false)updateHistoryMetadata(item);
+    else historyCapture.textContent="Showing archive version "+(item.releaseDateLabel||"")+" · pause or select a date to load image acquisition metadata.";
   }
   async function loadHistoryAtPoint(){
     if(!lastMapPoint)return;
@@ -1069,14 +1076,14 @@
     historyPlayBtn.textContent="▶";historyPlayBtn.setAttribute("aria-label","Play historical imagery");
   }
   historyLoadBtn.addEventListener("click",loadHistoryAtPoint);
-  historySlider.addEventListener("input",()=>applyHistoryItem(Number(historySlider.value)));
+  historySlider.addEventListener("input",()=>{stopHistoryPlay();applyHistoryItem(Number(historySlider.value),true);});
   historyPlayBtn.addEventListener("click",()=>{
     if(playTimer){stopHistoryPlay();return;}
     if(historyItems.length<2)return;
     historyPlayBtn.textContent="Ⅱ";historyPlayBtn.setAttribute("aria-label","Pause historical imagery");
     playTimer=window.setInterval(()=>{
       const next=(historyIndex+1)%historyItems.length;
-      applyHistoryItem(next);
+      applyHistoryItem(next,false);
     },1800);
   });
   document.querySelectorAll("[data-level]").forEach(button=>button.addEventListener("click",()=>switchLevel(button.dataset.level)));
