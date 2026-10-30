@@ -1716,11 +1716,12 @@ async function ensureLeaflet(){
     const id=project.id;
     const state=projectTimeLapseStates[id];
     if(!state){
+      const hasOfficialPoint=Number.isFinite(Number(project.latitude))&&Number.isFinite(Number(project.longitude));
       return '<div class="atlas-project-timelapse" data-project-timelapse="'+escapeHtml(id)+'">'+
         '<div class="atlas-project-timelapse-head"><strong>Location time-lapse</strong><span>Esri imagery archive</span></div>'+
-        '<p>Choose the actual reported work site on the map to load imagery history for this project profile.</p>'+
-        '<p class="atlas-small-note">The project source currently supplies an administrative area, not an exact surveyed GPS point. The selected point will be labelled as visitor-selected, not an official project coordinate.</p>'+
-        '<button type="button" class="atlas-choose-spot" data-choose-project-spot="'+escapeHtml(id)+'">⌖ Choose reported spot on map</button>'+
+        (hasOfficialPoint?
+          '<p>Official project coordinate is available in the source-linked record. Open the reported point to load its imagery history.</p><button type="button" class="atlas-choose-spot" data-open-project-spot="'+escapeHtml(id)+'">⌖ Open reported spot &amp; time-lapse</button>':
+          '<p>Choose the actual reported work site on the map to load imagery history for this project profile.</p><p class="atlas-small-note">The project source currently supplies an administrative area, not an exact surveyed GPS point. The selected point will be labelled as visitor-selected, not an official project coordinate.</p><button type="button" class="atlas-choose-spot" data-choose-project-spot="'+escapeHtml(id)+'">⌖ Choose reported spot on map</button>')+
       '</div>';
     }
     if(state.loading){
@@ -1926,6 +1927,23 @@ async function ensureLeaflet(){
       applyProjectTimeLapseVersion(projectId,Number(slider.value),true);
     });
     panel.addEventListener("click",async event=>{
+      const openSpot=event.target.closest("[data-open-project-spot]");
+      if(openSpot){
+        const projectId=openSpot.getAttribute("data-open-project-spot");
+        const project=atlasData.projects?.projects?.find(item=>item.id===projectId);
+        const lat=Number(project?.latitude),lng=Number(project?.longitude);
+        const point=L.latLng(lat,lng);
+        if(!project||!Number.isFinite(lat)||!Number.isFinite(lng)||!bounds.contains(point)){
+          setStatus("This project has no valid source-backed point inside Bangladesh.",true);
+          return;
+        }
+        activePanel="projects";
+        map.setView(point,Math.max(map.getZoom(),14));
+        setPoint(point,"Officially reported project coordinate for "+projectId);
+        if(document.body.classList.contains("sidebar-collapsed"))toggleRecordsPanel();
+        window.setTimeout(()=>loadProjectTimeLapse(projectId,point),320);
+        return;
+      }
       const chooseSpot=event.target.closest("[data-choose-project-spot]");
       if(chooseSpot){
         startChoosingProjectSpot(chooseSpot.getAttribute("data-choose-project-spot"));
