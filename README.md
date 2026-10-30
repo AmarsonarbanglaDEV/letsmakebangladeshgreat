@@ -24,7 +24,7 @@ The first version is a static HTML/CSS/JavaScript site deployed through Cloudfla
 - Production preview: https://letsmakebangladeshgreat.pages.dev/
 - Repository: https://github.com/AmarsonarbanglaDEV/letsmakebangladeshgreat
 
-The current interface is a prototype. It now includes switchable Bangladesh division and 64-district map views, a searchable bilingual district directory, distinct district colours and map zoom controls. It does **not** yet contain a verified project, payment, funding or indicator database. Empty states are intentional; no project or financial figures are fabricated to populate the design.
+The current interface is a prototype. Its atlas is being extended with optional division, district, upazila, union and available-ward map levels, satellite imagery, point-based historical imagery lookup, and a searchable administrative-area directory. It does **not** yet contain a verified project, payment, funding or indicator database. Historical imagery begins in 2014 and local availability varies; this is not a complete 15-year record. Empty states are intentional; no project or financial figures are fabricated to populate the design.
 
 ## Evidence principles
 
@@ -50,8 +50,10 @@ Current prototype:
 - CSS
 - Vanilla JavaScript
 - Leaflet map library via CDN
-- Switchable division / district map levels, 64 individually coloured district areas, bilingual names, search and zoom controls
-- Bangladesh eight-division boundaries and 64-district polygons from the DGHS GIS Feature Service (BBS ADM1 / ADM2 datasets)
+- Switchable division, district, upazila, union and available-ward map levels
+- Bilingual division / district directory, searchable deeper-level layers, distinct area colours and zoom / focus controls
+- Esri World Imagery satellite basemap and point-based World Imagery Wayback history lookup (2014 onward, where local imagery versions exist)
+- Division / district boundaries from DGHS GIS Feature Service BBS ADM1 / ADM2 layers; BBS 2022 upazila layer; DGHS All_Union and All_Wards_main layers
 
 Planned capabilities:
 - PostgreSQL / Supabase for structured records
@@ -72,7 +74,7 @@ python -m http.server 8000
 
 Then visit http://localhost:8000.
 
-An internet connection is required for the Leaflet library and Bangladesh division boundary service.
+An internet connection is required for the Leaflet library, administrative boundary services, satellite tiles and historical imagery lookup. The Mouza / land-map link opens the official settlement portal; a complete national village / mouza polygon layer is not yet integrated.
 
 ## Contributing
 
