@@ -749,23 +749,19 @@ async function ensureLeaflet(){
         :"Bangladesh national outline loaded · BBS ADM0");
       return true;
     }catch(error){
-      console.warn("National outline service failed; deriving the mask from the eight division polygons.",error);
-      try{
-        const divisions=await fetchLayer("division");
-        installBangladeshMask(divisions);
-        setStatus("Bangladesh mask derived from the official division boundaries.");
-        return true;
-      }catch(divisionError){
-        console.error("Bangladesh outline failed:",divisionError);
-        if(loadingCover&&map.hasLayer(loadingCover))map.removeLayer(loadingCover);
-        if(satellite&&map.hasLayer(satellite))map.removeLayer(satellite);
-        outlineMode=true;
-        el("satelliteToggle").classList.remove("active");
-        el("outlineToggle").classList.add("active");
-        map.fitBounds(bounds,{padding:[25,25]});
-        setStatus("Bangladesh boundary data could not load. Satellite is turned off to avoid displaying surrounding countries. "+divisionError.message,true);
-        return false;
-      }
+      // Division polygons are separate adjacent areas, not a dissolved
+      // national outline. Never treat them as overlapping mask holes.
+      console.error("Bangladesh national outline failed:",error);
+      if(loadingCover&&map.hasLayer(loadingCover))map.removeLayer(loadingCover);
+      if(satellite&&map.hasLayer(satellite))map.removeLayer(satellite);
+      outlineMode=true;
+      el("satelliteToggle").classList.remove("active");
+      el("satelliteToggle").disabled=true;
+      el("satelliteToggle").title="Satellite imagery is disabled until a verified national boundary is available.";
+      el("outlineToggle").classList.add("active");
+      map.fitBounds(bounds,{padding:[25,25]});
+      setStatus("The national boundary could not be verified. Satellite imagery is disabled to keep surrounding countries hidden. "+error.message,true);
+      return false;
     }
   }
 
