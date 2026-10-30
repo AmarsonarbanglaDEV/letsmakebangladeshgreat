@@ -187,7 +187,8 @@
     .history-load:hover:not(:disabled){background:#e4efe0}
     .history-load:disabled{opacity:.45;cursor:not-allowed}
     .timeline-scale{display:flex;justify-content:space-between;gap:8px;margin:6px 45px 0;color:#8a968d;font-size:9px}
-    .timeline-meta{margin-top:8px;display:flex;align-items:center;justify-content:space-between;gap:12px;color:#7e897f;font-size:9px;line-height:1.5}
+    .timeline-disclaimer{margin:6px 0 0;padding:6px 8px;border-radius:8px;background:#f6f7f2;color:#77847a;font-size:9px;line-height:1.45}
+    .timeline-meta{margin-top:7px;display:flex;align-items:center;justify-content:space-between;gap:12px;color:#7e897f;font-size:9px;line-height:1.5}
     #historyMeta{min-width:0}
     .map-attribution{
       position:absolute;z-index:700;right:16px;bottom:108px;padding:6px 9px;
@@ -238,6 +239,7 @@
       .history-load{grid-column:1/-1;width:100%;padding:8px}
       .play-btn{width:30px;height:30px}
       .timeline-scale{margin-left:39px;margin-right:0}
+      .timeline-disclaimer{font-size:8px}
       .timeline-meta{align-items:flex-start;flex-direction:column;gap:3px}
       .map-attribution{bottom:165px;left:10px;right:auto}
       .map-status{max-width:calc(100% - 22px);font-size:9px}
@@ -345,6 +347,7 @@
         <button class="history-load" id="loadHistory" type="button" disabled data-en="Find imagery history" data-bn="পুরনো ছবি খুঁজুন">Find imagery history</button>
       </div>
       <div class="timeline-scale"><span id="timelineStart">2014 archive</span><span id="timelineEnd">Latest available</span></div>
+      <div class="timeline-disclaimer">Archive versions begin in 2014 and vary by location; this is not a complete 15-year record. Imagery can show visible change, but cannot prove corruption or misuse of public money.</div>
       <div class="timeline-meta">
         <span id="historyMeta">Click a point or search for a place, then find imagery versions for that location.</span>
         <span>Esri World Imagery Wayback · imagery dates vary by location</span>
@@ -524,7 +527,6 @@ async function ensureLeaflet(){
     try{
       return await fetchArcGISLayer(info.url);
     }catch(primaryError){
-      if(info.adm>2)throw primaryError;
       try{
         const fallback=await fetchGeoBoundariesFallback(info.adm);
         fallback.fallbackReason=primaryError.message;
@@ -690,9 +692,21 @@ async function ensureLeaflet(){
         setStatus("Bangladesh outline loaded · geoBoundaries open fallback");
         return true;
       }catch(fallbackError){
-        console.error("Bangladesh outline failed:",fallbackError);
-        setStatus("The national outline could not load. Satellite is still restricted to Bangladesh's map extent; boundary service needs checking.",true);
-        return false;
+        console.warn("Country boundary fallback failed; trying to derive the mask from division polygons.",fallbackError);
+        try{
+          const divisions=await fetchLayer("division");
+          installBangladeshMask(divisions);
+          setStatus("Bangladesh mask derived from the eight division polygons.");
+          return true;
+        }catch(divisionError){
+          console.error("Bangladesh outline failed:",divisionError);
+          if(satellite&&map.hasLayer(satellite))map.removeLayer(satellite);
+          outlineMode=true;
+          el("satelliteToggle").classList.remove("active");
+          el("outlineToggle").classList.add("active");
+          setStatus("Bangladesh boundary sources are unavailable. Satellite imagery is disabled so the map will not show neighbouring countries as Bangladesh.",true);
+          return false;
+        }
       }
     }
   }
