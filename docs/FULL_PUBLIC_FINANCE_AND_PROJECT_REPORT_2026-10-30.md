@@ -314,6 +314,14 @@ A district-centre dot must not be used as a substitute for a project coordinate.
 - If no dated percentage exists, display **Progress data not published in the imported source** rather than a guessed 0%, 50% or 100%.
 - Model animation must not imply that a project has been built or completed. Use an explicit timeline only when dated records exist.
 
+## 9. Project-profile historical imagery time-lapse
+
+Each project card includes a location time-lapse section. When the project record contains a valid source-backed latitude/longitude, the profile can open that reported point and automatically query Esri World Imagery Wayback for available local versions. When an official coordinate is absent—as it is for the current pilot road-project rows—the visitor can choose the actual work-site point on the map; the profile then retrieves archive versions for that clicked point and displays its own timeline slider and play/pause controls.
+
+The profile records the selected latitude/longitude and distinguishes a visitor-selected point from an official surveyed project coordinate. A district centroid or the centre of an administrative polygon is not substituted for a work site. The location/time-lapse association is visual context only: historical imagery can show visible changes, but cannot establish project expenditure, contractor performance, construction quality, exact project limits, ownership or wrongdoing. Archive dates and capture dates are not assumed to be continuous; the provider's version list and metadata are shown where available.
+
+Current pilot data has administrative areas but no exact site coordinates for its road-project rows. Therefore visitors must choose a work-site point manually before the project-specific time-lapse can load. A newer source-backed point can use the one-click path.
+
 ## 9. Intended outcomes versus measured outcomes
 
 Every project record should keep four separate fields:
