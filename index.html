@@ -914,6 +914,7 @@ async function ensureLeaflet(){
     const countryBounds=countryOutline.getBounds();
     if(!countryBounds.isValid())throw new Error("The national boundary has invalid map bounds.");
     map.fitBounds(countryBounds.pad(.11),{padding:[25,25],animate:false});
+    updateCountryClip();
     scheduleCountryClip();
   }
   async function loadCountryBoundary(){
@@ -945,8 +946,11 @@ async function ensureLeaflet(){
         if(!divisionBounds.isValid())throw new Error("Division outline bounds are invalid.");
         map.fitBounds(divisionBounds.pad(.11),{padding:[25,25],animate:false});
         updateCountryClip();
-        if(!outlineMode&&satellite&&!map.hasLayer(satellite))satellite.addTo(map);
+        outlineMode=false;
+        if(satellite&&!map.hasLayer(satellite))satellite.addTo(map);
         el("satelliteToggle").disabled=false;
+        el("satelliteToggle").classList.add("active");
+        el("outlineToggle").classList.remove("active");
         el("satelliteToggle").title="Satellite imagery is clipped to the combined division footprint.";
         setStatus("National boundary service unavailable. Showing the eight division outlines as a verified fallback. "+error.message,true);
         return true;
