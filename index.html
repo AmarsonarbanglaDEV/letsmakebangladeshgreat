@@ -2594,7 +2594,7 @@ async function ensureLeaflet(){
   syncSidebarState(false);
   sidebarToggle.addEventListener("click",toggleRecordsPanel);
   sidebarRailToggle.addEventListener("click",toggleRecordsPanel);
-  sidebarClose.addEventListener("click",event=>setSidebarOpen(false,event.currentTarget,true));
+  sidebarClose.addEventListener("click",()=>setSidebarOpen(false,lastSidebarTrigger,true));
   sidebarBackdrop.addEventListener("click",()=>setSidebarOpen(false,sidebarToggle,true));
 
   document.addEventListener("keydown",event=>{
