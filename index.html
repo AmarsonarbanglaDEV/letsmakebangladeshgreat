@@ -4716,7 +4716,7 @@ async function ensureLeaflet(){
     const lines=[];
     sorted.forEach(item=>{
       let line=lines[lines.length-1];
-      if(!line||Math.abs(line.y-item.y)>2.2){
+      if(!line||Math.abs(line.y-item.y)>2.4){
         line={y:item.y,items:[]};
         lines.push(line);
       }
@@ -4731,80 +4731,117 @@ async function ensureLeaflet(){
 
   function parseAdpPageLines(lines,pageWidth,pageNumber){
     const rows=[];
-    let current=null;
+    let current=null, currentMinistry="", currentAgency="", generated=0;
     const codeAtStart=/^\s*(\d{9})\b/;
     const footer=/number\s+of\s+projects|adp\s+sub\s+total|page\s+no/i;
     const allocationPattern=/\b\d[\d,]*\.\d{2}\b/;
+    const englishPattern=/[A-Za-z]/;
+    const ministryHeadingPattern=/ministry|division|cabinet|office of|prime minister|parliament secretariat|election commission secretariat|bridges division/i;
+
     function finish(){
       if(!current)return;
       const title=current.titleParts.join(" ").replace(/\s+/g," ").trim()
         .replace(/^[\s:;,.–—-]+|[\s:;,.–—-]+$/g,"");
-      rows.push({
-        id:"ADP26-"+current.code+"-"+pageNumber+"-"+rows.length,
-        projectCode:current.code,
-        title:title||("ADP project "+current.code),
-        locationText:current.banglaTitleParts.join(" ").replace(/\s+/g," ").trim(),
-        allocationLakh:current.allocation,
-        page:pageNumber,
-        source:"IMED ADP 2026-27"
-      });
+      if(title){
+        rows.push({
+          id:"ADP26-"+current.code+"-"+pageNumber+"-"+generated,
+          projectCode:current.code,
+          title:title,
+          locationText:current.banglaTitleParts.join(" ").replace(/\s+/g," ").trim(),
+          allocationLakh:current.allocation,
+          ministryHeading:current.ministryHeading,
+          agencyHeading:current.agencyHeading,
+          page:pageNumber,
+          source:"IMED ADP 2026-27"
+        });
+        generated++;
+      }
       current=null;
     }
+
+    function start(code,synthetic){
+      current={
+        code:code||( "UNNUMBERED-P"+pageNumber+"-"+generated ),
+        synthetic:!!synthetic,
+        titleParts:[],
+        banglaTitleParts:[],
+        allocation:null,
+        ministryHeading:currentMinistry,
+        agencyHeading:currentAgency
+      };
+    }
+
+    function lineColumns(line){
+      const englishItems=line.items.filter(item=>item.x>=pageWidth*.16&&item.x<pageWidth*.50);
+      const banglaItems=line.items.filter(item=>item.x>=pageWidth*.50&&item.x<pageWidth*.80);
+      const allocationItems=line.items.filter(item=>item.x>=pageWidth*.80);
+      const leftItems=line.items.filter(item=>item.x<pageWidth*.16);
+      const english=englishItems.map(item=>item.str).join(" ").replace(/\s+/g," ").trim();
+      const bangla=banglaItems.map(item=>item.str).filter(part=>/[\u0980-\u09FF]/.test(part)).join(" ").replace(/\s+/g," ").trim();
+      let allocation=null;
+      allocationItems.forEach(item=>{
+        const amount=item.str.match(allocationPattern);
+        if(amount&&allocation===null)allocation=Number(amount[0].replace(/,/g,""));
+      });
+      const left=leftItems.map(item=>item.str).join(" ").replace(/\s+/g," ").trim();
+      return {english,bangla,allocation,left};
+    }
+
     lines.forEach(line=>{
-      const match=line.text.match(codeAtStart);
-      if(match){
-        finish();
-        current={code:match[1],titleParts:[],banglaTitleParts:[],titleEnded:false,allocation:null};
-      }
-      if(!current)return;
       if(footer.test(line.text)){
         finish();
         return;
       }
-      // The amount is printed in the rightmost column. Keep it separate from
-      // the title; project names are read only from the English description column.
-      let amountFoundOnLine=false;
-      line.items.forEach(item=>{
-        if(item.x>=pageWidth*.80){
-          const amount=item.str.match(allocationPattern);
-          if(amount){
-            amountFoundOnLine=true;
-            if(current.allocation===null)current.allocation=Number(amount[0].replace(/,/g,""));
-          }
+      if(/^\s*project description\s+allocation/i.test(line.text))return;
+      const codeMatch=line.text.match(codeAtStart);
+      const columns=lineColumns(line);
+
+      // Ministry, division and implementing-organisation headings are placed
+      // in the far-left column. Project-description text begins in its own
+      // separate column; this lets multi-line titles continue safely even
+      // when their allocation is printed beside the first title line.
+      const isHeading=!codeMatch&&columns.left&&
+        !englishPattern.test(columns.english)&&
+        !/^\d{9}$/.test(columns.left);
+      if(isHeading){
+        finish();
+        const heading=columns.left.replace(/^[\s:;,.–—-]+|[\s:;,.–—-]+$/g,"");
+        if(ministryHeadingPattern.test(heading)){
+          currentMinistry=heading;
+          currentAgency="";
+        }else{
+          currentAgency=heading;
         }
-      });
-      // Preserve the Bangla location spelling too. The English column is
-      // used for project display; the Bangla column helps match Bengali
-      // spellings already present in the boundary map's name_bn attributes.
-      const banglaItems=line.items.filter(item=>item.x>=pageWidth*.50&&item.x<pageWidth*.80);
-      const banglaLine=banglaItems.map(item=>item.str).filter(part=>/[\u0980-\u09FF]/.test(part)).join(" ").trim();
-      if(banglaLine)current.banglaTitleParts.push(banglaLine);
-      if(current.titleEnded)return;
-      const titleItems=line.items.filter(item=>item.x<pageWidth*.64);
-      const englishParts=[];
-      for(const item of titleItems){
-        let part=item.str.replace(/^\s*\d{9}\s*/,"").trim();
-        if(!part)continue;
-        const banglaIndex=part.search(/[\u0980-\u09FF]/);
-        if(banglaIndex>=0)part=part.slice(0,banglaIndex).trim();
-        if(/[A-Za-z]/.test(part))englishParts.push(part);
+        return;
       }
-      const englishLine=englishParts.join(" ").replace(/\s+/g," ").trim();
-      if(englishLine){
-        const cleaned=englishLine.replace(allocationPattern,"").trim();
+
+      if(codeMatch){
+        finish();
+        start(codeMatch[1],false);
+      }else if(current&&columns.english&&columns.allocation!==null&&current.allocation!==null){
+        // Some rows have no project code. A new English description with its
+        // own allocation is a new unnumbered project, not a continuation.
+        finish();
+        start("",true);
+      }else if(!current&&columns.english){
+        start("",true);
+      }
+      if(!current)return;
+
+      if(columns.english){
+        const cleaned=columns.english.replace(/^\s*\d{9}\s*/,"")
+          .replace(/[\u0980-\u09FF].*$/,"").trim();
         if(cleaned)current.titleParts.push(cleaned);
-        if(amountFoundOnLine)current.titleEnded=true;
-      }else if(current.titleParts.length){
-        // Bangla translation / amount rows signal the end of the English title.
-        if(/[\u0980-\u09FF]/.test(line.text)||allocationPattern.test(line.text)){
-          current.titleEnded=true;
-        }
+      }
+      if(columns.bangla)current.banglaTitleParts.push(columns.bangla);
+      if(columns.allocation!==null&&current.allocation===null){
+        current.allocation=columns.allocation;
       }
     });
+
     finish();
     return rows;
   }
-
   async function parseAdpRosterPdf(){
     const loadingTask=pdfjsLib.getDocument({
       url:"/api/adp-roster",
