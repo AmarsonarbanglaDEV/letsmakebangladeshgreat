@@ -64,7 +64,7 @@ const layers={
 };
 layers.satellite.addTo(map);
 document.querySelectorAll("[data-layer]").forEach(b=>b.addEventListener("click",()=>{Object.values(layers).forEach(l=>map.removeLayer(l));layers[b.dataset.layer].addTo(map);document.querySelectorAll("[data-layer]").forEach(x=>x.classList.toggle("active",x===b));}));
-let selected=null,marker=null,connector=null,boundaryLayer=null,boundariesOn=false,reverseTimer=0;
+let selected=null,marker=null,connector=null,boundaryLayer=null,boundariesOn=false,reverseTimer=0,geocodeSequence=0,lastGeocodeAt=0;
 const glow=L.divIcon({className:"",html:'<div style="width:18px;height:18px;border:3px solid #b8ff45;border-radius:50%;background:#b8ff45aa;box-shadow:0 0 0 7px #b8ff4530,0 0 24px #b8ff45"></div>',iconSize:[18,18],iconAnchor:[9,9]});
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 function status(msg,error){const n=$("geoStatus");if(n){n.className="status"+(error?" error":"");n.innerHTML="<i></i>"+esc(msg);}}
@@ -79,6 +79,7 @@ function renderLocation(data){
  $("reportBtn").onclick=openComplaint;$("prepareBtn").onclick=openDraft;$("recordsBtn").onclick=openRecords;$("copyLocBtn").onclick=copyLocation;
 }
 async function lookup(latlng){
+ const sequence=++geocodeSequence;
  selected={lat:latlng.lat,lng:latlng.lng};
  if(marker)map.removeLayer(marker);marker=L.marker(latlng,{icon:glow,zIndexOffset:1000}).addTo(map);
  if(connector)map.removeLayer(connector);
@@ -86,11 +87,16 @@ async function lookup(latlng){
  connector=L.polyline([latlng,edge],{color:"#b8ff45",weight:1.5,dashArray:"4 7",opacity:.85}).addTo(map);
  $("details").innerHTML='<div class="empty"><div><div class="empty-icon">⌖</div><strong>Resolving selected location…</strong><p>Looking up the nearest mapped place and administrative labels.</p></div></div>';
  try{
+  const wait=Math.max(0,1100-(Date.now()-lastGeocodeAt));
+  if(wait)await new Promise(resolve=>setTimeout(resolve,wait));
+  if(sequence!==geocodeSequence)return;
+  lastGeocodeAt=Date.now();
   const url="https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat="+encodeURIComponent(latlng.lat)+"&lon="+encodeURIComponent(latlng.lng)+"&zoom=18&addressdetails=1";
   const res=await fetch(url,{headers:{Accept:"application/json"}});
   if(!res.ok)throw new Error("Place lookup returned HTTP "+res.status);
-  const data=await res.json();renderLocation(data);
+  const data=await res.json();if(sequence===geocodeSequence)renderLocation(data);
  }catch(err){
+  if(sequence!==geocodeSequence)return;
   $("details").innerHTML='<div class="status error" id="geoStatus"><i></i>Place lookup unavailable</div><h2 class="loc-title">Selected coordinate</h2><div class="coord"><div><small>LATITUDE</small><strong>'+selected.lat.toFixed(6)+'</strong></div><div><small>LONGITUDE</small><strong>'+selected.lng.toFixed(6)+'</strong></div></div><p class="help">Reverse geocoding failed: '+esc(err.message)+'. The coordinate remains selected; administrative details are not available.</p><div class="actions"><button class="action primary" id="reportBtn">＋ Report an issue</button><button class="action" id="copyLocBtn">Copy location link</button></div><div class="disclaimer">A coordinate is not proof of a specific building, land parcel or administrative jurisdiction.</div>';
   $("reportBtn").onclick=openComplaint;$("copyLocBtn").onclick=copyLocation;
  }
@@ -156,8 +162,9 @@ function openComplaint(){$("cCoordinate").value=selected.lat.toFixed(6)+", "+sel
 function complaintText(issue){return "To\\nThe Designated Officer / Relevant Public Authority\\nBangladesh\\n\\nSubject: Request for action regarding "+issue+"\\n\\nDear Sir/Madam,\\n\\nI wish to bring to your attention the following public-service issue at the location below.\\n\\nLocation: "+selected.lat.toFixed(6)+", "+selected.lng.toFixed(6)+"\\nMap: "+location.href+"\\nIssue: "+issue+"\\n\\nI request that the matter be inspected, the responsible office be identified, and appropriate action be taken in accordance with applicable procedures. Please acknowledge receipt and advise the relevant reference number if this is accepted through your official channel.\\n\\nSincerely,\\n[Your name]\\n[Your contact details]\\n[Date]\\n\\nNote: This is a draft only and has not been submitted to any authority.";}
 function openDraft(){$("draftIssue").value="";$("draftText").value=complaintText("[describe the issue]");openModal("draftModal");$("draftIssue").focus();}
 $("draftIssue").addEventListener("input",()=>{$("draftText").value=complaintText($("draftIssue").value||"[describe the issue]");});
-function openRecords(){$("recordSubject").value="";$("recordDraft").value="To\\nThe Designated Information Officer\\n[Relevant public authority]\\nBangladesh\\n\\nSubject: Request for information under the Right to Information Act, 2009\\n\\nDear Sir/Madam,\\n\\nI request access to the following existing public records concerning the location below:\\n\\nLocation: "+selected.lat.toFixed(6)+", "+selected.lng.toFixed(6)+"\\nMap: "+location.href+"\\n\\nRecords requested:\\n[Describe the specific records, period and project/service]\\n\\nPlease provide the information in the available lawful format and advise me if another public authority holds these records.\\n\\nSincerely,\\n[Your name and contact details]\\n[Date]\\n\\nDraft only — not submitted. Check current RTI forms, fees and designated officer details before filing.";openModal("recordsModal");}
-$("recordSubject").addEventListener("input",()=>{$("recordDraft").value=$("recordDraft").value.replace("[Describe the specific records, period and project/service]",$("recordSubject").value||"[Describe the specific records, period and project/service]");});
+function recordsText(subject){return "To\\nThe Designated Information Officer\\n[Relevant public authority]\\nBangladesh\\n\\nSubject: Request for information under the Right to Information Act, 2009\\n\\nDear Sir/Madam,\\n\\nI request access to the following existing public records concerning the location below:\\n\\nLocation: "+selected.lat.toFixed(6)+", "+selected.lng.toFixed(6)+"\\nMap: "+location.href+"\\n\\nRecords requested:\\n"+(subject||"[Describe the specific records, period and project/service]")+"\\n\\nPlease provide the information in the available lawful format and advise me if another public authority holds these records.\\n\\nSincerely,\\n[Your name and contact details]\\n[Date]\\n\\nDraft only — not submitted. Check current RTI forms, fees and designated officer details before filing.";}
+function openRecords(){$("recordSubject").value="";$("recordDraft").value=recordsText("");openModal("recordsModal");}
+$("recordSubject").addEventListener("input",()=>{$("recordDraft").value=recordsText($("recordSubject").value);});
 async function copyText(text){try{await navigator.clipboard.writeText(text);alert("Copied to clipboard.");}catch(e){alert("Clipboard access unavailable. Select and copy the text manually.");}}
 $("copyDraft").onclick=()=>copyText($("draftText").value);$("copyRecords").onclick=()=>copyText($("recordDraft").value);
 function locationLink(){const u=new URL(location.href);u.searchParams.set("lat",selected.lat.toFixed(6));u.searchParams.set("lon",selected.lng.toFixed(6));return u.toString();}
