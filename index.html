@@ -2884,6 +2884,38 @@
       .adp-profile-stat{padding:9px}
     }
 
+  
+    /* District postcard artwork: a lightweight illustrated layer that stays crisp on the real boundary geometry. */
+    #map{background-color:#dcefeb!important;background-image:radial-gradient(ellipse at 18% 22%,rgba(255,255,255,.72) 0 2px,transparent 3px),radial-gradient(ellipse at 78% 68%,rgba(255,255,255,.55) 0 2px,transparent 3px),repeating-linear-gradient(135deg,rgba(255,255,255,.16) 0 2px,transparent 2px 19px)!important;background-size:37px 37px,51px 51px,auto}
+    .atlas-district-vibe-popup .leaflet-popup-content-wrapper{padding:0;overflow:hidden;border:1px solid rgba(255,255,255,.9);border-radius:19px;background:#fffaf0;box-shadow:0 15px 38px rgba(27,48,39,.25)}
+    .atlas-district-vibe-popup .leaflet-popup-content{width:278px!important;margin:0}
+    .atlas-district-vibe-popup .leaflet-popup-tip{background:#fffaf0}
+    .atlas-district-vibe-popup .leaflet-popup-close-button{z-index:4;top:8px!important;right:9px!important;width:27px!important;height:27px!important;border-radius:50%;background:rgba(255,255,255,.88);color:#294238!important;font-size:20px!important;line-height:25px!important;text-align:center}
+    .district-vibe-card{overflow:hidden;color:#233c34;font-family:"DM Sans","Noto Sans Bengali",sans-serif}
+    .district-vibe-art{height:112px;position:relative;display:grid;place-items:center;overflow:hidden;background-color:var(--district-fill);background-image:linear-gradient(135deg,rgba(255,255,255,.36),transparent 58%)}
+    .district-vibe-art:before{content:"";position:absolute;inset:-20px;opacity:.38;transform:rotate(-7deg);pointer-events:none}
+    .district-vibe-art.motif-waves:before{background:repeating-radial-gradient(ellipse at 12% 100%,transparent 0 13px,var(--district-accent) 14px 16px,transparent 17px 27px)}
+    .district-vibe-art.motif-hills:before{background:linear-gradient(155deg,transparent 0 38%,var(--district-accent) 39% 41%,transparent 42%),linear-gradient(25deg,transparent 0 52%,rgba(255,255,255,.72) 53% 55%,transparent 56%)}
+    .district-vibe-art.motif-dots:before{background-image:radial-gradient(var(--district-accent) 1.5px,transparent 2px);background-size:17px 17px}
+    .district-vibe-art.motif-grid:before{background:repeating-linear-gradient(0deg,transparent 0 15px,var(--district-accent) 16px 17px),repeating-linear-gradient(90deg,transparent 0 15px,var(--district-accent) 16px 17px)}
+    .district-vibe-art.motif-leaves:before{background:repeating-radial-gradient(ellipse at 50% 50%,transparent 0 8px,var(--district-accent) 9px 10px,transparent 11px 22px);background-size:45px 38px}
+    .district-vibe-art.motif-rays:before{background:repeating-conic-gradient(from 8deg at 50% 50%,transparent 0 10deg,var(--district-accent) 11deg 13deg,transparent 14deg 25deg)}
+    .district-vibe-art.motif-weave:before{background:repeating-linear-gradient(45deg,transparent 0 8px,var(--district-accent) 9px 10px,transparent 11px 18px),repeating-linear-gradient(-45deg,transparent 0 8px,rgba(255,255,255,.7) 9px 10px,transparent 11px 18px)}
+    .district-vibe-art.motif-city:before{background:linear-gradient(to top,rgba(255,255,255,.55) 0 22%,transparent 23%),repeating-linear-gradient(90deg,transparent 0 17px,var(--district-accent) 18px 21px,transparent 22px 31px)}
+    .district-vibe-emoji{position:relative;z-index:1;display:grid;place-items:center;width:84px;height:84px;border:3px solid rgba(255,255,255,.75);border-radius:28px;background:rgba(255,255,255,.62);box-shadow:0 8px 22px rgba(29,48,39,.12);font-size:51px;line-height:1;animation:districtMascotFloat 2.7s ease-in-out infinite}
+    .district-vibe-stamp{position:absolute;z-index:1;left:12px;top:11px;padding:4px 8px;border:1px solid rgba(255,255,255,.75);border-radius:20px;background:rgba(255,255,255,.72);color:#29463a;font-size:8px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+    .district-vibe-content{padding:13px 15px 15px}
+    .district-vibe-kicker{color:#6c8276;font-size:8px;font-weight:900;letter-spacing:.13em;text-transform:uppercase}
+    .district-vibe-title{display:flex;align-items:baseline;flex-wrap:wrap;gap:6px;margin:4px 0 0;font-size:19px;font-weight:900;letter-spacing:-.045em}
+    .district-vibe-title small{color:#4f8269;font-family:"Noto Sans Bengali",sans-serif;font-size:12px;font-weight:750}
+    .district-vibe-division{margin-top:2px;color:#7b8a80;font-size:9px}
+    .district-vibe-line{margin:10px 0 0;padding:10px 11px;border-left:3px solid var(--district-accent);border-radius:0 10px 10px 0;background:rgba(235,242,228,.72);color:#344d42;font-size:11px;line-height:1.55}
+    .district-vibe-foot{display:flex;justify-content:space-between;gap:8px;margin-top:10px;color:#849087;font-size:8px}
+    .district-vibe-foot strong{color:#69836e;font-weight:850}
+    @keyframes districtMascotFloat{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-7px) rotate(3deg)}}
+    @media(prefers-reduced-motion:reduce){.district-vibe-emoji{animation:none}}
+    .district-hover-tooltip{border:1px solid rgba(255,255,255,.95)!important;border-radius:10px!important;background:#fffaf0!important;color:#233c34!important;font-size:11px!important;font-weight:850!important;box-shadow:0 5px 18px rgba(20,40,31,.17)!important}
+
   </style>
 </head>
 <body>
@@ -3202,6 +3234,116 @@ async function ensureLeaflet(){
     statusEl.textContent=message||"";
     statusEl.classList.toggle("error",!!isError);
   }
+
+  // 64 illustrated district identities. The polygons retain the official GIS geometry;
+  // these colours and mini-postcards are decorative editorial layers, not administrative data.
+  const districtArt={
+    dhaka:["🚌","The VIP district: leave at 8 for a 9 AM meeting and arrive in time for the 2 PM apology.","#f2b6a5","#a94d3c","city"],
+    faridpur:["🧭","So confident that even Google Maps asks Faridpur for directions.","#f6d4a0","#b87932","rays"],
+    gazipur:["🏭","Factory capital energy: even the birds sound like they work the night shift.","#b8d7c8","#477d63","grid"],
+    gopalganj:["🏛️","A family dinner can turn into a full parliamentary session.","#d9c5e9","#76548f","weave"],
+    kishoreganj:["🛶","Monsoon gets so watery that Google Maps starts offering swimming directions.","#a8d9df","#347f8d","waves"],
+    madaripur:["👀","Everyone knows everyone. A secret has a very short life here.","#f0c4d2","#a45470","dots"],
+    manikganj:["🚲","So peaceful that even gossip travels by bicycle.","#c9dfaa","#638344","leaves"],
+    munshiganj:["🥔","Potato pride: every menu conversation eventually becomes a potato conversation.","#e8d49c","#98732d","dots"],
+    narayanganj:["🏗️","Industrial energy everywhere; even mosquitoes seem to follow a production schedule.","#efb59a","#a9553c","city"],
+    narsingdi:["🧵","Textile expertise so strong that fabric quality gets judged before the shirt is identified.","#d5c3e7","#7b5b9a","weave"],
+    rajbari:["🚂","The railway station feels like a family living room.","#c3d2e9","#526f9c","grid"],
+    shariatpur:["⛵","River life is real: sometimes the route requires negotiating with the river.","#a7d6cb","#397f70","waves"],
+    tangail:["🧣","Sarees and chamcham: fashion and dessert share the spotlight.","#edc2a6","#a96543","weave"],
+
+    bandarban:["⛰️","The neighbour's house is a workout: the hills do not believe in flat walks.","#b8cda5","#5a7950","hills"],
+    brahmanbaria:["🎤","A normal chat can become a debate final, with arguments about the arguments.","#e5b3c7","#9a5470","rays"],
+    chandpur:["🐟","Hilsa is the celebrity; every other fish is supporting cast.","#a7d5d8","#397b83","waves"],
+    chattogram:["⚓","Business-minded enough to negotiate a tea discount and international trade at once.","#efc18f","#a87536","city"],
+    cumilla:["🍮","Roshmalai pride: sweet people, serious dessert debates.","#e5c1a4","#a56a47","dots"],
+    coxsbazar:["🏖️","The beach is the star, but the camera roll is mostly selfies.","#91d0dc","#327f94","waves"],
+    feni:["😎","Small district, huge confidence. It expects you to know the name already.","#f0b5a4","#a94f40","rays"],
+    khagrachhari:["🌄","Even the roads seem to have a mountain-climbing career.","#b6c99b","#607e4b","hills"],
+    lakshmipur:["📣","A hometown question can turn into a 30-minute local-pride presentation.","#e8c79e","#a27a36","rays"],
+    noakhali:["🗣️","A dialect so distinctive that Google Translate might need a regional update.","#d7c2e7","#76558f","weave"],
+    rangamati:["🛶","Lake-and-hill mornings while the rest of us wake up to construction noise.","#9fcfc5","#397a70","waves"],
+
+    bogura:["🥣","Doi is the unofficial currency; a bowl can settle almost any disagreement.","#e7c77f","#9c7427","dots"],
+    joypurhat:["🌾","Quiet, hardworking energy: less noise, more getting things done.","#bfd29d","#6d8241","leaves"],
+    naogaon:["🍚","Rice country: if rice had a headquarters, Naogaon would be the CEO.","#ead49a","#9b7b39","weave"],
+    natore:["🍬","Kachagolla with royal-history energy. Even the sweets feel aristocratic.","#edb99b","#a35f43","dots"],
+    chapainawabganj:["🥭","Mango season turns everyone into an agricultural scientist and fruit analyst.","#efce75","#9c7925","leaves"],
+    pabna:["🧑‍💻","The district has heard enough name jokes; please update your comedy software.","#c4c9e5","#646f9b","grid"],
+    rajshahi:["🧵","Silk, mangoes and calm vibes: Dhaka visitors start planning early retirement.","#c4d8a2","#678446","weave"],
+    sirajganj:["🌊","The Jamuna is the main character and sometimes changes the scenery without notice.","#9fcbd9","#39758a","waves"],
+
+    bagerhat:["🕌","The historic buildings have more stories than your entire family tree.","#c5d4a2","#6d8246","weave"],
+    chuadanga:["☀️","Summer is not a season here; it is a very determined personal enemy.","#efc17b","#a9792d","rays"],
+    jashore:["🌼","Flowers and culture: even the district's reputation comes with a fragrance.","#e8c4a6","#a66b48","leaves"],
+    jhenaidah:["🎙️","A village discussion can become a full-length podcast.","#d6c7e8","#7b649b","rays"],
+    khulna:["🐅","Sundarbans neighbour energy: a tiger-shaped reminder to respect the forest.","#a9d0ae","#4d7a4d","leaves"],
+    kushtia:["🎶","Lalon's home territory: life philosophy can arrive before the tea is finished.","#ddc4a4","#8d6945","weave"],
+    magura:["⚽","A local football match can carry more emotion than a family wedding.","#c4d9a3","#688344","dots"],
+    meherpur:["📜","Small in area, enormous in historical significance.","#c5d1e6","#667b9d","grid"],
+    narail:["🏏","Cricket pride is strong; the local expectations have a legendary standard.","#a7cfc3","#417a6b","rays"],
+    satkhira:["🦐","Shrimp and the Sundarbans: seafood has a reputation to protect.","#9fcbd1","#3f7d83","waves"],
+
+    sylhet:["🍃","Tea, hills and a London connection somewhere in the family tree.","#9fcba8","#4e8058","leaves"],
+    habiganj:["🍵","Tea gardens and resources: quietly rich while the rest of us are loudly struggling.","#c2d7a6","#6e874c","leaves"],
+    moulvibazar:["🫖","Tea-capital energy: tea is less a drink and more a ceremony.","#a8cdbd","#4e8070","weave"],
+    sunamganj:["🚣","In monsoon, roads become optional and boats become the luxury cars.","#94cbd3","#3c7d87","waves"],
+
+    dinajpur:["🍒","Litchi, rice and history: fruit season outranks the office calendar.","#e5c28f","#9a703d","leaves"],
+    gaibandha:["🌊","River resilience: when the river changes the plan, people adapt.","#a7c9d8","#4d7891","waves"],
+    kurigram:["🏝️","Char life: the river rearranges the neighbourhood like a SimCity update.","#9ed2c4","#3f8172","waves"],
+    lalmonirhat:["🚆","Railway connections are part of the district's personality.","#c2cee5","#687ca0","grid"],
+    nilphamari:["✈️","Saidpur pride and railway history both have their fan clubs.","#b8d5d0","#56817b","rays"],
+    panchagarh:["🏔️","Bangladesh's northern edge, with Himalayan views to make everyone jealous.","#b5c9e8","#5877a7","hills"],
+    rangpur:["🧣","Northern pride is non-negotiable; criticism earns a full history lesson.","#d1d5e8","#737da4","weave"],
+    thakurgaon:["🌤️","Peaceful countryside mornings, far from Dhaka's bus-seat battles.","#c6d9b5","#6f8a5d","leaves"],
+
+    mymensingh:["🐟","Fish and Muktagacha monda: one conversation can become a university lecture.","#c8b9e4","#755c9b","waves"],
+    jamalpur:["🪡","Nakshi Kantha: even the blankets have artistic qualifications.","#e1c6a4","#96734b","weave"],
+    netrokona:["🌾","Haors, hills and scenery: daily life with nature-documentary energy.","#a9d0bf","#568272","hills"],
+    sherpur:["🌳","Peaceful hills and countryside; even the scenery seems to be on vacation.","#c5d6a9","#6b874c","leaves"],
+
+    barishal:["🛶","The Venice of Bangladesh: first question is which boat goes there.","#94d1d0","#397f80","waves"],
+    barguna:["🐚","Coastal life: the sea is practically the next-door neighbour.","#a4cddd","#4a8193","waves"],
+    bhola:["🏝️","The largest island district: a geographical plot twist.","#a3d7c8","#458575","waves"],
+    jhalokati:["🍈","Floating guava markets: even the shopping basket needs a swimming certificate.","#b4d7a5","#648a4d","leaves"],
+    patuakhali:["🌅","Kuakata offers sunrise and sunset over the sea: nature's two-for-one deal.","#ecc49a","#a46d45","rays"],
+    pirojpur:["🌿","Rivers, greenery and rural beauty: your neighbour might be a river.","#b7d7b5","#5d885e","leaves"]
+  };
+  const districtArtAliases={
+    chittagong:"chattogram",comilla:"cumilla",bogra:"bogura",jessore:"jashore",
+    barisal:"barishal",maulvibazar:"moulvibazar","coxsbazar":"coxsbazar",
+    chapainawabganj:"chapainawabganj"
+  };
+  function districtArtFor(record){
+    if(!record)return null;
+    const key=normalise(record.name);
+    return districtArt[districtArtAliases[key]||key]||null;
+  }
+  function openDistrictArtPopup(record){
+    const art=districtArtFor(record);
+    if(!art||!map||activeLevel!=="district")return;
+    const featureLayer=currentLayer&&currentLayer.getLayers().find(path=>path._atlasRecord&&path._atlasRecord.id===record.id);
+    if(!featureLayer)return;
+    const division=record.division||"Bangladesh";
+    const html=
+      '<article class="district-vibe-card" style="--district-fill:'+art[2]+';--district-accent:'+art[3]+'">'+
+        '<div class="district-vibe-art motif-'+art[4]+'">'+
+          '<span class="district-vibe-stamp">Bangladesh · District postcard</span>'+
+          '<span class="district-vibe-emoji" aria-hidden="true">'+art[0]+'</span>'+
+        '</div>'+
+        '<div class="district-vibe-content">'+
+          '<div class="district-vibe-kicker">A little local character</div>'+
+          '<div class="district-vibe-title">'+escapeHtml(record.name)+' <small>'+escapeHtml(record.bn||"")+'</small></div>'+
+          '<div class="district-vibe-division">'+escapeHtml(division)+' Division · Bangladesh</div>'+
+          '<p class="district-vibe-line">'+escapeHtml(art[1])+'</p>'+
+          '<div class="district-vibe-foot"><strong>Local vibe, lovingly illustrated</strong><span>Just for fun</span></div>'+
+        '</div>'+
+      '</article>';
+    L.popup({className:"atlas-district-vibe-popup",maxWidth:300,minWidth:278,autoPan:true,closeButton:true})
+      .setLatLng(featureLayer.getBounds().getCenter()).setContent(html).openOn(map);
+  }
+
   function infoText(record){
     return [record.division,record.district,record.upazila,record.union,record.ward]
       .filter(Boolean).join(" · ");
@@ -3354,14 +3496,18 @@ async function ensureLeaflet(){
         const r=byFeature.get(feature);
         if(!r)return;
         path._atlasRecord=r;
-        const tooltipLabel=escapeHtml(r.name+(r.bn?" / "+r.bn:""));
-        const tooltipOptions={sticky:true,className:"area-label",direction:"auto"};
+        const art=level==="district"?districtArtFor(r):null;
+        const tooltipLabel=art
+          ?'<span aria-hidden="true">'+art[0]+'</span> '+escapeHtml(r.name)+(r.bn?" / "+escapeHtml(r.bn):"")
+          :escapeHtml(r.name+(r.bn?" / "+r.bn:""));
+        const tooltipOptions={sticky:true,className:art?"area-label district-hover-tooltip":"area-label",direction:"auto"};
         if(interactive&&prebindTooltips)path.bindTooltip(tooltipLabel,tooltipOptions);
         if(interactive){
           path.on("click",event=>{
             if(event.originalEvent)L.DomEvent.stopPropagation(event.originalEvent);
             if(activeProjectSpotId&&handleProjectSpotMapClick(event.latlng))return;
             selectAdministrativeArea(r,true);
+            if(level==="district")openDistrictArtPopup(r);
           });
           path.on("mouseover",()=>{
             if(!path.getTooltip()){
@@ -3370,7 +3516,8 @@ async function ensureLeaflet(){
             }
             path.openTooltip();
             const base=basePathStyle(path);
-            path.setStyle({color:"#d9ed8e",weight:Math.max(3.2,base.weight),fillOpacity:.12});
+            const art=level==="district"?districtArtFor(r):null;
+            path.setStyle({color:art?art[3]:"#d9ed8e",weight:Math.max(3.2,base.weight),fillColor:art?art[2]:base.fillColor,fillOpacity:level==="district"?.98:.22});
           });
           path.on("mouseout",()=>{
             if(path._atlasLazyTooltip){
@@ -3391,12 +3538,13 @@ async function ensureLeaflet(){
     const illustrative=outlineMode;
     const isDivision=activeLevel==="division";
     const isDistrict=activeLevel==="district";
-    const fillOpacity=selected ? .78 : (illustrative ? (isDivision ? .90 : (isDistrict ? .76 : (activeLevel==="upazila" ? .34 : .20))) : .018);
+    const art=isDistrict?districtArtFor(r):null;
+    const fillOpacity=selected ? (isDistrict?.96:.86) : (illustrative ? (isDivision ? .90 : (isDistrict ? .86 : (activeLevel==="upazila" ? .34 : .20))) : .018);
     return {
-      color:selected?"#386a46":(illustrative?(isDivision?"#f8fff2":(isDistrict?"#fffef5":"#f7fff4")):"#f8f8e8"),
-      weight:selected?3.2:(illustrative?(isDivision?2.6:(isDistrict?1.35:0.9)):(isDivision?3.1:(isDistrict?1.7:1.15))),
+      color:selected?(art?art[3]:"#386a46"):(illustrative?(isDivision?"#f8fff2":(isDistrict?"#fffaf0":"#f7fff4")):"#f8f8e8"),
+      weight:selected?3.5:(illustrative?(isDivision?2.6:(isDistrict?1.55:0.9)):(isDivision?3.1:(isDistrict?1.7:1.15))),
       opacity:illustrative?1:.9,
-      fillColor:selected?"#bfe4a8":(r?r.color:"#dce8d7"),
+      fillColor:selected?(art?art[2]:"#bfe4a8"):(art?art[2]:(r?r.color:"#dce8d7")),
       fillOpacity:fillOpacity
     };
   }
@@ -3600,7 +3748,7 @@ async function ensureLeaflet(){
     countryOutline=L.geoJSON(data,{
       pane:"countryPane",renderer:countryRenderer,interactive:false,
       smoothFactor:1.5,
-      style:{color:"#427a54",weight:2.6,opacity:1,fill:false,fillColor:"#dcefc9",fillOpacity:0}
+      style:{color:"#3e7861",weight:3,opacity:1,fill:false,fillColor:"#dcefc9",fillOpacity:0}
     }).addTo(map);
     const countryBounds=countryOutline.getBounds();
     if(!countryBounds.isValid())throw new Error("The national boundary has invalid map bounds.");
@@ -3670,7 +3818,9 @@ async function ensureLeaflet(){
   map.createPane("projectMarkerPane");map.getPane("projectMarkerPane").style.zIndex=680;
   const countryRenderer=L.svg({pane:"countryPane"});
   const adminRenderer=L.canvas({pane:"boundaryPane",padding:0.5});
-  map.getContainer().style.background="#c7e6e9";
+  map.getContainer().style.backgroundColor="#dcefeb";
+  map.getContainer().style.backgroundImage="radial-gradient(circle at 18% 22%,rgba(255,255,255,.72) 0 2px,transparent 3px),radial-gradient(circle at 78% 68%,rgba(255,255,255,.55) 0 2px,transparent 3px),repeating-linear-gradient(135deg,rgba(255,255,255,.16) 0 2px,transparent 2px 19px)";
+  map.getContainer().style.backgroundSize="37px 37px,51px 51px,auto";
   map.on("move",()=>{if(!outlineMode&&satellite&&map.hasLayer(satellite))scheduleCountryClip(false);});
   map.on("moveend zoomend resize viewreset",()=>{if(!outlineMode&&satellite&&map.hasLayer(satellite))scheduleCountryClip(true);});
 
@@ -6278,7 +6428,7 @@ async function ensureLeaflet(){
   });
 
   async function start(){
-    el("map").style.background="#c7e6e9";
+    el("map").style.background="#dcefeb";
     setStatus("Preparing Bangladesh map…");
     await loadCountryBoundary();
     setStatus("Loading district boundaries…");
