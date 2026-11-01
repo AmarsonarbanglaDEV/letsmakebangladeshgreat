@@ -5500,6 +5500,7 @@ async function ensureLeaflet(){
   function renderProjectProfilePopup(projectId,tabKey="overview",open=true,trigger){
     const project=atlasData.projects?.projects?.find(item=>item.id===projectId);
     if(!project)return;
+    activeAdpProjectRecord=null;activeAdpProjectMatches=[];
     activeProjectProfileId=projectId;
     activeProjectProfileTab=projectProfileSectionDefs.some(item=>item[0]===tabKey)?tabKey:"overview";
     el("projectProfileTitle").textContent=project.name;
@@ -5541,8 +5542,192 @@ async function ensureLeaflet(){
         else sidebarToggle.focus();
       });
     }
+    activeAdpProjectRecord=null;
+    activeAdpProjectMatches=[];
   }
+
+  const adpProfileTabs=[
+    ["overview","Overview","◫"],
+    ["details","Details","▤"],
+    ["location","Location","⌖"],
+    ["financial","Finance","৳"],
+    ["news","News & media","▶"],
+    ["sources","Sources","↗"]
+  ];
+
+  function adpProfileSearchUrl(engine,project){
+    const phrase='"'+project.title+'" Bangladesh';
+    const queries={
+      google:"https://www.google.com/search?q="+encodeURIComponent(phrase),
+      news:"https://news.google.com/search?q="+encodeURIComponent(phrase)+"&hl=en-BD&gl=BD&ceid=BD%3Aen",
+      youtube:"https://www.youtube.com/results?search_query="+encodeURIComponent(phrase),
+      bss:"https://www.google.com/search?q="+encodeURIComponent('site:bssnews.net "'+project.title+'"'),
+      tbs:"https://www.google.com/search?q="+encodeURIComponent('site:tbsnews.net "'+project.title+'"'),
+      dailystar:"https://www.google.com/search?q="+encodeURIComponent('site:thedailystar.net "'+project.title+'"'),
+      prothomalo:"https://www.google.com/search?q="+encodeURIComponent('site:prothomalo.com "'+project.title+'"'),
+      bppa:"https://www.google.com/search?q="+encodeURIComponent('site:bppa.gov.bd "'+project.projectCode+'" "'+project.title+'"'),
+      official:"https://www.google.com/search?q="+encodeURIComponent('site:gov.bd "'+project.title+'"')
+    };
+    return queries[engine]||queries.google;
+  }
+
+  function adpProfileLocationSummary(matches){
+    if(!matches||!matches.length)return "No unique division, district, upazila or union name could be matched from the ADP project description.";
+    return matches.map(match=>{
+      const path=[match.record.division,match.record.district,match.record.upazila,match.record.union]
+        .filter(Boolean).filter((value,index,array)=>array.indexOf(value)===index).join(" · ");
+      return match.name+" ("+match.level+")"+(path?" · "+path:"");
+    }).join("; ");
+  }
+
+  function adpProfileLink(label,url,description){
+    return '<a class="adp-profile-link" href="'+escapeHtml(url)+'" target="_blank" rel="noopener noreferrer">'+
+      escapeHtml(label)+' ↗'+(description?'<small>'+escapeHtml(description)+'</small>':"")+'</a>';
+  }
+
+  function renderAdpProjectProfileTab(key){
+    const project=activeAdpProjectRecord;
+    if(!project)return;
+    activeProjectProfileTab=adpProfileTabs.some(tab=>tab[0]===key)?key:"overview";
+    el("projectProfileTabs").querySelectorAll("[data-project-profile-tab]").forEach(button=>{
+      const selected=button.dataset.projectProfileTab===activeProjectProfileTab;
+      button.classList.toggle("active",selected);
+      button.setAttribute("aria-pressed",String(selected));
+    });
+    const matchText=adpProfileLocationSummary(activeAdpProjectMatches);
+    const allocation=project.allocationLakh===null||project.allocationLakh===undefined?
+      "Not extracted":Number(project.allocationLakh).toLocaleString("en-BD",{maximumFractionDigits:2})+" lakh";
+    const allocationCrore=project.allocationLakh===null||project.allocationLakh===undefined?
+      "Not calculated":(Number(project.allocationLakh)/100).toLocaleString("en-BD",{maximumFractionDigits:2})+" crore";
+    let html="";
+
+    if(activeProjectProfileTab==="overview"){
+      html+='<section class="adp-profile-intro"><span class="adp-profile-kicker">IMED · ADP 2026–27 · PROJECT ROSTER</span>'+
+        '<h3>'+escapeHtml(project.title)+'</h3>'+
+        '<div class="adp-profile-summary">Source-listed project entry. This record is generated from the official ADP roster and linked to the original PDF page. It is not a full DPP, progress evaluation or completion certificate.</div></section>';
+      html+='<div class="adp-profile-grid">'+
+        '<div class="adp-profile-stat"><small>Project code</small><strong>'+escapeHtml(project.projectCode)+'</strong><em>Official code where supplied; unnumbered entry otherwise</em></div>'+
+        '<div class="adp-profile-stat"><small>ADP allocation</small><strong>৳ '+escapeHtml(allocation)+'</strong><em>FY2026–27 · '+escapeHtml(allocationCrore)+'</em></div>'+
+        '<div class="adp-profile-stat"><small>PDF page</small><strong>'+escapeHtml(project.page)+'/88</strong><em>Published 14 October 2026</em></div>'+
+        '<div class="adp-profile-stat"><small>Map-name match</small><strong>'+activeAdpProjectMatches.length+' area match(es)</strong><em>'+escapeHtml(activeAdpProjectMatches.map(x=>x.level).join(", ")||"Not matched")+'</em></div>'+
+      '</div>';
+      html+='<section class="adp-profile-section"><h3>Location summary</h3><div class="adp-profile-row"><span>Map match</span><strong>'+escapeHtml(matchText)+'</strong></div><div class="adp-profile-note">A map dot marks a matched administrative boundary area only. It is not a surveyed construction-site coordinate.</div></section>';
+      html+='<section class="adp-profile-section"><h3>Lifecycle status</h3><div class="adp-profile-note">The FY2026–27 ADP allocation list does not provide a project-by-project completed, ongoing, cancelled or suspended status. Status remains unverified until corroborated from an official project, IMED or agency record.</div></section>';
+      html+='<div class="adp-profile-actions">'+adpProfileLink("Open official ADP page",ADP_ROSTER_SOURCE_URL+"#page="+project.page)+adpProfileLink("Search news",adpProfileSearchUrl("news",project))+adpProfileLink("Search YouTube",adpProfileSearchUrl("youtube",project))+'</div>';
+    }else if(activeProjectProfileTab==="details"){
+      html+='<section class="adp-profile-section"><h3>Project description</h3><div class="adp-profile-row"><span>English title</span><strong>'+escapeHtml(project.title)+'</strong></div>'+
+        (project.locationText?'<div class="adp-profile-row"><span>Bangla source text</span><strong>'+escapeHtml(project.locationText)+'</strong></div>':"")+
+        '<div class="adp-profile-row"><span>Project code</span><strong>'+escapeHtml(project.projectCode)+'</strong></div>'+
+        '<div class="adp-profile-row"><span>Ministry / division heading</span><strong>'+escapeHtml(project.ministryHeading||"Not separately identified in this row")+'</strong></div>'+
+        '<div class="adp-profile-row"><span>Organisation heading</span><strong>'+escapeHtml(project.agencyHeading||"Not separately identified in this row")+'</strong></div>'+
+        '<div class="adp-profile-row"><span>Source page</span><strong>'+escapeHtml(project.page)+" of 88"+'</strong></div></section>';
+      html+='<div class="adp-profile-note">Organisation names are the headings appearing in the ADP document. They are not independently verified as the project director, procurement entity or contractor.</div>';
+    }else if(activeProjectProfileTab==="location"){
+      html+='<section class="adp-profile-section"><h3>Matched administrative names</h3>';
+      if(activeAdpProjectMatches.length){
+        activeAdpProjectMatches.forEach(match=>{
+          const path=[match.record.division,match.record.district,match.record.upazila,match.record.union]
+            .filter(Boolean).filter((value,index,array)=>array.indexOf(value)===index).join(" · ");
+          html+='<div class="adp-profile-row"><span>'+escapeHtml(match.level)+'</span><strong>'+escapeHtml(match.name)+'</strong></div>';
+          if(path)html+='<div class="adp-profile-summary">'+escapeHtml(path)+'</div>';
+        });
+      }else{
+        html+=profileEmpty("The roster title does not identify a unique name that matches the loaded map's administrative boundaries. No map dot is assigned to this entry.");
+      }
+      html+='</section><div class="adp-profile-note">Location precision: administrative-area name match. No latitude/longitude, chainage or surveyed site geometry is provided by this ADP list. Multi-location projects may need several official source documents to identify all sites.</div>';
+      html+='<div class="adp-profile-actions">'+adpProfileLink("Search exact title and place",adpProfileSearchUrl("google",project))+adpProfileLink("Search official government pages",adpProfileSearchUrl("official",project))+'</div>';
+    }else if(activeProjectProfileTab==="financial"){
+      html+='<div class="adp-profile-grid"><div class="adp-profile-stat"><small>FY2026–27 ADP allocation</small><strong>৳ '+escapeHtml(allocation)+'</strong><em>Bangladesh taka · lakh</em></div>'+
+        '<div class="adp-profile-stat"><small>Equivalent allocation</small><strong>৳ '+escapeHtml(allocationCrore)+'</strong><em>1 crore = 100 lakh</em></div></div>';
+      html+='<section class="adp-profile-section"><h3>What this figure represents</h3><div class="adp-profile-row"><span>Financial measure</span><strong>Annual ADP allocation</strong></div><div class="adp-profile-row"><span>Fiscal year</span><strong>2026–27</strong></div><div class="adp-profile-row"><span>Source unit</span><strong>Lakh taka</strong></div></section>';
+      html+='<div class="adp-profile-note">An ADP allocation is not the project's total approved cost, money released, actual expenditure, contractor payment or proof of physical progress. These figures are not published in this row of the ADP roster.</div>';
+    }else if(activeProjectProfileTab==="news"){
+      html+='<section class="adp-profile-section"><h3>News and media search</h3><div class="adp-profile-summary">Search results are discovered live for this project's title. Check the publisher, date, place and whether the article is about this exact project before treating it as evidence.</div>'+
+        '<div class="adp-profile-actions">'+adpProfileLink("YouTube videos",adpProfileSearchUrl("youtube",project))+adpProfileLink("Google News",adpProfileSearchUrl("news",project))+adpProfileLink("BSS",adpProfileSearchUrl("bss",project))+adpProfileLink("The Daily Star",adpProfileSearchUrl("dailystar",project))+adpProfileLink("The Business Standard",adpProfileSearchUrl("tbs",project))+adpProfileLink("Prothom Alo",adpProfileSearchUrl("prothomalo",project))+'</div>'+
+        '<div id="adpNewsResults" class="adp-news-empty">Loading recent news matches…</div></section>';
+      loadAdpProjectNews(project);
+    }else if(activeProjectProfileTab==="sources"){
+      html+='<section class="adp-profile-section"><h3>Primary source</h3><div class="adp-profile-row"><span>Publisher</span><strong>Implementation Monitoring and Evaluation Division (IMED)</strong></div><div class="adp-profile-row"><span>Document</span><strong>List of Project in ADP 2026–27</strong></div><div class="adp-profile-row"><span>Publication date</span><strong>14 October 2026</strong></div><div class="adp-profile-row"><span>Source page</span><strong>'+escapeHtml(project.page)+'/88</strong></div><div class="adp-profile-actions">'+adpProfileLink("Open official PDF at project page",ADP_ROSTER_SOURCE_URL+"#page="+project.page)+adpProfileLink("IMED report archive","https://imed.gov.bd/pages/reports")+'</div></section>';
+      html+='<section class="adp-profile-section"><h3>Further source discovery</h3><div class="adp-profile-actions">'+adpProfileLink("Official government records",adpProfileSearchUrl("official",project))+adpProfileLink("Procurement / tender search",adpProfileSearchUrl("bppa",project))+adpProfileLink("General web search",adpProfileSearchUrl("google",project))+adpProfileLink("YouTube search",adpProfileSearchUrl("youtube",project))+'</div></section>';
+      html+='<div class="adp-profile-note">Search links are discovery tools, not confirmed source documents. The profile does not claim that a search result is about this exact project until its title, project code and location have been checked.</div>';
+    }
+    el("projectProfileContent").innerHTML=html;
+    el("projectProfileContent").scrollTop=0;
+  }
+
+  async function loadAdpProjectNews(project){
+    const target=el("adpNewsResults");
+    if(!target)return;
+    const key=project.projectCode+"|"+project.page+"|"+project.title;
+    if(!adpNewsCache.has(key)){
+      const query='"'+project.title+'" Bangladesh';
+      const pending=(async()=>{
+        const response=await fetch("/api/project-news?q="+encodeURIComponent(query),{
+          method:"GET",credentials:"same-origin",headers:{Accept:"application/rss+xml, application/xml, text/xml"}
+        });
+        if(!response.ok)throw new Error("News feed returned HTTP "+response.status);
+        const xmlText=await response.text();
+        const xml=new DOMParser().parseFromString(xmlText,"application/xml");
+        if(xml.querySelector("parsererror"))throw new Error("News feed could not be parsed.");
+        return [...xml.querySelectorAll("item")].slice(0,8).map(item=>{
+          const title=item.querySelector("title")?.textContent?.trim()||"Untitled article";
+          const link=item.querySelector("link")?.textContent?.trim()||"";
+          const source=item.querySelector("source")?.textContent?.trim()||"News source";
+          const date=item.querySelector("pubDate")?.textContent?.trim()||"Date not supplied";
+          let safeUrl="";
+          try{const parsed=new URL(link);if(parsed.protocol==="https:")safeUrl=parsed.toString();}catch(_){}
+          return {title,link:safeUrl,source,date};
+        }).filter(item=>item.link);
+      })();
+      adpNewsCache.set(key,pending);
+    }
+    try{
+      const items=await adpNewsCache.get(key);
+      if(!activeAdpProjectRecord||activeAdpProjectRecord.id!==project.id||
+         activeProjectProfileTab!=="news")return;
+      const node=el("adpNewsResults");
+      if(!node)return;
+      if(!items.length){
+        node.className="adp-news-empty";
+        node.textContent="No article matches were returned for this exact title. Try the publisher search links above; no article has been attached as confirmed evidence.";
+        return;
+      }
+      node.className="";
+      node.innerHTML=items.map(item=>
+        '<a class="adp-news-card" href="'+escapeHtml(item.link)+'" target="_blank" rel="noopener noreferrer">'+
+        '<strong>'+escapeHtml(item.title)+'</strong><small>'+escapeHtml(item.source)+' · '+escapeHtml(item.date)+'</small></a>'
+      ).join("");
+    }catch(error){
+      if(!activeAdpProjectRecord||activeAdpProjectRecord.id!==project.id||
+         activeProjectProfileTab!=="news")return;
+      const node=el("adpNewsResults");
+      if(node){node.className="adp-news-empty";node.textContent="Live news search is unavailable right now. Use the Google News and publisher search links above.";}
+    }
+  }
+
+  function renderAdpProjectProfilePopup(project,matches,open=true,trigger){
+    if(!project)return;
+    activeAdpProjectRecord=project;
+    activeAdpProjectMatches=Array.isArray(matches)?matches:[];
+    activeProjectProfileId=project.id;
+    activeProjectProfileTab="overview";
+    el("projectProfileTitle").textContent=project.title;
+    el("projectProfileSubtitle").textContent=project.projectCode+" · ADP 2026–27 · page "+project.page+"/88";
+    el("projectProfileTabs").innerHTML=adpProfileTabs.map(([key,label,icon])=>
+      '<button type="button" class="project-profile-tab'+(key==="overview"?" active":"")+
+      '" data-project-profile-tab="'+key+'" aria-pressed="'+(key==="overview"?"true":"false")+'"><span>'+
+      icon+'</span><b>'+escapeHtml(label)+'</b></button>'
+    ).join("");
+    renderAdpProjectProfileTab("overview");
+    el("projectProfileFooter").textContent="IMED ADP 2026–27 · Published 14 October 2026 · allocation is not expenditure · locations are area matches, not surveyed sites.";
+    if(open)openProjectProfilePopup(trigger);
+  }
+
   function projectProfileSectionChange(key){
+    if(activeAdpProjectRecord){
+      renderAdpProjectProfileTab(key);
+      return;
+    }
     const project=atlasData.projects?.projects?.find(item=>item.id===activeProjectProfileId);
     if(!project)return;
     activeProjectProfileTab=key;
@@ -5820,7 +6005,70 @@ async function ensureLeaflet(){
     const button=event.target.closest("[data-project-profile-tab]");
     if(button)projectProfileSectionChange(button.dataset.projectProfileTab);
   });
+  const adpDirectoryPanel=el("adpDirectoryPanel");
+  const adpDirectoryToggle=el("adpDirectoryToggle");
+  const adpDirectoryResults=el("adpDirectoryResults");
+  function renderAdpDirectory(){
+    if(!adpDirectoryPanel||adpDirectoryPanel.hidden)return;
+    const query=String(el("adpDirectorySearch")?.value||"").trim().toLowerCase();
+    const filter=el("adpDirectoryFilter")?.value||"all";
+    const filtered=adpProjectRows.filter(project=>{
+      const matches=adpProjectMatches.get(project.id)||[];
+      if(filter==="located"&&!matches.length)return false;
+      if(filter==="unlocated"&&matches.length)return false;
+      const haystack=[project.title,project.projectCode,project.locationText,project.ministryHeading,project.agencyHeading].join(" ").toLowerCase();
+      return !query||haystack.includes(query);
+    });
+    const shown=filtered.slice(0,45);
+    el("adpDirectoryMeta").textContent=filtered.length.toLocaleString("en-BD")+" matching entries · showing "+shown.length+" · "+adpProjectRows.length.toLocaleString("en-BD")+" parsed from 88 pages";
+    if(!shown.length){
+      adpDirectoryResults.innerHTML='<div class="adp-directory-empty">No project entry matches this search. Try a project code, a shorter phrase or a place name.</div>';
+      return;
+    }
+    adpDirectoryResults.innerHTML=shown.map(project=>{
+      const matches=adpProjectMatches.get(project.id)||[];
+      const location=matches.map(item=>item.name+" ("+item.level+")").join(" · ")||
+        (project.locationText||"No map-name match");
+      const amount=project.allocationLakh===null?"Allocation not extracted":
+        "৳ "+Number(project.allocationLakh).toLocaleString("en-BD",{maximumFractionDigits:2})+" lakh";
+      return '<button class="adp-directory-item" type="button" data-adp-project-id="'+escapeHtml(project.id)+'">'+
+        '<strong>'+escapeHtml(project.title)+'</strong>'+
+        '<small>'+escapeHtml(project.projectCode)+" · "+escapeHtml(amount)+" · "+escapeHtml(location)+'</small></button>';
+    }).join("");
+  }
+  adpDirectoryToggle?.addEventListener("click",()=>{
+    adpDirectoryPanel.hidden=!adpDirectoryPanel.hidden;
+    if(!adpDirectoryPanel.hidden){
+      renderAdpDirectory();
+      el("adpDirectorySearch")?.focus();
+    }
+  });
+  el("adpDirectoryClose")?.addEventListener("click",()=>{adpDirectoryPanel.hidden=true;});
+  el("adpDirectorySearch")?.addEventListener("input",renderAdpDirectory);
+  el("adpDirectoryFilter")?.addEventListener("change",renderAdpDirectory);
+  adpDirectoryResults?.addEventListener("click",event=>{
+    const button=event.target.closest("[data-adp-project-id]");
+    if(!button)return;
+    const project=adpProjectRows.find(item=>item.id===button.dataset.adpProjectId);
+    if(!project)return;
+    const matches=adpProjectMatches.get(project.id)||[];
+    if(matches[0])map.setView(matches[0].point,Math.max(map.getZoom(),9));
+    renderAdpProjectProfilePopup(project,matches,true,button);
+  });
   el("projectProfileShare").addEventListener("click",async()=>{
+    if(activeAdpProjectRecord){
+      const project=activeAdpProjectRecord;
+      const url=window.location.href.split("#")[0]+"#adp="+encodeURIComponent(project.projectCode)+"&page="+project.page;
+      try{
+        if(navigator.share)await navigator.share({title:project.title,url:url});
+        else if(navigator.clipboard?.writeText){
+          await navigator.clipboard.writeText(url);
+          const label=el("projectProfileShare").querySelector("span");
+          if(label){label.textContent="Link copied";window.setTimeout(()=>{label.textContent="Share";},1800);}
+        }else window.prompt("Copy project profile link",url);
+      }catch(error){if(error&&error.name!=="AbortError")console.warn("Project share was unavailable",error);}
+      return;
+    }
     const project=atlasData.projects?.projects?.find(item=>item.id===activeProjectProfileId);
     if(!project)return;
     const url=window.location.href.split("#")[0]+"#project="+encodeURIComponent(project.id);
