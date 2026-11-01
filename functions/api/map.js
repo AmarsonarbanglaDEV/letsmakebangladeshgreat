@@ -108,7 +108,7 @@ async function fetchGeoBoundariesFallback(adm) {
   return geojson;
 }
 
-async function fetchArcGisPage(config, offset, requestedLimit) {
+async function fetchArcGisPage(config, offset, requestedLimit, bboxText) {
   const metadataUrl = config.url + "?f=pjson";
   const metadataResponse = await fetchWithTimeout(metadataUrl, {
     headers: { Accept: "application/json" },
@@ -130,7 +130,6 @@ async function fetchArcGisPage(config, offset, requestedLimit) {
   });
   if (oid) params.set("orderByFields", oid + " ASC");
 
-  const bboxText = requestUrl.searchParams.get("bbox");
   if (bboxText) {
     const values = bboxText.split(",").map(Number);
     if (values.length !== 4 || values.some(value => !Number.isFinite(value)) ||
@@ -192,7 +191,7 @@ export async function onRequestGet(context) {
   }
 
   try {
-    const page = await fetchArcGisPage(config, offsetValue, limitValue);
+    const page = await fetchArcGisPage(config, offsetValue, limitValue, requestUrl.searchParams.get("bbox"));
     return jsonResponse(page);
   } catch (primaryError) {
     // Use the open gbOpen boundary only for national / division / district
