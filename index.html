@@ -4438,7 +4438,7 @@ async function ensureLeaflet(){
   }
   function openAtlasDataPopup(trigger){
     if(!dataPopupLayer)return;
-    if(trigger)lastPopupTrigger=trigger;
+    lastPopupTrigger=trigger&& !trigger.closest("#sidebar")?trigger:sidebarToggle;
     if(sidebarIsOpen())setSidebarOpen(false,trigger||sidebarToggle,false);
     dataPopupLayer.hidden=false;
     dataPopupLayer.setAttribute("aria-hidden","false");
