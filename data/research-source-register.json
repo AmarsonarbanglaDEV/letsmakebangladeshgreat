@@ -130,16 +130,17 @@
       "url": "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-imed/2026/9/51732c2a-8082-469a-b02b-499e6aaa00b6.pdf",
       "publicationDate": "2026-10-14",
       "coverage": "FY2026-27; 88 pages; 1,173 project entries; allocation total 19,474,064.07 lakh taka.",
-      "importStatus": "The map runtime parses the official 88-page PDF through /api/adp-roster. It extracts project code, English title, Bangla location text, ADP allocation and page number; it matches names to the map's division, district, upazila and union boundary names. A static JSON export and verified exact sites are not present.",
+      "importStatus": "The website parses the official 88-page PDF at runtime, extracts the project rows and creates a searchable directory and profile for each parsed row. Project names are matched against the map's division/district/upazila/union boundary names. Profiles include the official source page, allocation, location precision note, Google News RSS search results, YouTube search links and selected publisher search links.",
       "useFor": [
         "project code",
         "English project description",
         "Bangla location clues",
         "ADP allocation",
         "PDF page number",
-        "division/district/upazila/union map-name matching"
+        "division/district/upazila/union map-name matching",
+        "project-profile source citation"
       ],
-      "limitations": "The roster is not an exact-location dataset and does not contain a per-project lifecycle status field. Matched dots show administrative areas only; ambiguous repeated place names and rows with no map-name clue remain unlocated."
+      "limitations": "A live parse count must be checked against the official total of 1,173; no static 1,173-row JSON export is committed. The roster is not an exact-location dataset and does not contain project lifecycle statuses. Map dots are administrative-area matches, not surveyed sites. Google News results and publisher/YouTube searches are discovery aids, not confirmed evidence until checked for the exact project."
     },
     {
       "id": "imed-report-archive",
@@ -429,6 +430,19 @@
         "ECNEC decision and project proposal status clues"
       ],
       "limitations": "A proposal sent back is not automatically cancelled; confirm with ECNEC minutes or official decision."
+    },
+    {
+      "id": "project-news-rss",
+      "publisher": "Google News RSS",
+      "title": "Per-project news search in ADP profiles",
+      "type": "live news search / discovery feed",
+      "url": "https://news.google.com/",
+      "coverage": "Title-based searches run when a user opens the News & Media tab for an ADP project profile.",
+      "useFor": [
+        "find dated news articles about a project",
+        "identify media leads to corroborate against official records"
+      ],
+      "limitations": "Results are not guaranteed to be about the exact project. Verify project code, named place, date and claim before attaching as evidence. This is a discovery feed, not a complete archive."
     }
   ]
 }
