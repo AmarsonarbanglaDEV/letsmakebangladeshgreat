@@ -2639,6 +2639,27 @@
     <div class="sidebar-foot">Evidence first · Unknown stays unknown · Map data is not proof of expenditure.</div>
     </section>
   </div>
+  <div class="project-profile-layer" id="projectProfileLayer" hidden aria-hidden="true">
+    <section class="project-profile-modal" id="projectProfileModal" role="dialog" aria-modal="true" aria-labelledby="projectProfileTitle">
+      <header class="project-profile-header">
+        <div class="project-profile-heading">
+          <div class="project-profile-eyebrow">BANGLADESH ATLAS <span>·</span> DEVELOPMENT PROJECT RECORD</div>
+          <h2 id="projectProfileTitle">Project profile</h2>
+          <div class="project-profile-subtitle" id="projectProfileSubtitle">Source-linked public record</div>
+        </div>
+        <div class="project-profile-actions">
+          <button type="button" id="projectProfileShare" class="project-profile-action">↗ <span>Share</span></button>
+          <button type="button" id="projectProfilePrint" class="project-profile-action">▤ <span>Print</span></button>
+          <button type="button" id="projectProfileClose" class="project-profile-close" aria-label="Close project profile" title="Close">×</button>
+        </div>
+      </header>
+      <div class="project-profile-shell">
+        <nav class="project-profile-tabs" id="projectProfileTabs" aria-label="Project profile sections"></nav>
+        <main class="project-profile-content" id="projectProfileContent" aria-live="polite"></main>
+      </div>
+      <footer class="project-profile-footer" id="projectProfileFooter">Evidence first · Unknown stays unknown · A map marker is not proof of expenditure.</footer>
+    </section>
+  </div>
   <button class="sidebar-backdrop" id="sidebarBackdrop" type="button"
     aria-label="Close navigation panel" aria-hidden="true" tabindex="-1"></button>
 
@@ -4266,37 +4287,24 @@ async function ensureLeaflet(){
   }
 
   function renderProjectCard(project){
-
     const isMega=project.kind==="mega";
-    const cost=isMega?croreFromLakh(project.approval.latestRevisedTotalLakh):croreFromLakh(project.approvedProjectCostLakh);
-    const title=project.name;
-    let html='<article class="atlas-project-card" data-project-card="'+escapeHtml(project.id)+'"><div class="atlas-project-top"><span class="atlas-project-kind">'+(isMega?"MEGA PROJECT":"APPROVED ROAD PROJECT · RTHD")+'</span><span class="atlas-project-id">'+escapeHtml(project.id)+'</span></div>';
-    html+='<h3>'+escapeHtml(title)+'</h3><p class="atlas-project-meta">'+escapeHtml(project.implementingAgency||"Implementing agency not in imported row")+' · '+(isMega?"RTHD mega-project progress PDF":"RTHD approved-project list")+'</p>';
-    html+=projectTypeImageHtml(project);
-    html+='<div class="atlas-project-money"><small>'+(isMega?"Third revised project total":"Approved estimate")+'</small><strong>'+atlasMoney(cost)+'</strong><small>Original unit: '+(isMega?"lakh taka converted to crore":"lakh taka converted to crore")+'</small></div>';
-    if(isMega)html+=projectModelHtml(project);
-    if(isMega){
-      (project.progress||[]).forEach(progress=>html+=progressBarHtml(progress));
-      html+='<p class="atlas-small-note">Progress snapshot: '+escapeHtml(project.approval.sourceDate)+' · physical and financial measures are separate. The RTHD index has a newer report dated 12 Oct 2026 which is not yet transcribed.</p>';
-      html+='<p class="atlas-small-note">Revised total includes GoB '+atlasMoney(croreFromLakh(project.approval.latestGoBShareLakh))+' and project aid '+atlasMoney(croreFromLakh(project.approval.latestProjectAidShareLakh))+'.</p>';
-    }else{
-      html+='<p class="atlas-warning-text">No project-level progress percentage, release or expenditure was provided in the imported approved-project listing. Progress is not assumed to be 0%.</p>';
-    }
-    html+='<p class="atlas-project-area-label">Officially listed area:</p>';
-    if(project.mapDisplay?.areaConflict){
-      html+='<p class="atlas-warning-text">Area conflict in the source register: '+escapeHtml((project.administrativeAreas||[]).map(a=>a.name).join(" / "))+'. Not mapped until the administrative relationship is confirmed.</p>';
-    }else{
-      html+='<div class="atlas-location-chips">'+(project.administrativeAreas||[]).map(a=>a.type==="district"?'<button class="atlas-location-chip" type="button" data-district="'+escapeHtml(a.name)+'">'+escapeHtml(a.name)+' ↗</button>':'<span class="atlas-location-chip is-context">'+escapeHtml(a.name)+'</span>').join("")+'</div>';
-    }
-    html+=projectFundingDetailsHtml(project);
-    html+=projectManagementDetailsHtml(project);
-    html+=projectContractDetailsHtml(project);
-    html+=projectOutputDetailsHtml(project);
-    html+=projectTimeLapseMarkup(project);
-    html+='<div class="atlas-project-foot"><span>Source date: '+escapeHtml(project.sourceUpdatedAt||project.lastChecked||"not supplied")+'</span><a class="atlas-source-inline" href="'+escapeHtml(project.source||project.approval?.source||"#")+'" target="_blank" rel="noopener">Original record ↗</a></div>';
-    html+='</article>';
+    const approvedLakh=project.approval?.latestRevisedTotalLakh??project.approvedProjectCostLakh??project.financials?.approvedCostLakh;
+    const place=(project.administrativeAreas||[]).map(a=>a.name).filter(Boolean).join(" · ");
+    const agency=project.implementingAgency||"Implementing agency not stated in imported row";
+    const sourceDate=project.sourceUpdatedAt||project.lastChecked||"Date not stated";
+    const status=isMega?"Progress report available":"Listed in RTHD approved-project register";
+    let html='<article class="atlas-project-card atlas-project-directory-card" data-project-card="'+escapeHtml(project.id)+'">';
+    html+='<div class="atlas-project-card-visual">'+projectTypeImageHtml(project)+'<span class="atlas-project-card-status">'+escapeHtml(status)+'</span></div>';
+    html+='<div class="atlas-project-card-body">';
+    html+='<div class="atlas-project-top"><span class="atlas-project-kind">'+(isMega?"MEGA PROJECT":"APPROVED ROAD PROJECT · RTHD")+'</span><span class="atlas-project-id">'+escapeHtml(project.id)+'</span></div>';
+    html+='<h3><button type="button" class="atlas-project-title-button" data-view-project-profile="'+escapeHtml(project.id)+'">'+escapeHtml(project.name)+'</button></h3>';
+    html+='<p class="atlas-project-meta">'+escapeHtml(agency)+'</p>';
+    html+='<div class="atlas-project-directory-facts"><div><small>Project estimate</small><strong>'+atlasMoney(approvedLakh==null?null:croreFromLakh(approvedLakh))+'</strong></div><div><small>Listed area</small><strong>'+escapeHtml(place||"Not specified")+'</strong></div></div>';
+    html+='<div class="atlas-project-card-bottom"><span>Source snapshot · '+escapeHtml(sourceDate)+'</span><button type="button" class="atlas-project-view-button" data-view-project-profile="'+escapeHtml(project.id)+'">View full profile <b aria-hidden="true">→</b></button></div>';
+    html+='</div></article>';
     return html;
   }
+
   function renderProjectsPanel(){
     const d=atlasData.projects;
     if(!d)return '<p class="atlas-empty-note">Project data file unavailable.</p>';
@@ -4306,7 +4314,9 @@ async function ensureLeaflet(){
       '<div class="atlas-kpi"><small>Imported approved rows</small><strong>'+d.coverage.rthdApprovedProjectRegister.importedRecords+'</strong><small>first page only</small></div>'+
       '<div class="atlas-kpi"><small>Mega-project records</small><strong>'+d.coverage.rthdMegaProjectRegister.importedRecords+'</strong><small>quantified snapshot</small></div>'+
     '</div><p class="atlas-small-note">'+escapeHtml(d.coverage.rthdApprovedProjectRegister.note)+'</p>';
+    html+='<div class="atlas-project-grid">';
     d.projects.forEach(project=>html+=renderProjectCard(project));
+    html+='</div>';
     return html;
   }
   function renderProcurementPanel(){
