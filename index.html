@@ -7686,6 +7686,7 @@ async function ensureLeaflet(){
       if(target.matches("[data-promise-compare]")){
         promiseFilters[target.getAttribute("data-promise-compare")==="A"?"compareA":"compareB"]=target.value;
         promiseFilterAttribute="data-promise-compare";
+      }
       if(promiseFilterAttribute){
         const start=target.selectionStart,end=target.selectionEnd;
         refreshPromiseDashboard();
