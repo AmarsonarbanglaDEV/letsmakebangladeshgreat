@@ -405,6 +405,12 @@
     .leaflet-marker-icon:hover .atlas-project-pin,.leaflet-marker-icon:focus .atlas-project-pin{transform:scale(1.28)}
     .project-marker-tooltip{border:1px solid #dbe4ec;border-radius:8px;background:#fff;color:#214059;box-shadow:0 4px 14px rgba(0,0,0,.16);font-size:9px;line-height:1.5}
     .project-marker-tooltip small{color:#718397}
+    .map-selected-locus-shell{background:transparent;border:0}
+    .map-selected-locus{position:relative;display:block;width:26px;height:26px;border:2px solid #f7fbff;border-radius:50%;background:rgba(13,79,112,.17);box-shadow:0 0 0 2px #175b78,0 2px 8px rgba(0,0,0,.24)}
+    .map-selected-locus:before,.map-selected-locus:after{content:"";position:absolute;background:#175b78}
+    .map-selected-locus:before{left:10px;top:-5px;width:2px;height:32px}
+    .map-selected-locus:after{top:10px;left:-5px;width:32px;height:2px}
+    .map-selected-locus i{position:absolute;left:8px;top:8px;width:6px;height:6px;border:1px solid #fff;border-radius:50%;background:#175b78;z-index:1}
     .atlas-project-card.is-project-selected{border-color:#f28a19;box-shadow:0 0 0 3px rgba(242,138,25,.19),0 8px 24px rgba(18,43,70,.08)}
     .atlas-project-type-image{margin:11px 0 13px;border-radius:13px;overflow:hidden;background:linear-gradient(145deg,#143d52,#22617b)}
     .atlas-project-type-image svg{display:block;width:100%;height:auto;max-height:170px}
@@ -3581,10 +3587,17 @@ async function ensureLeaflet(){
     if(historicalLayer&&map.hasLayer(historicalLayer))map.removeLayer(historicalLayer);
     if(!outlineMode&&satellite&&!map.hasLayer(satellite))satellite.addTo(map);
     if(pointMarker&&map.hasLayer(pointMarker))map.removeLayer(pointMarker);
-    pointMarker=L.circleMarker(latlng,{
-      pane:"markerPane",radius:6,color:"#fff",weight:2,fillColor:"#e08a3b",fillOpacity:1
-    }).addTo(map);
-    if(label)setStatus(label+" · selected map point, not an official project coordinate.");
+    const selectedIcon=L.divIcon({
+      className:"map-selected-locus-shell",
+      html:'<span class="map-selected-locus" aria-hidden="true"><i></i></span>',
+      iconSize:[26,26],iconAnchor:[13,13]
+    });
+    pointMarker=L.marker(latlng,{pane:"markerPane",icon:selectedIcon,keyboard:false,interactive:true})
+      .addTo(map);
+    pointMarker.bindTooltip("Selected map point · imagery lookup only · not a government project location",{
+      direction:"top",offset:[0,-11],className:"project-marker-tooltip"
+    });
+    if(label)setStatus(label+" · temporary imagery lookup point only; not an official project location.");
   }
   function refreshAreaLabels(){
     if(!currentLayer)return;
