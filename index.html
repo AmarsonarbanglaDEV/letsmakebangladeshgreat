@@ -3186,6 +3186,221 @@
     .promise-period-stats b{color:#234d37}
     @media(max-width:420px){.promise-pager{align-items:flex-start;flex-direction:column}.promise-pager>div{display:flex;gap:6px}.promise-pager .promise-action{min-height:28px}}
 
+
+    /* Progress dashboard UI refinement v2 */
+    body.promise-dashboard-open .atlas-data-popup{
+      width:min(1180px,calc(100vw - 64px));
+      height:min(930px,calc(100dvh - 56px));
+      max-height:calc(100dvh - 32px);
+      border-radius:24px;
+      box-shadow:0 32px 110px rgba(4,22,13,.4);
+    }
+    body.promise-dashboard-open .atlas-data-popup-head{
+      padding:17px 24px;
+      background:linear-gradient(105deg,#f9fcf7,#edf5eb);
+      border-bottom:1px solid #dbe7dc;
+    }
+    body.promise-dashboard-open .atlas-data-popup-head h2{font-size:19px}
+    body.promise-dashboard-open .atlas-data-popup .side-content{
+      padding:22px clamp(16px,3vw,34px) 36px;
+      background:#f4f7f2;
+    }
+    .promise-dashboard{max-width:1080px;margin:0 auto;gap:15px;padding:0 0 30px}
+    .promise-hero{
+      display:flex;align-items:center;justify-content:space-between;gap:24px;
+      min-height:190px;padding:28px 32px;border:1px solid rgba(255,255,255,.16);
+      border-radius:22px;
+      background:
+        radial-gradient(circle at 88% 20%,rgba(220,239,180,.16),transparent 24%),
+        linear-gradient(115deg,#0a4935 0%,#0c6747 62%,#8d2838 125%);
+      box-shadow:0 14px 30px rgba(13,69,45,.12);
+    }
+    .promise-hero-copy{position:relative;z-index:2;max-width:760px}
+    .promise-hero-kicker{font-size:9px;letter-spacing:.2em;color:#d9edc5}
+    .promise-hero h2{font-size:clamp(28px,3.6vw,39px);letter-spacing:-.055em;margin:10px 0 8px}
+    .promise-hero p{max-width:680px;font-size:12px;line-height:1.75;color:#e1efe6}
+    .promise-hero-meta{gap:7px 9px;margin-top:17px}
+    .promise-hero-meta span{padding:6px 9px;border-color:rgba(255,255,255,.17);background:rgba(255,255,255,.09);font-size:9px}
+    .promise-hero-meta b{color:#fff;font-size:11px;font-variant-numeric:tabular-nums}
+    .promise-hero-seal{
+      position:relative;z-index:1;flex:0 0 112px;width:112px;height:112px;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+      border:1px solid rgba(255,255,255,.3);border-radius:50%;
+      background:rgba(255,255,255,.075);color:#fff;text-align:center;
+      box-shadow:0 0 0 9px rgba(255,255,255,.045),inset 0 0 0 7px rgba(255,255,255,.045)
+    }
+    .promise-hero-seal span{font-size:30px;font-weight:900;letter-spacing:-.08em}
+    .promise-hero-seal small{font-size:7px;font-weight:900;letter-spacing:.16em;line-height:1.35}
+    .promise-jump-nav{
+      position:sticky;top:-22px;z-index:10;display:flex;gap:6px;overflow-x:auto;
+      padding:9px 10px;border:1px solid #dfe8de;border-radius:13px;
+      background:rgba(250,252,248,.96);box-shadow:0 5px 15px rgba(22,54,34,.06);
+      scrollbar-width:none;backdrop-filter:blur(14px)
+    }
+    .promise-jump-nav::-webkit-scrollbar{display:none}
+    .promise-jump-nav a{
+      flex:0 0 auto;padding:7px 10px;border-radius:8px;background:#edf3ed;
+      color:#486453;font-size:9px;font-weight:850;white-space:nowrap;
+      transition:background .14s,color .14s
+    }
+    .promise-jump-nav a:hover{background:#145b40;color:#fff}
+    .promise-section{
+      scroll-margin-top:18px;padding:19px 20px;border:1px solid #dfe7df;
+      border-radius:17px;background:#fff;box-shadow:0 4px 16px rgba(19,49,30,.035)
+    }
+    .promise-section-head{margin-bottom:15px}
+    .promise-section-head h3{font-size:16px;letter-spacing:-.035em}
+    .promise-section-head p{max-width:720px;font-size:10px;line-height:1.65}
+    .promise-section-kicker{font-size:8px;letter-spacing:.16em}
+    .promise-kpi-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+    .promise-kpi{
+      min-height:91px;display:flex;flex-direction:column;justify-content:space-between;
+      padding:13px 14px;border:1px solid #e3eae3;border-top-width:1px;
+      border-left:3px solid #d7e3d7;border-radius:12px;background:linear-gradient(145deg,#fff,#fbfcfa)
+    }
+    .promise-kpi small{font-size:9px;color:#617367}
+    .promise-kpi strong{font-size:26px;margin-top:8px;color:#153c2b}
+    .promise-kpi em{font-size:8px;color:#87948b}
+    .promise-kpi.fulfilled{border-left-color:#218552}
+    .promise-kpi.partial{border-left-color:#3b83bd}
+    .promise-kpi.progress{border-left-color:#2878c8}
+    .promise-kpi.delayed{border-left-color:#c27a22}
+    .promise-kpi.cancelled{border-left-color:#b24c4c}
+    .promise-kpi.unknown{border-left-color:#8b6bb0}
+    .promise-status-distribution{margin-top:14px;padding:13px 14px;border:1px solid #e4ebe3;border-radius:12px;background:#fafcf9}
+    .promise-status-distribution-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .promise-status-distribution-head strong{color:#294737;font-size:10px}
+    .promise-status-distribution-head small{color:#839087;font-size:8px}
+    .promise-status-strip{display:flex;overflow:hidden;height:10px;margin-top:10px;border-radius:10px;background:#edf1ed}
+    .promise-status-strip span{height:100%;min-width:2px}
+    .promise-status-legend{display:flex;flex-wrap:wrap;gap:7px 13px;margin-top:10px}
+    .promise-status-legend span{display:inline-flex;align-items:center;gap:5px;color:#718177;font-size:8px}
+    .promise-status-legend i{width:7px;height:7px;border-radius:50%}
+    .promise-status-legend b{color:#294737;font-variant-numeric:tabular-nums}
+    .promise-register-note{padding:12px 14px;border-radius:11px;font-size:9px;line-height:1.7}
+    .promise-filter-grid{grid-template-columns:minmax(0,1.8fr) repeat(3,minmax(130px,1fr));gap:8px}
+    .promise-filter{height:40px;padding:0 11px;border-radius:10px;font-size:10px}
+    .promise-register-tools{margin-top:10px}
+    .promise-result-count{font-size:9px}
+    .promise-action{min-height:36px;padding:8px 12px;border-radius:10px;font-size:9px}
+    .promise-list{gap:9px;margin-top:13px}
+    .promise-card{padding:15px 16px;border-radius:13px}
+    .promise-card h4{font-size:13px}
+    .promise-card p{font-size:10px}
+    .promise-meta-chip{padding:5px 7px;font-size:8px}
+    .promise-status{font-size:8px;padding:6px 8px}
+    .promise-progress-track{height:8px;margin-top:11px}
+    .promise-progress-caption{font-size:9px}
+    .promise-empty{padding:25px 18px;border-radius:13px;font-size:11px}
+    .promise-empty strong{font-size:13px}
+    .promise-source-starter{margin-top:14px;padding:16px;border:1px solid #dce8dc;border-radius:14px;background:linear-gradient(145deg,#f9fcf7,#f0f6ee)}
+    .promise-source-starter h4{margin:5px 0;color:#1c4932;font-size:13px}
+    .promise-source-starter p{margin:4px 0;color:#718177;font-size:9px;line-height:1.65}
+    .promise-source-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
+    .promise-source-grid a{display:flex;flex-direction:column;gap:5px;padding:11px;border:1px solid #e0e9df;border-radius:10px;background:#fff}
+    .promise-source-grid a:hover{border-color:#9cbea1;background:#fbfefa}
+    .promise-source-grid strong{color:#27513a;font-size:10px}
+    .promise-source-grid small{color:#7d8b80;font-size:8px;line-height:1.45}
+    .promise-source-grid span{margin-top:auto;color:#27734a;font-size:8px;font-weight:900}
+    .promise-source-reminder{margin-top:12px!important;padding:9px 11px;border-left:3px solid #d9a64d;background:#fff9ed;color:#84682e!important}
+    .promise-sector-list{gap:12px}
+    .promise-sector-row{grid-template-columns:minmax(150px,1fr) minmax(0,2fr) auto;gap:14px}
+    .promise-sector-name{font-size:10px}
+    .promise-sector-bar{height:9px}
+    .promise-sector-sub{font-size:8px}
+    .promise-sector-stats{font-size:9px}
+    .promise-achievement-grid{gap:10px}
+    .promise-achievement{padding:14px;border-radius:13px;background:linear-gradient(145deg,#fff,#fbfcf9)}
+    .promise-achievement-badge{font-size:8px;padding:5px 7px}
+    .promise-achievement h4{font-size:12px}
+    .promise-achievement p{font-size:9px}
+    .promise-pending-grid{gap:8px}
+    .promise-pending-chip{padding:11px;border-radius:10px}
+    .promise-pending-chip strong{font-size:9px}
+    .promise-pending-chip b{font-size:14px}
+    .promise-period-card{padding:13px;border-radius:12px}
+    .promise-period-card strong{font-size:11px}
+    .promise-period-card small{font-size:9px}
+    .promise-period-stats{font-size:9px}
+    .promise-timeline{gap:10px}
+    .promise-timeline-item{grid-template-columns:86px 14px minmax(0,1fr);gap:10px}
+    .promise-timeline-date{font-size:9px}
+    .promise-timeline-dot{width:10px;height:10px}
+    .promise-timeline-copy strong{font-size:10px}
+    .promise-timeline-copy small{font-size:9px}
+    .promise-method-note{padding:13px 15px;font-size:9px;line-height:1.75}
+    .promise-detail-head{padding-bottom:8px}
+    .promise-detail-head .promise-action{min-height:34px}
+    .promise-detail-grid{gap:9px}
+    .promise-detail-field{padding:12px;border-radius:10px}
+    .promise-detail-field small{font-size:8px}
+    .promise-detail-field strong{font-size:10px}
+    .promise-detail-text{padding:15px;font-size:11px;line-height:1.8}
+    .promise-evidence-item{padding:12px;border-radius:10px}
+    .promise-evidence-item strong{font-size:10px}
+    .promise-evidence-item small{font-size:9px}
+    .promise-evidence-item a{font-size:9px}
+    @media(max-width:900px){
+      body.promise-dashboard-open .atlas-data-popup-layer{padding:12px}
+      body.promise-dashboard-open .atlas-data-popup{width:calc(100vw - 24px);height:calc(100dvh - 24px);max-height:calc(100dvh - 24px);border-radius:19px}
+      body.promise-dashboard-open .atlas-data-popup .side-content{padding:16px 15px 28px}
+      .promise-hero{min-height:160px;padding:20px}
+      .promise-hero-seal{flex-basis:82px;width:82px;height:82px}
+      .promise-hero-seal span{font-size:24px}
+      .promise-filter-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .promise-filter-grid .promise-filter:first-child{grid-column:1/-1}
+      .promise-sector-row{grid-template-columns:minmax(120px,1fr) minmax(0,1.6fr) auto;gap:9px}
+    }
+    @media(max-width:600px){
+      body.promise-dashboard-open .atlas-data-popup-layer{padding:5px}
+      body.promise-dashboard-open .atlas-data-popup{width:calc(100vw - 10px);height:calc(100dvh - 10px);max-height:calc(100dvh - 10px);border-radius:16px}
+      body.promise-dashboard-open .atlas-data-popup-head{padding:12px 13px}
+      body.promise-dashboard-open .atlas-data-popup-head h2{font-size:16px}
+      body.promise-dashboard-open .atlas-data-popup-head p{font-size:9px}
+      body.promise-dashboard-open .atlas-data-popup .side-content{padding:11px 9px 22px}
+      .promise-dashboard{gap:10px}
+      .promise-hero{min-height:0;padding:17px 15px;border-radius:15px;gap:8px}
+      .promise-hero h2{font-size:25px}
+      .promise-hero p{font-size:10px;line-height:1.6}
+      .promise-hero-meta span{font-size:8px;padding:5px 6px}
+      .promise-hero-seal{flex-basis:58px;width:58px;height:58px;box-shadow:0 0 0 4px rgba(255,255,255,.045)}
+      .promise-hero-seal span{font-size:18px}
+      .promise-hero-seal small{font-size:5px}
+      .promise-jump-nav{top:-11px;padding:6px;border-radius:10px}
+      .promise-jump-nav a{font-size:8px;padding:7px 8px}
+      .promise-section{padding:12px 11px;border-radius:13px}
+      .promise-section-head h3{font-size:14px}
+      .promise-section-head p{font-size:9px}
+      .promise-kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+      .promise-kpi{min-height:78px;padding:10px}
+      .promise-kpi strong{font-size:22px}
+      .promise-status-distribution{padding:10px}
+      .promise-filter-grid{grid-template-columns:1fr}
+      .promise-filter-grid .promise-filter:first-child{grid-column:auto}
+      .promise-filter{height:39px}
+      .promise-source-grid{grid-template-columns:1fr}
+      .promise-card{padding:11px}
+      .promise-card-top{flex-direction:column;align-items:flex-start}
+      .promise-status{font-size:7px}
+      .promise-progress-caption{font-size:8px}
+      .promise-sector-row{grid-template-columns:minmax(0,1fr) auto;gap:5px 8px}
+      .promise-sector-name{grid-column:1}
+      .promise-sector-row>span:nth-child(2){grid-column:1/-1;grid-row:2}
+      .promise-sector-stats{grid-column:2;grid-row:1;font-size:8px}
+      .promise-achievement-grid,.promise-period-grid{grid-template-columns:1fr}
+      .promise-pending-grid{grid-template-columns:1fr 1fr}
+      .promise-compare-selects{grid-template-columns:1fr}
+      .promise-detail-grid{grid-template-columns:1fr}
+      .promise-timeline-item{grid-template-columns:66px 12px minmax(0,1fr);gap:6px}
+      .promise-timeline-date{font-size:8px}
+      .promise-pager{align-items:flex-start;flex-direction:column}
+      .promise-pager>div{display:flex;gap:6px}
+      .promise-register-tools{align-items:flex-start;flex-direction:column}
+    }
+    @media(prefers-reduced-motion:reduce){
+      .promise-dashboard *, .promise-dashboard *:before, .promise-dashboard *:after{transition:none!important;animation:none!important;scroll-behavior:auto!important}
+    }
+
   </style>
 </head>
 <body>
@@ -7522,8 +7737,9 @@ async function ensureLeaflet(){
     const selectedArea=el("selectedAreaName")?.textContent||"Bangladesh";
     const districtRecords=selectedArea!=="Bangladesh"?records.filter(record=>promiseAreaMatches(record,selectedArea)):[];
     let html='<div class="promise-dashboard">';
-    html+='<div class="promise-hero"><span class="promise-hero-kicker">NATIONAL DEVELOPMENT SCOREBOARD</span><h2>Progress you can verify.</h2><p>Explore public commitments, implementation milestones and achievements through their original sources. No party leaderboard, no popularity score and no invented progress.</p><div class="promise-hero-meta"><span>Evidence-first register</span><span>'+records.length+' records imported</span><span>'+governments.length+' administration periods</span></div></div>';
-    html+='<section class="promise-section"><div class="promise-section-head"><div><span class="promise-section-kicker">NATIONAL REGISTER</span><h3>Commitment overview</h3><p>Counts refer only to records imported into this register. They are not totals of all commitments made by governments.</p></div></div>';
+    html+='<div class="promise-hero"><div class="promise-hero-copy"><span class="promise-hero-kicker">BANGLADESH · PUBLIC ACCOUNTABILITY</span><h2>Progress you can verify.</h2><p>Track public commitments from the original promise to documented delivery. Every status and progress figure must be supported by an evidence trail.</p><div class="promise-hero-meta"><span><b>'+records.length+'</b> commitments in register</span><span><b>'+governments.length+'</b> administration periods</span><span><b>'+data.evidence.length+'</b> evidence records</span><span><b>'+achievements.length+'</b> verified achievements</span></div></div><div class="promise-hero-seal" aria-hidden="true"><span>BD</span><small>PROGRESS<br>REGISTER</small></div></div>';
+    html+='<nav class="promise-jump-nav" aria-label="Progress dashboard sections"><a href="#promise-overview">Overview</a><a href="#promise-register">Promise register</a><a href="#promise-sectors">Sectors</a><a href="#promise-pending">Pending</a><a href="#promise-achievements">Achievements</a><a href="#promise-districts">Districts</a><a href="#promise-periods">History</a></nav>';
+    html+='<section class="promise-section" id="promise-overview"><div class="promise-section-head"><div><span class="promise-section-kicker">NATIONAL REGISTER</span><h3>Commitment overview</h3><p>Counts refer only to records imported into this register. They are not totals of all commitments made by governments.</p></div></div>';
     html+='<div class="promise-kpi-grid">';
     html+=promiseKpi("Promises recorded",records.length,"", "Imported records only");
     html+=promiseKpi("Fulfilled",counts.fulfilled,"fulfilled","Evidence-reviewed status");
@@ -7535,9 +7751,15 @@ async function ensureLeaflet(){
     html+=promiseKpi("Insufficient evidence",counts.insufficient_evidence,"unknown","Do not treat as zero performance");
     html+=promiseKpi("Under review",counts.under_review,"","Evidence assessment ongoing");
     html+='</div>';
-    html+='<div class="promise-register-note" style="margin-top:10px">Overall measurable progress: '+(rate===null?"Not available":rate+"% mean across "+measured.length+" evidence-backed measurable promise(s)")+'. This descriptive figure is not a government or party score. Under-review records: '+counts.under_review+'.</div></section>';
+    if(records.length){
+      const statusSegments=Object.entries(PROMISE_STATUS_META).filter(([key])=>counts[key]>0).map(([key,meta])=>
+        '<span title="'+escapeHtml(meta.label)+': '+counts[key]+'" style="width:'+(counts[key]/records.length*100)+'%;background:'+meta.color+'"></span>'
+      ).join("");
+      html+='<div class="promise-status-distribution"><div class="promise-status-distribution-head"><strong>Record status mix</strong><small>'+records.length+' imported records · all administrations selected</small></div><div class="promise-status-strip" role="img" aria-label="Stacked status distribution of imported promise records">'+statusSegments+'</div><div class="promise-status-legend">'+Object.entries(PROMISE_STATUS_META).filter(([key])=>counts[key]>0).map(([key,meta])=>'<span><i style="background:'+meta.color+'"></i>'+escapeHtml(meta.label)+' <b>'+counts[key]+'</b></span>').join("")+'</div></div>';
+    }
+    html+='<div class="promise-register-note" style="margin-top:10px"><strong>How to read this:</strong> '+(rate===null?"No evidence-backed progress percentage can be calculated yet.":"The "+rate+"% figure is a mean across "+measured.length+" promises with reproducible evidence-backed progress calculations.")+' It is not a government or party score. Missing evidence remains separate from not started.</div></section>';
 
-    html+='<section class="promise-section"><div class="promise-section-head"><div><span class="promise-section-kicker">FIND A COMMITMENT</span><h3>Government promise tracker</h3><p>Search original wording, sector, institution, government period or linked district.</p></div><div class="promise-dashboard-actions"><button type="button" class="promise-action" data-promise-export>↓ Export CSV</button></div></div>';
+    html+='<section class="promise-section" id="promise-register"><div class="promise-section-head"><div><span class="promise-section-kicker">FIND A COMMITMENT</span><h3>Government promise tracker</h3><p>Search original wording, sector, institution, government period or linked district.</p></div><div class="promise-dashboard-actions"><button type="button" class="promise-action" data-promise-export>↓ Export CSV</button></div></div>';
     html+='<div class="promise-filter-grid"><input class="promise-filter" type="search" data-promise-search placeholder="Search commitments…" value="'+escapeHtml(promiseFilters.q)+'" aria-label="Search promises">';
     html+='<select class="promise-filter" data-promise-status aria-label="Filter by promise status"><option value="all">All statuses</option>'+Object.entries(PROMISE_STATUS_META).map(([key,val])=>'<option value="'+key+'"'+(promiseFilters.status===key?" selected":"")+'>'+escapeHtml(val.label)+'</option>').join("")+'</select>';
     html+='<select class="promise-filter" data-promise-sector aria-label="Filter by sector"><option value="all">All sectors</option>'+sectors.map(sector=>'<option value="'+escapeHtml(sector)+'"'+(promiseFilters.sector===sector?" selected":"")+'>'+escapeHtml(sector)+'</option>').join("")+'</select>';
@@ -7550,9 +7772,12 @@ async function ensureLeaflet(){
     }else{
       html+='<div class="promise-empty"><strong>'+(records.length?"No commitments match these filters.":"The promise register is ready for source-reviewed records.")+'</strong>'+(records.length?"Try another search, status or administration.":"No commitments have been imported yet. This is a data-coverage gap, not evidence that promises do not exist.")+'</div></div>';
     }
+    if(!records.length){
+      html+='<div class="promise-source-starter"><div><span class="promise-section-kicker">BUILD THE FIRST RECORDS</span><h4>Start with original public documents</h4><p>Capture the exact commitment wording first. Then link its government period, responsible institution, measurable target and evidence of implementation.</p></div><div class="promise-source-grid">'+(modules.promises.sources||[]).map(source=>'<a href="'+escapeHtml(source[2])+'" target="_blank" rel="noopener"><strong>'+escapeHtml(source[0])+'</strong><small>'+escapeHtml(source[1])+'</small><span>Open source ↗</span></a>').join("")+'</div><p class="promise-source-reminder">A manifesto or announcement proves that a commitment was made. It does not prove completion. Each result needs separate delivery evidence.</p></div>';
+    }
     html+='</section>';
 
-    html+='<section class="promise-section"><div class="promise-section-head"><div><span class="promise-section-kicker">SECTOR VIEW</span><h3>Development commitments by sector</h3><p>Average verified progress only among commitments with reproducible calculations; record counts show coverage.</p></div></div>';
+    html+='<section class="promise-section" id="promise-sectors"><div class="promise-section-head"><div><span class="promise-section-kicker">SECTOR VIEW</span><h3>Development commitments by sector</h3><p>Average verified progress only among commitments with reproducible calculations; record counts show coverage.</p></div></div>';
     if(sectors.length){
       html+='<div class="promise-sector-list">'+sectors.map(sector=>{
         const items=records.filter(x=>x.sector===sector);
@@ -7567,7 +7792,7 @@ async function ensureLeaflet(){
     }else html+='<div class="promise-empty">Sector results will appear after commitments are imported.</div>';
     html+='<p class="promise-method-note">No composite political ranking is calculated. Sector averages exclude records with missing or unverified progress denominators.</p></section>';
 
-    html+='<section class="promise-section"><div class="promise-section-head"><div><span class="promise-section-kicker">PENDING WORK</span><h3>Promises still pending</h3><p>Incomplete, delayed, not-started, cancelled, under-review and insufficient-evidence records remain visible with their exact status.</p></div></div>';
+    html+='<section class="promise-section" id="promise-pending"><div class="promise-section-head"><div><span class="promise-section-kicker">PENDING WORK</span><h3>Promises still pending</h3><p>Incomplete, delayed, not-started, cancelled, under-review and insufficient-evidence records remain visible with their exact status.</p></div></div>';
     const pendingStatuses=["partially_fulfilled","in_progress","not_started","delayed","cancelled_withdrawn","insufficient_evidence","under_review"];
     const pendingTotal=pendingStatuses.reduce((sum,key)=>sum+activeRecords.filter(item=>item.status===key).length,0);
     html+=pendingTotal?'<div class="promise-pending-grid">'+pendingStatuses.map(key=>{
@@ -7576,20 +7801,20 @@ async function ensureLeaflet(){
     }).join("")+'</div><p class="promise-method-note" style="margin-top:8px">Select a status to filter the full commitment register. Pending means not marked fulfilled; it does not imply wrongdoing.</p>':'<div class="promise-empty">'+(records.length?"No pending commitments in the current filter.":"No pending list can be calculated until records are imported.")+'</div>';
     html+='</section>';
 
-    html+='<section class="promise-section"><div class="promise-section-head"><div><span class="promise-section-kicker">VERIFIED OUTCOMES</span><h3>Development achievements</h3><p>Achievement badges are shown only when a linked evidence record is explicitly verified.</p></div></div>';
+    html+='<section class="promise-section" id="promise-achievements"><div class="promise-section-head"><div><span class="promise-section-kicker">VERIFIED OUTCOMES</span><h3>Development achievements</h3><p>Achievement badges are shown only when a linked evidence record is explicitly verified.</p></div></div>';
     html+=achievements.length?'<div class="promise-achievement-grid">'+achievements.map(item=>
       '<article class="promise-achievement"><span class="promise-achievement-badge">✓ VERIFIED ACHIEVEMENT</span><h4>'+escapeHtml(item.title)+'</h4><p>'+escapeHtml(item.description||"")+'</p><p style="margin-top:6px"><strong>'+escapeHtml(item.sector||"")+'</strong> · '+escapeHtml(promiseDate(item.completionDate))+'</p><p>Verified result: '+escapeHtml(item.verifiedResult??"Not stated")+'</p><p>Evidence records: '+(item.evidenceIds||[]).length+'</p></article>'
     ).join("")+'</div>':'<div class="promise-empty"><strong>No verified achievement badges have been issued.</strong>Achievement cards appear only after the result and its documentary evidence are reviewed.</div>';
     html+='</section>';
 
-    html+='<section class="promise-section"><div class="promise-section-head"><div><span class="promise-section-kicker">DISTRICT CONNECTION</span><h3>District-wise commitments</h3><p>Area association is displayed as geography, not as an invented project-site coordinate.</p></div></div>';
+    html+='<section class="promise-section" id="promise-districts"><div class="promise-section-head"><div><span class="promise-section-kicker">DISTRICT CONNECTION</span><h3>District-wise commitments</h3><p>Area association is displayed as geography, not as an invented project-site coordinate.</p></div></div>';
     html+='<div class="promise-register-note">Current map selection: <strong>'+escapeHtml(selectedArea)+'</strong> · '+districtRecords.length+' matching commitment(s) in this register.</div>';
     html+='<div class="promise-dashboard-actions" style="margin-top:9px"><button class="promise-action" type="button" data-promise-open-map>⌖ Explore selected district on map</button></div>';
     if(districtRecords.length)html+='<div class="promise-list" style="margin-top:9px">'+districtRecords.slice(0,8).map(promiseRecordCard).join("")+'</div>';
     else html+='<div class="promise-empty" style="margin-top:9px">No commitment in the current register is linked to this district. This is not evidence that the district received no public investment.</div>';
     html+='</section>';
 
-    html+='<section class="promise-section"><div class="promise-section-head"><div><span class="promise-section-kicker">ADMINISTRATION ARCHIVE</span><h3>Government terms &amp; historical comparison</h3><p>Periods are shown separately; comparisons require compatible targets, definitions and source coverage.</p></div></div>';
+    html+='<section class="promise-section" id="promise-periods"><div class="promise-section-head"><div><span class="promise-section-kicker">ADMINISTRATION ARCHIVE</span><h3>Government terms &amp; historical comparison</h3><p>Periods are shown separately; comparisons require compatible targets, definitions and source coverage.</p></div></div>';
     if(governments.length){
       html+='<div class="promise-period-grid">'+governments.map(govt=>{
         const rows=records.filter(item=>item.governmentId===govt.id);
@@ -7899,7 +8124,7 @@ async function ensureLeaflet(){
     const module=modules[activePanel];
     if(activePanel==="promises"){
       const sideContent=el("sideContent");
-      sideContent.innerHTML='<h2>'+module.title+'</h2><p class="side-intro">'+module.intro+'</p>'+renderPromisesDashboard();
+      sideContent.innerHTML=renderPromisesDashboard();
       const popupTitle=el("atlasDataPopupTitle");
       if(popupTitle)popupTitle.textContent=module.title;
       sideContent.scrollTop=0;
@@ -7967,6 +8192,7 @@ async function ensureLeaflet(){
     dataPopupLayer.hidden=false;
     dataPopupLayer.setAttribute("aria-hidden","false");
     document.body.classList.add("atlas-data-popup-open");
+    document.body.classList.toggle("promise-dashboard-open",activePanel==="promises");
     sidebar.setAttribute("aria-hidden","true");
     sidebar.inert=true;
     mapArea.inert=true;
@@ -7977,7 +8203,7 @@ async function ensureLeaflet(){
     if(!isDataPopupOpen())return;
     dataPopupLayer.hidden=true;
     dataPopupLayer.setAttribute("aria-hidden","true");
-    document.body.classList.remove("atlas-data-popup-open");
+    document.body.classList.remove("atlas-data-popup-open","promise-dashboard-open");
     const blockingPopup=isProjectProfileOpen();
     sidebar.inert=!sidebarIsOpen()||blockingPopup;
     sidebar.setAttribute("aria-hidden",sidebarIsOpen()&&!blockingPopup?"false":"true");
