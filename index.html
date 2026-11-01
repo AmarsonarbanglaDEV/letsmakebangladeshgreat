@@ -4355,10 +4355,40 @@ async function ensureLeaflet(){
     if(!map||!atlasData.projects||!cache.district||!cache.district.layer)return;
     if(!projectMarkersLayer)projectMarkersLayer=L.layerGroup().addTo(map);
     projectMarkersLayer.clearLayers();
-    let markerCount=0,unresolvedCount=0,unmatchedCount=0;
+    let exactPinCount=0,areaCount=0,unresolvedCount=0,unmatchedCount=0;
     (atlasData.projects.projects||[]).forEach(project=>{
       if(project.mapDisplay?.areaConflict){
         unresolvedCount++;
+        return;
+      }
+      const latitude=project.latitude;
+      const longitude=project.longitude;
+      const hasCoordinates=latitude!==null&&latitude!==undefined&&latitude!==""&&
+        longitude!==null&&longitude!==undefined&&longitude!==""&&
+        Number.isFinite(Number(latitude))&&Number.isFinite(Number(longitude));
+      const point=hasCoordinates?L.latLng(Number(latitude),Number(longitude)):null;
+      const exactPoint=!!(point&&bounds.contains(point)&&
+        (project.mapDisplay?.exactCoordinatesAvailable===true||
+         project.locationPrecision==="exact"||
+         project.locationPrecision==="site"));
+      if(exactPoint){
+        const icon=L.divIcon({
+          className:"atlas-project-pin-shell",
+          html:'<span class="atlas-project-pin" aria-hidden="true"></span>',
+          iconSize:[22,22],
+          iconAnchor:[11,11]
+        });
+        const marker=L.marker(point,{
+          pane:"projectMarkerPane",icon,keyboard:true,
+          title:project.name+" · verified project-site location"
+        });
+        marker.bindTooltip(
+          escapeHtml(project.name)+"<br><small>Verified project-site point</small>",
+          {direction:"top",offset:[0,-8],className:"project-marker-tooltip"}
+        );
+        marker.on("click",()=>openProjectProfile(project.id,point));
+        marker.addTo(projectMarkersLayer);
+        exactPinCount++;
         return;
       }
       const districtNames=[...new Set((project.administrativeAreas||[])
@@ -4368,52 +4398,42 @@ async function ensureLeaflet(){
         unresolvedCount++;
         return;
       }
+      let projectHasArea=false;
       districtNames.forEach(districtName=>{
         const districtRecord=cache.district.records.find(record=>
           normalise(record.name)===normalise(districtName)
         );
-        if(!districtRecord){
+        if(!districtRecord||!districtRecord.feature?.geometry){
           unmatchedCount++;
           return;
         }
-        const districtLayer=cache.district.layer.getLayers().find(path=>
-          path._atlasRecord&&path._atlasRecord.id===districtRecord.id
-        );
-        if(!districtLayer){
-          unmatchedCount++;
-          return;
-        }
-        const locatorPoint=districtLayer.getBounds().getCenter();
-        const icon=L.divIcon({
-          className:"atlas-project-pin-shell",
-          html:'<span class="atlas-project-pin" aria-hidden="true"></span>',
-          iconSize:[22,22],
-          iconAnchor:[11,11]
-        });
-        const marker=L.marker(locatorPoint,{
-          pane:"projectMarkerPane",
-          icon,
-          keyboard:true,
-          title:project.name+" · "+districtName+" district locator (not exact site)"
-        });
-        marker.bindTooltip(
-          escapeHtml(project.name)+"<br><small>"+escapeHtml(districtName)+" district locator · not exact project coordinates</small>",
-          {direction:"top",offset:[0,-8],className:"project-marker-tooltip"}
-        );
-        marker.on("click",()=>{
-          if(activeProjectSpotId){
-            setStatus("The orange dot is only a district locator, not the exact work site. Click the actual project location elsewhere inside the district.",true);
-            return;
+        const areaLayer=L.geoJSON(districtRecord.feature,{
+          interactive:true,
+          style:{
+            color:"#176b53",weight:2.2,opacity:.9,dashArray:"5 5",
+            fillColor:"#48a889",fillOpacity:.105
           }
-          openProjectProfile(project.id,locatorPoint);
         });
-        marker.addTo(projectMarkersLayer);
-        markerCount++;
+        areaLayer.bindTooltip(
+          escapeHtml(project.name)+"<br><small>"+escapeHtml(districtName)+
+          " · administrative coverage only; exact site not verified</small>",
+          {sticky:true,className:"project-marker-tooltip"}
+        );
+        areaLayer.on("click",()=>{
+          const areaBounds=areaLayer.getBounds();
+          if(areaBounds.isValid())map.fitBounds(areaBounds,{padding:[28,28],maxZoom:9});
+          openProjectProfile(project.id,areaBounds.getCenter());
+        });
+        areaLayer.addTo(projectMarkersLayer);
+        areaCount++;
+        projectHasArea=true;
       });
+      if(!projectHasArea)unresolvedCount++;
     });
     const countNode=el("projectMarkerCount");
     if(countNode){
-      countNode.textContent=markerCount+" orange locator(s) · "+unresolvedCount+" unresolved project(s)"+
+      countNode.textContent=exactPinCount+" verified site pin(s) · "+areaCount+
+        " district coverage area(s) · "+unresolvedCount+" unresolved project(s)"+
         (unmatchedCount?" · "+unmatchedCount+" area match(es) unavailable":"");
     }
   }
