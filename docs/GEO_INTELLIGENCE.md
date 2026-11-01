@@ -31,7 +31,7 @@ Deploy the feature branch only after the D1 migration and bindings are configure
 
 There is deliberately no public GET endpoint for reports or attachments. Access reports through authenticated Cloudflare D1/R2 administration with least-privilege access. Before collecting real citizen reports, define a named review team, retention period, deletion/correction process, incident response and a privacy notice. Do not expose complainant contact details in public project profiles. Add a separate authenticated staff workflow before operational use.
 
-The current public form does not represent an official government grievance channel and does not issue an official government case number. It only returns a platform reference after private storage succeeds.
+Village / para labels come from reverse-geocoding results where available; a complete nationwide village / mouza polygon or cadastral layer is not integrated. The administrative boundary point lookup uses the existing BBS/DGHS-backed map services where they respond; missing or ambiguous matches remain unavailable rather than being guessed.\n\nThe current public form does not represent an official government grievance channel and does not issue an official government case number. It only returns a platform reference after private storage succeeds.
 
 ## Geographic accuracy
 
