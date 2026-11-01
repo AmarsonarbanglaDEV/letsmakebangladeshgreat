@@ -55,7 +55,7 @@
 (function(){
 "use strict";
 const $=id=>document.getElementById(id);
-const map=L.map("map",{zoomControl:false,preferCanvas:true,minZoom:5,maxZoom:19}).setView([23.75,90.35],7);
+const map=L.map("map",{zoomControl:false,preferCanvas:true,minZoom:5,maxZoom:19,maxBounds:[[20.3,87.8],[26.9,93.0]],maxBoundsViscosity:.85}).setView([23.75,90.35],7);
 L.control.zoom({position:"bottomleft"}).addTo(map);
 const layers={
  satellite:L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxZoom:19,attribution:"Imagery © Esri, Maxar, Earthstar Geographics"}),
@@ -65,6 +65,10 @@ const layers={
 layers.satellite.addTo(map);
 document.querySelectorAll("[data-layer]").forEach(b=>b.addEventListener("click",()=>{Object.values(layers).forEach(l=>map.removeLayer(l));layers[b.dataset.layer].addTo(map);document.querySelectorAll("[data-layer]").forEach(x=>x.classList.toggle("active",x===b));}));
 let selected=null,marker=null,connector=null,boundaryLayer=null,boundariesOn=false,reverseTimer=0,geocodeSequence=0,lastGeocodeAt=0;
+function panelAnchor(){const size=map.getSize();return map.containerPointToLatLng(window.innerWidth<=760?[size.x*.5,size.y*.43]:[Math.max(28,size.x-440),size.y*.5]);}
+function updateConnector(){if(selected&&connector)connector.setLatLngs([[selected.lat,selected.lng],panelAnchor()]);}
+map.on("moveend",updateConnector);
+window.addEventListener("resize",()=>setTimeout(updateConnector,120));
 const glow=L.divIcon({className:"",html:'<div style="width:18px;height:18px;border:3px solid #b8ff45;border-radius:50%;background:#b8ff45aa;box-shadow:0 0 0 7px #b8ff4530,0 0 24px #b8ff45"></div>',iconSize:[18,18],iconAnchor:[9,9]});
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 function status(msg,error){const n=$("geoStatus");if(n){n.className="status"+(error?" error":"");n.innerHTML="<i></i>"+esc(msg);}}
@@ -112,8 +116,7 @@ async function lookup(latlng){
  selected={lat:latlng.lat,lng:latlng.lng};
  if(marker)map.removeLayer(marker);marker=L.marker(latlng,{icon:glow,zIndexOffset:1000}).addTo(map);
  if(connector)map.removeLayer(connector);
- const edge=L.latLng(map.getCenter().lat,latlng.lng);
- connector=L.polyline([latlng,edge],{color:"#b8ff45",weight:1.5,dashArray:"4 7",opacity:.85}).addTo(map);
+ connector=L.polyline([latlng,panelAnchor()],{color:"#b8ff45",weight:1.5,dashArray:"4 7",opacity:.85}).addTo(map);
  $("details").innerHTML='<div class="empty"><div><div class="empty-icon">⌖</div><strong>Resolving selected location…</strong><p>Looking up the nearest mapped place and administrative labels.</p></div></div>';
  try{
   const wait=Math.max(0,1100-(Date.now()-lastGeocodeAt));
