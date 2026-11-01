@@ -49,9 +49,20 @@
         "importedRecords": 0,
         "note": "Source roster identified but not imported row-by-row. Allocation is the ADP 2026-27 list total, not expenditure."
       },
-      "mediaEvidencePolicy": "Attach article/video/audio/photo sources to an identified project only with publisher, publication date, source URL, claim summary and corroboration state. Media alone must not establish final project cancellation, completion, expenditure or exact coordinates."
+      "mediaEvidencePolicy": "Attach article/video/audio/photo sources to an identified project only with publisher, publication date, source URL, claim summary and corroboration state. Media alone must not establish final project cancellation, completion, expenditure or exact coordinates.",
+      "importedExamples": {
+        "imedCompletedProjects": 5,
+        "note": "These five agency-specific examples demonstrate verified historical records from 2007-2025. They do not imply complete national coverage for those years."
+      }
     },
-    "sourceRegister": "data/research-source-register.json"
+    "sourceRegister": "data/research-source-register.json",
+    "imedCompletedProjects": {
+      "source": "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.oraclecloud.net/n/axvjbnqprylg/b/V2Ministry/o/office-imed/2026/4/7b5ad4fd-ec3a-43d9-96c4-2fa75d617c91.pdf",
+      "sourceTitle": "IMED — Completed Projects of IMED",
+      "sourceDate": "2026-05-12",
+      "importedRecords": 5,
+      "note": "Five IMED-owned completed institutional/national programmes have been imported with implementation periods, revised estimated costs and reported cumulative financial progress. They have no verified physical work-site coordinates and are deliberately not shown as site pins."
+    }
   },
   "projects": [
     {
@@ -1161,6 +1172,198 @@
         "exactCoordinatesAvailable": false,
         "note": "No source-verified project-site latitude/longitude or route geometry has been entered. The map shows administrative coverage only, not an exact site point."
       }
+    },
+    {
+      "id": "IMED-PPRP-2007-2017",
+      "kind": "national_program",
+      "name": "Public Procurement Reform Project (3rd Revised)",
+      "ministry": "Planning",
+      "implementingAgency": "Implementation Monitoring and Evaluation Division (IMED)",
+      "projectType": "Public procurement reform / institutional strengthening",
+      "officialLocation": "Bangladesh — national procurement systems and institutions; no project work-site coordinates specified in the completed-project list",
+      "implementationStart": "2007-07-01",
+      "plannedCompletion": "2017-06-30",
+      "status": "completed",
+      "approvedProjectCostLakh": 56817.19,
+      "currency": "BDT",
+      "originalUnit": "lakh taka",
+      "reportedCumulativeExpenditureLakh": 52976.23,
+      "reportedFinancialProgressPercent": 93.24,
+      "reportedAt": "2026-05-12",
+      "source": "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-imed/2026/4/7b5ad4fd-ec3a-43d9-96c4-2fa75d617c91.pdf",
+      "sourceTitle": "IMED — Completed Projects of IMED",
+      "sourcePage": "PDF page 1",
+      "sourceStatus": "official_completed_project_list",
+      "lastChecked": "2026-11-01",
+      "locationEvidence": {
+        "precision": "national institutional programme; physical site not specified",
+        "exactCoordinatesAvailable": false,
+        "note": "The source identifies a national procurement reform programme but does not identify a discrete physical project site or surveyed coordinates."
+      },
+      "mapDisplay": {
+        "mode": "no_site_pin",
+        "exactCoordinatesAvailable": false,
+        "routeGeometryAvailable": false
+      },
+      "dataLimitations": [
+        "Listed by IMED among completed projects; the source does not provide a separate completion certificate date.",
+        "Reported financial progress is not a physical-completion percentage or an audited-expenditure statement.",
+        "No verified physical work-site geometry is published in this source."
+      ]
+    },
+    {
+      "id": "IMED-EICI-2015-2018",
+      "kind": "national_program",
+      "name": "Enhancing Institutional Capacity of IMED (EICI) (1st Revised)",
+      "ministry": "Planning",
+      "implementingAgency": "Implementation Monitoring and Evaluation Division (IMED)",
+      "projectType": "Institutional capacity development",
+      "officialLocation": "Bangladesh — IMED institutional capacity programme; no discrete physical project site specified",
+      "implementationStart": "2015-11-01",
+      "plannedCompletion": "2018-10-31",
+      "status": "completed",
+      "approvedProjectCostLakh": 433.2,
+      "currency": "BDT",
+      "originalUnit": "lakh taka",
+      "reportedCumulativeExpenditureLakh": 335.03,
+      "reportedFinancialProgressPercent": 77.34,
+      "reportedAt": "2026-05-12",
+      "source": "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.oraclecloud.net/n/axvjbnqprylg/b/V2Ministry/o/office-imed/2026/4/7b5ad4fd-ec3a-43d9-96c4-2fa75d617c91.pdf",
+      "sourceTitle": "IMED — Completed Projects of IMED",
+      "sourcePage": "PDF page 1",
+      "sourceStatus": "official_completed_project_list",
+      "lastChecked": "2026-11-01",
+      "locationEvidence": {
+        "precision": "national institutional programme; physical site not specified",
+        "exactCoordinatesAvailable": false,
+        "note": "The source identifies institutional capacity development within IMED but gives no discrete construction site or site coordinates."
+      },
+      "mapDisplay": {
+        "mode": "no_site_pin",
+        "exactCoordinatesAvailable": false,
+        "routeGeometryAvailable": false
+      },
+      "dataLimitations": [
+        "Listed by IMED among completed projects; no separate completion certificate is attached.",
+        "Reported financial progress is not a physical-completion percentage or audited expenditure.",
+        "No exact physical work-site coordinates are supplied."
+      ]
+    },
+    {
+      "id": "IMED-SMECI-2013-2020",
+      "kind": "national_program",
+      "name": "Strengthening Monitoring and Evaluation Capabilities of IMED (SMECI) (3rd Revised)",
+      "ministry": "Planning",
+      "implementingAgency": "Implementation Monitoring and Evaluation Division (IMED)",
+      "projectType": "Monitoring and evaluation capacity development",
+      "officialLocation": "Bangladesh — national monitoring and evaluation systems; no discrete physical project site specified",
+      "implementationStart": "2013-01-01",
+      "plannedCompletion": "2020-06-30",
+      "status": "completed",
+      "approvedProjectCostLakh": 6885,
+      "currency": "BDT",
+      "originalUnit": "lakh taka",
+      "reportedCumulativeExpenditureLakh": 6019.66,
+      "reportedFinancialProgressPercent": 87.43,
+      "reportedAt": "2026-05-12",
+      "source": "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-imed/2026/4/7b5ad4fd-ec3a-43d9-96c4-2fa75d617c91.pdf",
+      "sourceTitle": "IMED — Completed Projects of IMED",
+      "sourcePage": "PDF page 1",
+      "sourceStatus": "official_completed_project_list",
+      "lastChecked": "2026-11-01",
+      "locationEvidence": {
+        "precision": "national institutional programme; physical site not specified",
+        "exactCoordinatesAvailable": false,
+        "note": "The source identifies a national monitoring and evaluation capacity programme but does not identify a discrete physical project site."
+      },
+      "mapDisplay": {
+        "mode": "no_site_pin",
+        "exactCoordinatesAvailable": false,
+        "routeGeometryAvailable": false
+      },
+      "dataLimitations": [
+        "Listed by IMED among completed projects; exact administrative closure date is not separately stated.",
+        "Reported financial progress is not a physical-completion percentage or audited expenditure.",
+        "No surveyed site location or route geometry is published."
+      ]
+    },
+    {
+      "id": "IMED-ECBSS-PHASE2-2017-2024",
+      "kind": "national_program",
+      "name": "Capacity Development for Monitoring and Reporting to Increase the Effective Coverage of Basic Social Services for Children and Women in Bangladesh (ECBSS), Phase 2",
+      "alternateName": "ECBSS Phase 2",
+      "ministry": "Planning",
+      "implementingAgency": "Implementation Monitoring and Evaluation Division (IMED)",
+      "projectType": "Social-service monitoring and reporting capacity development",
+      "officialLocation": "Bangladesh — national programme for basic social services; project work sites not specified in the completed-project list",
+      "implementationStart": "2017-10-01",
+      "plannedCompletion": "2024-06-30",
+      "status": "completed",
+      "approvedProjectCostLakh": 719,
+      "currency": "BDT",
+      "originalUnit": "lakh taka",
+      "reportedCumulativeExpenditureLakh": 592.97,
+      "reportedFinancialProgressPercent": 82.47,
+      "reportedAt": "2026-05-12",
+      "source": "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.oraclecloud.net/n/axvjbnqprylg/b/V2Ministry/o/office-imed/2026/4/7b5ad4fd-ec3a-43d9-96c4-2fa75d617c91.pdf",
+      "sourceTitle": "IMED — Completed Projects of IMED",
+      "sourcePage": "PDF page 1",
+      "sourceStatus": "official_completed_project_list",
+      "lastChecked": "2026-11-01",
+      "locationEvidence": {
+        "precision": "national programme; no district or site list in source",
+        "exactCoordinatesAvailable": false,
+        "note": "The project title says Bangladesh-wide but the source does not identify participating facilities, districts or physical site coordinates."
+      },
+      "mapDisplay": {
+        "mode": "no_site_pin",
+        "exactCoordinatesAvailable": false,
+        "routeGeometryAvailable": false
+      },
+      "dataLimitations": [
+        "Listed by IMED among completed projects; the source does not provide a district-by-district beneficiary or facility list.",
+        "Reported financial progress is not a physical-completion percentage or audited expenditure.",
+        "No exact site coordinates are supplied."
+      ]
+    },
+    {
+      "id": "IMED-DIMAPPP-2007-2025",
+      "kind": "national_program",
+      "name": "Digitizing Implementation Monitoring and Public Procurement Project (DIMAPPP) (3rd Revised)",
+      "alternateName": "DIMAPPP",
+      "ministry": "Planning",
+      "implementingAgency": "Implementation Monitoring and Evaluation Division (IMED)",
+      "projectType": "Digital public procurement and project monitoring systems",
+      "officialLocation": "Bangladesh — national public procurement and implementation-monitoring systems; no discrete physical work-site location specified",
+      "implementationStart": "2007-07-01",
+      "plannedCompletion": "2025-12-31",
+      "status": "completed",
+      "approvedProjectCostLakh": 95488.5,
+      "currency": "BDT",
+      "originalUnit": "lakh taka",
+      "reportedCumulativeExpenditureLakh": 92325.14,
+      "reportedFinancialProgressPercent": 96.69,
+      "reportedAt": "2026-05-12",
+      "source": "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.oraclecloud.net/n/axvjbnqprylg/b/V2Ministry/o/office-imed/2026/4/7b5ad4fd-ec3a-43d9-96c4-2fa75d617c91.pdf",
+      "sourceTitle": "IMED — Completed Projects of IMED",
+      "sourcePage": "PDF page 1",
+      "sourceStatus": "official_completed_project_list",
+      "lastChecked": "2026-11-01",
+      "locationEvidence": {
+        "precision": "national digital / institutional programme; no physical site coordinates",
+        "exactCoordinatesAvailable": false,
+        "note": "The project title and agency record identify a national digital systems programme; no single physical project site is identified."
+      },
+      "mapDisplay": {
+        "mode": "no_site_pin",
+        "exactCoordinatesAvailable": false,
+        "routeGeometryAvailable": false
+      },
+      "dataLimitations": [
+        "Listed by IMED among completed projects; a separately dated completion certificate is not included in this extract.",
+        "Reported financial progress is not a physical-completion percentage or audited expenditure.",
+        "Do not treat software/platform users as geographic construction sites; no site coordinates are supplied."
+      ]
     }
   ]
 }
