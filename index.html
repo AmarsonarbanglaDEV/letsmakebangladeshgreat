@@ -4408,72 +4408,6 @@ async function ensureLeaflet(){
 
   const ADP_ROSTER_SOURCE_URL="https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-imed/2026/9/51732c2a-8082-469a-b02b-499e6aaa00b6.pdf";
   const ADP_EXPECTED_PROJECTS=1173;
-  const ADP_DISTRICTS=[
-    {name:"Bagerhat",aliases:["Bagerhat"]},
-    {name:"Bandarban",aliases:["Bandarban"]},
-    {name:"Barguna",aliases:["Barguna"]},
-    {name:"Barishal",aliases:["Barishal","Barisal"]},
-    {name:"Bhola",aliases:["Bhola"]},
-    {name:"Bogura",aliases:["Bogura","Bogra"]},
-    {name:"Brahmanbaria",aliases:["Brahmanbaria"]},
-    {name:"Chandpur",aliases:["Chandpur"]},
-    {name:"Chattogram",aliases:["Chattogram","Chittagong"]},
-    {name:"Chuadanga",aliases:["Chuadanga"]},
-    {name:"Cox's Bazar",aliases:["Cox's Bazar","Coxs Bazar","Cox Bazar"]},
-    {name:"Cumilla",aliases:["Cumilla","Comilla"]},
-    {name:"Dhaka",aliases:["Dhaka"]},
-    {name:"Dinajpur",aliases:["Dinajpur"]},
-    {name:"Faridpur",aliases:["Faridpur"]},
-    {name:"Feni",aliases:["Feni"]},
-    {name:"Gaibandha",aliases:["Gaibandha"]},
-    {name:"Gazipur",aliases:["Gazipur"]},
-    {name:"Gopalganj",aliases:["Gopalganj"]},
-    {name:"Habiganj",aliases:["Habiganj"]},
-    {name:"Jamalpur",aliases:["Jamalpur"]},
-    {name:"Jashore",aliases:["Jashore","Jessore"]},
-    {name:"Jhalokati",aliases:["Jhalokati"]},
-    {name:"Jhenaidah",aliases:["Jhenaidah","Jhenaida"]},
-    {name:"Joypurhat",aliases:["Joypurhat"]},
-    {name:"Khagrachhari",aliases:["Khagrachhari","Khagrachari"]},
-    {name:"Kishoreganj",aliases:["Kishoreganj"]},
-    {name:"Kurigram",aliases:["Kurigram"]},
-    {name:"Kushtia",aliases:["Kushtia"]},
-    {name:"Lakshmipur",aliases:["Lakshmipur","Laxmipur"]},
-    {name:"Lalmonirhat",aliases:["Lalmonirhat"]},
-    {name:"Madaripur",aliases:["Madaripur"]},
-    {name:"Magura",aliases:["Magura"]},
-    {name:"Manikganj",aliases:["Manikganj"]},
-    {name:"Meherpur",aliases:["Meherpur"]},
-    {name:"Moulvibazar",aliases:["Moulvibazar","Maulvibazar"]},
-    {name:"Munshiganj",aliases:["Munshiganj"]},
-    {name:"Mymensingh",aliases:["Mymensingh"]},
-    {name:"Naogaon",aliases:["Naogaon","Noagaon"]},
-    {name:"Narail",aliases:["Narail"]},
-    {name:"Narayanganj",aliases:["Narayanganj"]},
-    {name:"Narsingdi",aliases:["Narsingdi"]},
-    {name:"Natore",aliases:["Natore"]},
-    {name:"Chapai Nawabganj",aliases:["Chapai Nawabganj","Chapainawabganj","Chapai Nawabgonj"]},
-    {name:"Netrokona",aliases:["Netrokona"]},
-    {name:"Nilphamari",aliases:["Nilphamari"]},
-    {name:"Noakhali",aliases:["Noakhali"]},
-    {name:"Pabna",aliases:["Pabna"]},
-    {name:"Panchagarh",aliases:["Panchagarh"]},
-    {name:"Patuakhali",aliases:["Patuakhali"]},
-    {name:"Pirojpur",aliases:["Pirojpur"]},
-    {name:"Rajbari",aliases:["Rajbari"]},
-    {name:"Rajshahi",aliases:["Rajshahi"]},
-    {name:"Rangamati",aliases:["Rangamati"]},
-    {name:"Rangpur",aliases:["Rangpur"]},
-    {name:"Satkhira",aliases:["Satkhira"]},
-    {name:"Shariatpur",aliases:["Shariatpur"]},
-    {name:"Sherpur",aliases:["Sherpur"]},
-    {name:"Sirajganj",aliases:["Sirajganj"]},
-    {name:"Sunamganj",aliases:["Sunamganj"]},
-    {name:"Sylhet",aliases:["Sylhet"]},
-    {name:"Tangail",aliases:["Tangail"]},
-    {name:"Thakurgaon",aliases:["Thakurgaon"]}
-  ];
-
   function loadAdpScript(src,test){
     if(test())return Promise.resolve();
     return new Promise((resolve,reject)=>{
@@ -4553,6 +4487,21 @@ async function ensureLeaflet(){
     return (" "+titleNorm+" ").includes(" "+placeNorm+" ");
   }
 
+  function adpFeatureBoundsCenter(feature){
+    const boundsForFeature=L.latLngBounds([]);
+    const stack=[feature&&feature.geometry&&feature.geometry.coordinates];
+    while(stack.length){
+      const node=stack.pop();
+      if(!Array.isArray(node))continue;
+      if(node.length>=2&&typeof node[0]==="number"&&typeof node[1]==="number"){
+        boundsForFeature.extend([node[1],node[0]]);
+      }else{
+        for(let i=0;i<node.length;i++)stack.push(node[i]);
+      }
+    }
+    return boundsForFeature.isValid()?boundsForFeature.getCenter():null;
+  }
+
   function buildAdpLocationIndex(){
     const levels=["division","district","upazila","union"];
     const index=[];
@@ -4566,11 +4515,8 @@ async function ensureLeaflet(){
           ...adpNameVariants(record.bn)
         ])];
         if(!variants.length)return;
-        const geometryLayer=L.geoJSON(record.feature);
-        const featureBounds=geometryLayer.getBounds();
-        if(!featureBounds.isValid())return;
-        const center=featureBounds.getCenter();
-        if(!bounds.contains(center))return;
+        const center=adpFeatureBoundsCenter(record.feature);
+        if(!center||!bounds.contains(center))return;
         index.push({
           level:level,
           record:record,
@@ -4586,7 +4532,6 @@ async function ensureLeaflet(){
     });
     return index;
   }
-
   function matchAdpProjectLocations(title,index){
     const titleNorm=normalisePlaceText(title);
     if(!titleNorm)return {matches:[],ambiguous:[],mentioned:false};
