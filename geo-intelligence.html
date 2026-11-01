@@ -69,14 +69,43 @@ const glow=L.divIcon({className:"",html:'<div style="width:18px;height:18px;bord
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 function status(msg,error){const n=$("geoStatus");if(n){n.className="status"+(error?" error":"");n.innerHTML="<i></i>"+esc(msg);}}
 function addFact(label,value){return '<div class="fact"><span>'+esc(label)+'</span><span>'+esc(value||"Unavailable")+'</span></div>';}
-function renderLocation(data){
+function renderLocation(data,admin={}){
  const a=data.address||{},parts=[a.village||a.hamlet||a.suburb||a.neighbourhood||a.residential||a.town||a.city||a.county||"Selected coordinate"];
  const locality=a.village||a.hamlet||a.suburb||a.neighbourhood||a.residential||a.town||a.city||"";
- const union=a.union||a.ward||"",upazila=a.upazila||a.municipality||a.city_district||"",district=a.county||a.state_district||"",division=a.state||"";
+ const union=admin.union?.name||admin.ward?.name||a.union||a.ward||"",upazila=admin.upazila?.name||a.upazila||a.municipality||a.city_district||"",district=admin.district?.name||a.county||a.state_district||"",division=admin.division?.name||a.state||"";
  const name=parts[0],lat=selected.lat.toFixed(6),lon=selected.lng.toFixed(6);
  const tags='<span class="tag">OSM reverse geocoding</span><span class="tag">Not a land survey</span>';
- $("details").innerHTML='<div class="status" id="geoStatus"><i></i>Place lookup complete · review source precision</div><h2 class="loc-title">'+esc(name)+'</h2><div class="loc-sub">'+esc([upazila,district,division].filter(Boolean).join(" · ")||"Administrative names not resolved")+'</div><div class="coord"><div><small>LATITUDE</small><strong>'+lat+'</strong></div><div><small>LONGITUDE</small><strong>'+lon+'</strong></div></div><div class="section-label">Administrative location</div><div class="facts">'+addFact("Village / Para",locality)+addFact("Union / Ward",union)+addFact("Upazila / Thana",upazila)+addFact("District",district)+addFact("Division",division)+addFact("Postal code",a.postcode)+addFact("Country",a.country)+'</div><div class="section-label">Administrative authorities</div><div class="authority"><strong>Local government</strong><p>'+esc(union?"Potential Union Parishad jurisdiction: "+union:"Union Parishad / ward jurisdiction could not be confirmed from the returned address.")+' Office contacts are not inferred from coordinates.</p><a target="_blank" rel="noopener" href="https://bangladesh.gov.bd/">Bangladesh National Portal ↗</a><a target="_blank" rel="noopener" href="https://lgd.gov.bd/">Local Government Division ↗</a></div><div class="authority"><strong>Upazila / district administration</strong><p>'+esc([upazila,district].filter(Boolean).join(" · ")||"Administrative jurisdiction unavailable")+'. Confirm the correct office and designated officer using the official directory.</p><a target="_blank" rel="noopener" href="https://bangladesh.gov.bd/site/view/officer_list/">Government officer directory ↗</a></div><div class="authority"><strong>Location source</strong><p>'+esc(data.display_name||"OpenStreetMap reverse geocoder")+'</p><a target="_blank" rel="noopener" href="https://www.openstreetmap.org/?mlat='+lat+'&mlon='+lon+'#map=17/'+lat+'/'+lon+'">OpenStreetMap source ↗</a></div><div class="section-label">Data confidence</div>'+tags+'<div class="disclaimer">Reverse geocoding returns the nearest mapped address and administrative labels. Village, union, ward and postal information may be missing or approximate. A coordinate does not prove a building identity, land ownership, cadastral boundary or the responsible government office.</div><div class="actions"><button class="action primary" id="reportBtn">＋ Report an issue</button><button class="action" id="prepareBtn">Prepare complaint</button><button class="action" id="recordsBtn">Request records</button><button class="action" id="copyLocBtn">Copy location link</button></div>';
+ $("details").innerHTML='<div class="status" id="geoStatus"><i></i>Place lookup complete · review source precision</div><h2 class="loc-title">'+esc(name)+'</h2><div class="loc-sub">'+esc([upazila,district,division].filter(Boolean).join(" · ")||"Administrative names not resolved")+'</div><div class="coord"><div><small>LATITUDE</small><strong>'+lat+'</strong></div><div><small>LONGITUDE</small><strong>'+lon+'</strong></div></div><div class="section-label">Administrative location</div><div class="facts">'+addFact("Village / Para",locality)+addFact("Union / Ward",union)+addFact("Upazila / Thana",upazila)+addFact("District",district)+addFact("Division",division)+addFact("Postal code",a.postcode)+addFact("Country",a.country)+'</div><div class="section-label">Administrative authorities</div><div class="authority"><strong>Local government</strong><p>'+esc(union?"Potential Union Parishad jurisdiction: "+union:"Union Parishad / ward jurisdiction could not be confirmed from the returned address.")+' Office contacts are not inferred from coordinates.</p><a target="_blank" rel="noopener" href="https://bangladesh.gov.bd/">Bangladesh National Portal ↗</a><a target="_blank" rel="noopener" href="https://lgd.gov.bd/">Local Government Division ↗</a></div><div class="authority"><strong>Upazila / district administration</strong><p>'+esc([upazila,district].filter(Boolean).join(" · ")||"Administrative jurisdiction unavailable")+'. Confirm the correct office and designated officer using the official directory.</p><a target="_blank" rel="noopener" href="https://bangladesh.gov.bd/site/view/officer_list/">Government officer directory ↗</a></div><div class="authority"><strong>Location source</strong><p>'+esc(data.display_name||"OpenStreetMap reverse geocoder")+'</p><a target="_blank" rel="noopener" href="https://www.openstreetmap.org/?mlat='+lat+'&mlon='+lon+'#map=17/'+lat+'/'+lon+'">OpenStreetMap source ↗</a></div><div class="section-label">Boundary source checks</div>'+Object.entries(admin).filter(([,v])=>v&&v.name).map(([k,v])=>'<div class="fact"><span>'+esc(k)+'</span><span>'+esc(v.name)+' <small>'+esc(v.source||"Boundary service")+'</small></span></div>').join("")+'<div class="section-label">Data confidence</div>'+tags+'<div class="disclaimer">Reverse geocoding returns the nearest mapped address and administrative labels. Village, union, ward and postal information may be missing or approximate. A coordinate does not prove a building identity, land ownership, cadastral boundary or the responsible government office.</div><div class="actions"><button class="action primary" id="reportBtn">＋ Report an issue</button><button class="action" id="prepareBtn">Prepare complaint</button><button class="action" id="recordsBtn">Request records</button><button class="action" id="copyLocBtn">Copy location link</button></div>';
  $("reportBtn").onclick=openComplaint;$("prepareBtn").onclick=openDraft;$("recordsBtn").onclick=openRecords;$("copyLocBtn").onclick=copyLocation;
+}
+function boundaryName(feature,level){
+ const p=feature&&feature.properties||{},keys=Object.keys(p);
+ const patterns={
+  division:["ADM1_EN","ADM1_NAME","DIVISION_NAME","DIVISION","NAME_1","NAME"],
+  district:["ADM2_EN","ADM2_NAME","DISTRICT_NAME","DISTRICT","NAME_2","NAME"],
+  upazila:["ADM3_EN","ADM3_NAME","UPAZILA_NAME","UPAZILA","NAME_3","NAME"],
+  union:["ADM4_EN","ADM4_NAME","UNION_NAME","UNION","NAME_4","NAME"],
+  ward:["ADM5_EN","ADM5_NAME","WARD_NAME","WARD","NAME_5","NAME"]
+ };
+ const preferred=patterns[level]||[];
+ for(const wanted of preferred){const key=keys.find(k=>k.toUpperCase()===wanted);if(key&&p[key])return String(p[key]);}
+ const regex={division:/(ADM1.*(EN|NAME)|DIVISION.*NAME|NAME_1)/i,district:/(ADM2.*(EN|NAME)|DISTRICT.*NAME|NAME_2)/i,upazila:/(ADM3.*(EN|NAME)|UPAZILA.*NAME|NAME_3)/i,union:/(ADM4.*(EN|NAME)|UNION.*NAME|NAME_4)/i,ward:/(ADM5.*(EN|NAME)|WARD.*NAME|NAME_5)/i}[level];
+ const key=keys.find(k=>regex.test(k)&&p[k]);return key?String(p[key]):"";
+}
+async function pointBoundary(level,lat,lng){
+ try{
+  const q=new URLSearchParams({level,point:lng+","+lat,limit:"10"});
+  const response=await fetch("/api/map?"+q.toString());
+  if(!response.ok)return null;
+  const data=await response.json(),feature=(data.features||[])[0];
+  const name=boundaryName(feature,level);
+  return name?{name,source:data.sourceLabel||"Administrative boundary service"}:null;
+ }catch{return null;}
+}
+async function lookupAdmin(lat,lng){
+ const levels=["division","district","upazila","union","ward"];
+ const results=await Promise.all(levels.map(async level=>[level,await pointBoundary(level,lat,lng)]));
+ return Object.fromEntries(results.filter(([,value])=>value));
 }
 async function lookup(latlng){
  const sequence=++geocodeSequence;
@@ -94,7 +123,9 @@ async function lookup(latlng){
   const url="https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat="+encodeURIComponent(latlng.lat)+"&lon="+encodeURIComponent(latlng.lng)+"&zoom=18&addressdetails=1";
   const res=await fetch(url,{headers:{Accept:"application/json"}});
   if(!res.ok)throw new Error("Place lookup returned HTTP "+res.status);
-  const data=await res.json();if(sequence===geocodeSequence)renderLocation(data);
+  const data=await res.json();
+  const admin=await lookupAdmin(latlng.lat,latlng.lng);
+  if(sequence===geocodeSequence)renderLocation(data,admin);
  }catch(err){
   if(sequence!==geocodeSequence)return;
   $("details").innerHTML='<div class="status error" id="geoStatus"><i></i>Place lookup unavailable</div><h2 class="loc-title">Selected coordinate</h2><div class="coord"><div><small>LATITUDE</small><strong>'+selected.lat.toFixed(6)+'</strong></div><div><small>LONGITUDE</small><strong>'+selected.lng.toFixed(6)+'</strong></div></div><p class="help">Reverse geocoding failed: '+esc(err.message)+'. The coordinate remains selected; administrative details are not available.</p><div class="actions"><button class="action primary" id="reportBtn">＋ Report an issue</button><button class="action" id="copyLocBtn">Copy location link</button></div><div class="disclaimer">A coordinate is not proof of a specific building, land parcel or administrative jurisdiction.</div>';
