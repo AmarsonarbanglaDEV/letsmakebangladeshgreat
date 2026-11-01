@@ -3517,7 +3517,7 @@ async function ensureLeaflet(){
             path.openTooltip();
             const base=basePathStyle(path);
             const art=level==="district"?districtArtFor(r):null;
-            path.setStyle({color:art?art[3]:"#d9ed8e",weight:Math.max(3.2,base.weight),fillColor:art?art[2]:base.fillColor,fillOpacity:level==="district"?.98:.22});
+            path.setStyle({color:art?art[3]:"#d9ed8e",weight:Math.max(3.2,base.weight),fillColor:art?art[2]:base.fillColor,fillOpacity:level==="district"?(outlineMode?.98:.18):.22});
           });
           path.on("mouseout",()=>{
             if(path._atlasLazyTooltip){
@@ -3539,7 +3539,7 @@ async function ensureLeaflet(){
     const isDivision=activeLevel==="division";
     const isDistrict=activeLevel==="district";
     const art=isDistrict?districtArtFor(r):null;
-    const fillOpacity=selected ? (isDistrict?.96:.86) : (illustrative ? (isDivision ? .90 : (isDistrict ? .86 : (activeLevel==="upazila" ? .34 : .20))) : .018);
+    const fillOpacity=selected ? (illustrative ? .96 : .16) : (illustrative ? (isDivision ? .90 : (isDistrict ? .86 : (activeLevel==="upazila" ? .34 : .20))) : .018);
     return {
       color:selected?(art?art[3]:"#386a46"):(illustrative?(isDivision?"#f8fff2":(isDistrict?"#fffaf0":"#f7fff4")):"#f8f8e8"),
       weight:selected?3.5:(illustrative?(isDivision?2.6:(isDistrict?1.55:0.9)):(isDivision?3.1:(isDistrict?1.7:1.15))),
