@@ -2973,6 +2973,10 @@
 
   
     .map-pill.river-pill{border-color:#b8dfec;color:#176d91}
+    @media(max-width:760px){
+      .map-top-controls{max-width:calc(100% - 18px);flex-wrap:wrap;justify-content:flex-end;gap:5px}
+      .map-top-controls .map-pill{height:33px;padding:0 8px;font-size:9px}
+    }
     .map-pill.river-pill.active{background:#176f96;border-color:#176f96;color:#fff}
     .river-tooltip{padding:5px 8px!important;border:1px solid #a5d9ed!important;border-radius:7px!important;background:#f1fcff!important;color:#135a79!important;font-size:10px!important;font-weight:900!important;box-shadow:0 4px 14px rgba(20,76,100,.16)!important}
     .river-name-label{padding:2px 5px;border:0!important;border-radius:5px!important;background:rgba(233,250,255,.78)!important;color:#176e94!important;font-size:9px!important;font-weight:900!important;box-shadow:none!important;white-space:nowrap}
@@ -3137,7 +3141,7 @@
     <div class="map-status" id="mapStatus" role="status" aria-live="polite">Loading Bangladesh outline and satellite map…</div>
 
     <div class="landmark-panel" id="landmarkPanel" aria-live="polite">
-      <div class="landmark-panel-head"><strong>Landmarks in this map area</strong><span class="landmark-count" id="landmarkCount">OFF</span></div>
+      <div class="landmark-panel-head"><strong>Landmarks in this map area</strong><span class="landmark-count" id="landmarkCount">ZOOM IN</span></div>
       <div class="landmark-filters" role="group" aria-label="Filter mapped landmarks">
         <button class="landmark-filter active" type="button" data-landmark-filter="all">All</button>
         <button class="landmark-filter" type="button" data-landmark-filter="history">History</button>
@@ -3146,7 +3150,7 @@
         <button class="landmark-filter" type="button" data-landmark-filter="transport">Transport</button>
         <button class="landmark-filter" type="button" data-landmark-filter="attraction">Other places</button>
       </div>
-      <small class="landmark-panel-status" id="landmarkStatus">Turn on Landmarks, then zoom in to explore the mapped places around you. <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors · ODbL</a></small>
+      <small class="landmark-panel-status" id="landmarkStatus">Landmarks are enabled. Zoom into a district to load mapped places around you. <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors · ODbL</a></small>
     </div>
     <div class="project-map-legend" id="projectMarkerLegend" aria-live="polite">
       <strong>Project status</strong>
