@@ -46,7 +46,7 @@ function ext(type) {
 export async function onRequestPost({ request, env }) {
   const url = new URL(request.url);
   const origin = request.headers.get("Origin");
-  if (origin && origin !== url.origin) return json({ error: "Cross-origin submission is not allowed." }, 403);
+  if (origin !== url.origin) return json({ error: "A same-origin browser submission is required." }, 403);
   if (!request.headers.get("content-type")?.toLowerCase().includes("multipart/form-data")) {
     return json({ error: "Submit the report using the provided form." }, 415);
   }
@@ -75,6 +75,7 @@ export async function onRequestPost({ request, env }) {
     "Electricity", "Public infrastructure", "Land and property issues",
     "Public safety", "Other government service complaints"
   ]);
+  if (form.get("consent") !== "on") return json({ error: "Consent is required before submitting a report." }, 400);
   if (title.length < 5 || description.length < 20 || !allowedCategories.has(category) ||
       latitude === null || longitude === null) {
     return json({ error: "Please provide a valid title, category, description and Bangladesh coordinate." }, 400);
@@ -85,6 +86,7 @@ export async function onRequestPost({ request, env }) {
 
   const files = form.getAll("attachments").filter(x => x && typeof x.arrayBuffer === "function" && x.size > 0);
   if (files.length > MAX_FILES) return json({ error: "Attach no more than three files." }, 400);
+  if (files.reduce((total, file) => total + file.size, 0) > 15 * MAX_FILE) return json({ error: "The combined attachment size is too large." }, 413);
   if (files.some(f => f.size > MAX_FILE || !ALLOWED.has(f.type))) {
     return json({ error: "Only JPEG, PNG, WebP or PDF files up to 5 MB each are accepted." }, 400);
   }
