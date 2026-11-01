@@ -5115,7 +5115,6 @@ async function ensureLeaflet(){
     sidebarRailToggle.title=open?"Navigation panel open":"Open navigation panel";
     sidebarBackdrop.setAttribute("aria-hidden",String(!(open&&isCompactSidebar())));
     sidebarBackdrop.tabIndex=open&&isCompactSidebar()?0:-1;
-    const blockingPopup=isDataPopupOpen()||isProjectProfileOpen();
     mapArea.inert=blockingPopup||(open&&isCompactSidebar());
     if(topbarElement)topbarElement.inert=blockingPopup;
     if(isCompactSidebar()){
