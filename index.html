@@ -2937,6 +2937,40 @@
       .district-vibe-emoji,.district-motion-sprite,.district-motion-person:after{animation:none!important}
     }
 
+  
+    .landmark-panel{position:absolute;z-index:780;right:15px;bottom:15px;width:min(330px,calc(100% - 30px));padding:12px;border:1px solid rgba(255,255,255,.92);border-radius:15px;background:rgba(255,254,250,.97);box-shadow:0 9px 28px rgba(16,42,30,.2);backdrop-filter:blur(12px);color:#233d31}
+    .landmark-panel[hidden]{display:none}
+    .landmark-panel-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:7px}
+    .landmark-panel-head strong{font-size:12px;font-weight:900}
+    .landmark-count{padding:3px 7px;border-radius:15px;background:#e7f0e2;color:#306443;font-size:9px;font-weight:850}
+    .landmark-filters{display:flex;flex-wrap:wrap;gap:5px}
+    .landmark-filter{padding:6px 8px;border:1px solid #dce6d8;border-radius:9px;background:#fff;color:#587064;font-size:9px;font-weight:850}
+    .landmark-filter.active{border-color:#2c6948;background:#2c6948;color:#fff}
+    .landmark-panel-status{display:block;margin-top:8px;color:#74847a;font-size:9px;line-height:1.5}
+    .landmark-panel-status a{color:#347b57;text-decoration:underline}
+    .landmark-marker-shell{background:transparent;border:0}
+    .landmark-marker{display:grid;place-items:center;width:29px;height:29px;border:2px solid #fff;border-radius:50% 50% 50% 8px;transform:rotate(-45deg);background:#fff1be;box-shadow:0 2px 9px rgba(21,45,34,.28)}
+    .landmark-marker>span{display:block;transform:rotate(45deg);font-size:15px;line-height:1}
+    .landmark-marker-history{background:#eadcf5}
+    .landmark-marker-culture{background:#ffe0c9}
+    .landmark-marker-nature{background:#d5edc9}
+    .landmark-marker-transport{background:#d8e7f6}
+    .landmark-marker-attraction{background:#ffedb6}
+    .landmark-popup{min-width:195px;max-width:245px;color:#294436;font-family:"DM Sans","Noto Sans Bengali",sans-serif}
+    .landmark-popup small{display:block;margin-bottom:4px;color:#70877a;font-size:9px;font-weight:850;letter-spacing:.09em;text-transform:uppercase}
+    .landmark-popup strong{display:block;font-size:13px;line-height:1.4}
+    .landmark-popup .landmark-popup-bn{display:block;margin-top:3px;color:#64816f;font-family:"Noto Sans Bengali",sans-serif;font-size:11px}
+    .landmark-popup p{margin:7px 0;color:#708077;font-size:10px;line-height:1.5}
+    .landmark-popup a{color:#2e7951;font-size:10px;font-weight:850;text-decoration:underline}
+    .landmark-cluster-icon{background:transparent;border:0}
+    .landmark-cluster-icon span{display:grid;place-items:center;width:38px;height:38px;border:3px solid #fff;border-radius:50%;background:#275b43;color:#fff;font-size:11px;font-weight:900;box-shadow:0 3px 12px rgba(25,50,37,.3)}
+    .landmark-attribution{position:absolute;z-index:740;right:15px;bottom:4px;color:#819086;font-size:8px;pointer-events:none}
+    @media(max-width:680px){
+      .map-top-controls{right:9px;top:12px;gap:4px}
+      .map-top-controls .map-pill{height:34px;padding:0 8px;font-size:9px}
+      .landmark-panel{right:10px;bottom:10px;width:min(310px,calc(100% - 20px))}
+    }
+
   </style>
 </head>
 <body>
@@ -3084,6 +3118,7 @@
     <div class="map-top-controls">
       <button class="map-pill" id="satelliteToggle" type="button">◈ Satellite</button>
       <button class="map-pill active" id="outlineToggle" type="button">✿ Illustrated</button>
+      <button class="map-pill" id="landmarkToggle" type="button" aria-pressed="false">★ Landmarks</button>
     </div>
     <div class="map-controls" aria-label="Map controls">
       <button class="map-control" id="zoomIn" type="button" aria-label="Zoom in">+</button>
@@ -3092,6 +3127,18 @@
     </div>
     <div class="map-status" id="mapStatus" role="status" aria-live="polite">Loading Bangladesh outline and satellite map…</div>
 
+    <div class="landmark-panel" id="landmarkPanel" hidden aria-live="polite">
+      <div class="landmark-panel-head"><strong>Landmarks in this map area</strong><span class="landmark-count" id="landmarkCount">OFF</span></div>
+      <div class="landmark-filters" role="group" aria-label="Filter mapped landmarks">
+        <button class="landmark-filter active" type="button" data-landmark-filter="all">All</button>
+        <button class="landmark-filter" type="button" data-landmark-filter="history">History</button>
+        <button class="landmark-filter" type="button" data-landmark-filter="culture">Culture</button>
+        <button class="landmark-filter" type="button" data-landmark-filter="nature">Nature</button>
+        <button class="landmark-filter" type="button" data-landmark-filter="transport">Transport</button>
+        <button class="landmark-filter" type="button" data-landmark-filter="attraction">Other places</button>
+      </div>
+      <small class="landmark-panel-status" id="landmarkStatus">Turn on Landmarks, then zoom in to explore the mapped places around you. <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors · ODbL</a></small>
+    </div>
     <div class="project-map-legend" id="projectMarkerLegend" aria-live="polite">
       <strong>Project status</strong>
       <span class="project-status-key"><i style="--status-color:#238b57"></i>Completed</span>
@@ -3876,6 +3923,7 @@ async function ensureLeaflet(){
   map.createPane("countryPane");map.getPane("countryPane").style.zIndex=420;map.getPane("countryPane").style.pointerEvents="none";
   map.createPane("boundaryPane");map.getPane("boundaryPane").style.zIndex=450;
   map.createPane("projectMarkerPane");map.getPane("projectMarkerPane").style.zIndex=680;
+  map.createPane("landmarkPane");map.getPane("landmarkPane").style.zIndex=670;
   const countryRenderer=L.svg({pane:"countryPane"});
   const adminRenderer=L.canvas({pane:"boundaryPane",padding:0.5});
   map.getContainer().style.backgroundColor="#dcefeb";
@@ -3915,6 +3963,12 @@ async function ensureLeaflet(){
     setStatus("Satellite imagery enabled · select Illustrated for the lightweight map");
     window.setTimeout(()=>setStatus(""),2500);
   });
+  el("landmarkToggle").addEventListener("click",toggleLandmarks);
+  document.querySelectorAll("[data-landmark-filter]").forEach(button=>{
+    button.addEventListener("click",()=>setLandmarkFilter(button.getAttribute("data-landmark-filter")));
+  });
+  map.on("moveend zoomend",()=>scheduleLandmarkLoad(1200));
+
   el("outlineToggle").addEventListener("click",()=>{
     boundaryFallback();
     setStatus("Illustrated map · lightweight pastel boundaries and project dots");
@@ -3923,6 +3977,281 @@ async function ensureLeaflet(){
   el("zoomIn").addEventListener("click",()=>map.zoomIn());
   el("zoomOut").addEventListener("click",()=>map.zoomOut());
   el("fitBangladesh").addEventListener("click",()=>map.fitBounds(bounds,{padding:[30,30]}));
+
+
+  // Live, viewport-based OpenStreetMap landmarks. The API is same-origin,
+  // edge-cached and only queried while the visitor has the layer switched on.
+  let landmarksEnabled=false;
+  let landmarksLayer=null;
+  let landmarkItems=[];
+  let landmarkFilter="all";
+  let landmarkTimer=null;
+  let landmarkRequestController=null;
+  let landmarkRequestAt=0;
+  let landmarkLayerReady=null;
+  const landmarkViewportCache=new Map();
+  const LANDMARK_MIN_ZOOM=8;
+
+  function landmarkKind(item){
+    const t=item.tags||{};
+    if(t.historic||t.heritage||t.memorial)return "history";
+    if(t.natural||["park","garden","nature_reserve"].includes(t.leisure))return "nature";
+    if(t.railway||t.aeroway||t.waterway||t.man_made==="bridge"||t.man_made==="pier")return "transport";
+    if(t.amenity==="place_of_worship"||t.amenity==="museum"||t.amenity==="theatre"||
+       t.amenity==="arts_centre"||t.tourism==="museum"||t.building||
+       t.tourism==="gallery"||t.tourism==="artwork")return "culture";
+    if(t.tourism||t.leisure||t.sport||t.place==="island")return "attraction";
+    return "attraction";
+  }
+
+  function landmarkEmoji(item){
+    const t=item.tags||{};
+    if(t.amenity==="place_of_worship"||t.building==="mosque"){
+      if(t.religion==="hindu")return "🛕";
+      if(t.religion==="christian")return "⛪";
+      if(t.religion==="buddhist")return "🛕";
+      return "🕌";
+    }
+    if(t.historic||t.heritage||t.memorial||t.amenity==="museum"||t.tourism==="museum")return "🏛️";
+    if(t.natural==="beach"||t.tourism==="beach_resort")return "🏖️";
+    if(t.natural==="waterfall"||t.waterway==="waterfall"||t.natural==="peak")return "🏞️";
+    if(t.leisure==="park"||t.leisure==="garden"||t.leisure==="nature_reserve")return "🌳";
+    if(t.railway==="station")return "🚉";
+    if(t.aeroway==="aerodrome"||t.aeroway==="helipad")return "✈️";
+    if(t.man_made==="bridge"||t.man_made==="pier")return "🌉";
+    if(t.tourism==="viewpoint")return "🔭";
+    if(t.place==="island")return "🏝️";
+    if(t.sport==="stadium"||t.leisure==="stadium")return "🏟️";
+    return "📍";
+  }
+
+  function landmarkCategoryLabel(category){
+    return ({history:"History & heritage",culture:"Culture & worship",nature:"Nature & outdoors",
+      transport:"Transport & infrastructure",attraction:"Attractions & notable places"})[category]||"Landmark";
+  }
+
+  function landmarkName(item){
+    const t=item.tags||{};
+    return t["name:en"]||item.name||t.name||t.official_name||"Unnamed mapped feature";
+  }
+
+  function ensureLandmarkLayer(){
+    if(landmarksLayer)return Promise.resolve(landmarksLayer);
+    if(landmarkLayerReady)return landmarkLayerReady;
+    landmarkLayerReady=(async()=>{
+      const cssUrls=[
+        "https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css",
+        "https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css"
+      ];
+      cssUrls.forEach(url=>{
+        if(!document.querySelector('link[href="'+url+'"]')){
+          const link=document.createElement("link");link.rel="stylesheet";link.href=url;document.head.appendChild(link);
+        }
+      });
+      if(!L.markerClusterGroup){
+        await loadAdpScript(
+          "https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.js",
+          ()=>!!(window.L&&L.markerClusterGroup)
+        );
+      }
+      if(L.markerClusterGroup){
+        landmarksLayer=L.markerClusterGroup({
+          maxClusterRadius:42,disableClusteringAtZoom:13,spiderfyOnMaxZoom:true,
+          showCoverageOnHover:false,zoomToBoundsOnClick:true,animate:false,
+          chunkedLoading:true,chunkInterval:160,chunkDelay:20,removeOutsideVisibleBounds:true,
+          iconCreateFunction:cluster=>L.divIcon({
+            className:"landmark-cluster-icon",
+            html:"<span>"+cluster.getChildCount()+"</span>",
+            iconSize:[38,38],iconAnchor:[19,19]
+          })
+        });
+      }else{
+        landmarksLayer=L.layerGroup();
+      }
+      return landmarksLayer;
+    })().catch(error=>{
+      landmarkLayerReady=null;
+      throw error;
+    });
+    return landmarkLayerReady;
+  }
+
+  function renderLandmarkMarkers(){
+    if(!landmarksLayer)return;
+    landmarksLayer.clearLayers();
+    const visible=landmarkFilter==="all"?landmarkItems:
+      landmarkItems.filter(item=>landmarkKind(item)===landmarkFilter);
+    visible.forEach(item=>{
+      const category=landmarkKind(item);
+      const emoji=landmarkEmoji(item);
+      const name=landmarkName(item);
+      const bn=item.tags&&item.tags["name:bn"]&&item.tags["name:bn"]!==name
+        ?item.tags["name:bn"]:"";
+      const icon=L.divIcon({
+        className:"landmark-marker-shell",
+        html:'<span class="landmark-marker landmark-marker-'+category+'"><span>'+emoji+'</span></span>',
+        iconSize:[31,35],iconAnchor:[15,33]
+      });
+      const marker=L.marker([item.lat,item.lon],{icon,pane:"landmarkPane",keyboard:true,title:name,alt:name});
+      marker.bindTooltip(escapeHtml(name),{direction:"top",offset:[0,-27],className:"landmark-tooltip"});
+      const osmUrl="https://www.openstreetmap.org/"+encodeURIComponent(item.type)+"/"+encodeURIComponent(item.id);
+      const detail=(item.tags&&(item.tags.historic||item.tags.tourism||item.tags.amenity||
+        item.tags.natural||item.tags.leisure||item.tags.man_made||item.tags.railway||item.tags.aeroway))||"Mapped place";
+      const popup=
+        '<article class="landmark-popup">'+
+          '<small>'+escapeHtml(landmarkCategoryLabel(category))+'</small>'+
+          '<strong>'+escapeHtml(name)+'</strong>'+
+          (bn?'<span class="landmark-popup-bn">'+escapeHtml(bn)+'</span>':"")+
+          '<p>'+escapeHtml(String(detail).replace(/_/g," "))+' · OpenStreetMap mapped feature</p>'+
+          '<a href="'+osmUrl+'" target="_blank" rel="noopener">View source map ↗</a>'+
+        '</article>';
+      marker.bindPopup(popup,{maxWidth:270});
+      landmarksLayer.addLayer(marker);
+    });
+    const countEl=el("landmarkCount");
+    const statusEl=el("landmarkStatus");
+    if(countEl)countEl.textContent=visible.length.toLocaleString()+" / "+landmarkItems.length.toLocaleString();
+    if(statusEl){
+      const capped=landmarkItems._capped?" · result cap reached; zoom in for more":"";
+      const stamp=landmarkItems._timestamp?" · OSM data "+landmarkItems._timestamp.replace("T"," ").replace("Z"," UTC"):"";
+      statusEl.innerHTML=visible.length.toLocaleString()+" landmarks shown"+capped+stamp+
+        '. <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap contributors · ODbL</a>';
+    }
+    const toggle=el("landmarkToggle");
+    if(toggle)toggle.classList.toggle("active",landmarksEnabled);
+  }
+
+  function roundedLandmarkBounds(){
+    const view=map.getBounds();
+    const south=Math.max(bounds.getSouth(),view.getSouth());
+    const west=Math.max(bounds.getWest(),view.getWest());
+    const north=Math.min(bounds.getNorth(),view.getNorth());
+    const east=Math.min(bounds.getEast(),view.getEast());
+    if(south>=north||west>=east)return null;
+    // Snap requests to 0.1-degree cells so nearby users share edge-cache entries.
+    const floor=v=>Math.floor(v*10)/10;
+    const ceil=v=>Math.ceil(v*10)/10;
+    const box={south:Math.max(BOUNDS_LANDMARK.south,floor(south)),
+      west:Math.max(BOUNDS_LANDMARK.west,floor(west)),
+      north:Math.min(BOUNDS_LANDMARK.north,ceil(north)),
+      east:Math.min(BOUNDS_LANDMARK.east,ceil(east))};
+    return box;
+  }
+
+  const BOUNDS_LANDMARK={south:19.75,west:87.45,north:27.45,east:93.25};
+
+  async function loadLandmarksForViewport(){
+    if(!landmarksEnabled)return;
+    const zoom=map.getZoom();
+    const status=el("landmarkStatus");
+    if(zoom<LANDMARK_MIN_ZOOM){
+      if(status)status.innerHTML='Zoom in to level 8 or closer to load landmarks. <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap contributors · ODbL</a>';
+      setStatus("Landmarks are ready · zoom in on a district to load mapped places.");
+      return;
+    }
+    const box=roundedLandmarkBounds();
+    if(!box)return;
+    const area=(box.north-box.south)*(box.east-box.west);
+    if(area>5.5||box.north-box.south>2.8||box.east-box.west>3.2){
+      if(status)status.textContent="Zoom in a little further to request a smaller, faster landmark area.";
+      setStatus("Zoom in further to explore landmarks in this part of Bangladesh.");
+      return;
+    }
+    const bbox=[box.south,box.west,box.north,box.east].map(v=>v.toFixed(1)).join(",");
+    const key=bbox;
+    const cached=landmarkViewportCache.get(key);
+    if(cached){
+      landmarkItems=cached.items;
+      landmarkItems._capped=cached.capped;
+      landmarkItems._timestamp=cached.timestamp;
+      await ensureLandmarkLayer();
+      if(landmarksEnabled&&!map.hasLayer(landmarksLayer))landmarksLayer.addTo(map);
+      renderLandmarkMarkers();
+      if(status)status.textContent="Loaded from local cache · move around the map to discover more mapped places.";
+      setStatus(landmarkItems.length.toLocaleString()+" mapped landmarks in this cached map area.");
+      return;
+    }
+    const now=Date.now();
+    const wait=12000-(now-landmarkRequestAt);
+    if(wait>0){
+      if(status)status.textContent="Landmark service is being rate-limited politely · loading after a short pause.";
+      clearTimeout(landmarkTimer);
+      landmarkTimer=window.setTimeout(()=>loadLandmarksForViewport(),wait);
+      return;
+    }
+    if(landmarkRequestController)landmarkRequestController.abort();
+    landmarkRequestController=new AbortController();
+    landmarkRequestAt=Date.now();
+    if(status)status.textContent="Searching mapped history, culture, nature and notable places…";
+    setStatus("Loading OpenStreetMap landmarks for this area…");
+    try{
+      const params=new URLSearchParams({bbox,zoom:String(zoom)});
+      const response=await fetch("/api/landmarks?"+params.toString(),{
+        method:"GET",headers:{Accept:"application/json"},signal:landmarkRequestController.signal
+      });
+      const data=await response.json();
+      if(!response.ok)throw new Error(data.error||"Landmark data request failed.");
+      const items=(data.elements||[]).filter(item=>Number.isFinite(Number(item.lat))&&Number.isFinite(Number(item.lon)));
+      landmarkViewportCache.set(key,{items,capped:data.capped===true,timestamp:data.timestamp||null});
+      while(landmarkViewportCache.size>28)landmarkViewportCache.delete(landmarkViewportCache.keys().next().value);
+      landmarkItems=items;
+      landmarkItems._capped=data.capped===true;
+      landmarkItems._timestamp=data.timestamp||null;
+      await ensureLandmarkLayer();
+      if(!landmarksEnabled)return;
+      if(!map.hasLayer(landmarksLayer))landmarksLayer.addTo(map);
+      renderLandmarkMarkers();
+      if(status)status.textContent="Loaded "+items.length.toLocaleString()+" mapped places in this area. Pan or zoom to explore more.";
+      setStatus(items.length.toLocaleString()+" OpenStreetMap landmarks loaded for this map area.");
+    }catch(error){
+      if(error&&error.name==="AbortError")return;
+      console.error("Landmark lookup failed",error);
+      if(status)status.textContent=(error.message||"Landmark data is unavailable.")+" You can retry by moving the map.";
+      setStatus("Could not load landmarks: "+(error.message||"map data service unavailable."),true);
+    }
+  }
+
+  function scheduleLandmarkLoad(delay=900){
+    if(!landmarksEnabled)return;
+    clearTimeout(landmarkTimer);
+    landmarkTimer=window.setTimeout(()=>loadLandmarksForViewport(),delay);
+  }
+
+  function setLandmarkFilter(filter){
+    landmarkFilter=filter;
+    document.querySelectorAll("[data-landmark-filter]").forEach(button=>
+      button.classList.toggle("active",button.getAttribute("data-landmark-filter")===filter)
+    );
+    renderLandmarkMarkers();
+  }
+
+  async function toggleLandmarks(){
+    landmarksEnabled=!landmarksEnabled;
+    const button=el("landmarkToggle");
+    const panel=el("landmarkPanel");
+    if(button)button.classList.toggle("active",landmarksEnabled);
+    if(panel)panel.hidden=!landmarksEnabled;
+    if(!landmarksEnabled){
+      clearTimeout(landmarkTimer);
+      if(landmarkRequestController)landmarkRequestController.abort();
+      if(landmarksLayer&&map.hasLayer(landmarksLayer))map.removeLayer(landmarksLayer);
+      setStatus("Landmark layer hidden. Your project and administrative layers are unchanged.");
+      return;
+    }
+    try{
+      await ensureLandmarkLayer();
+      if(!landmarksEnabled)return;
+      if(!map.hasLayer(landmarksLayer))landmarksLayer.addTo(map);
+      if(landmarkItems.length)renderLandmarkMarkers();
+      scheduleLandmarkLoad(0);
+      setStatus("Landmark layer enabled · zoom in to discover mapped places across Bangladesh.");
+    }catch(error){
+      landmarksEnabled=false;
+      if(panel)panel.hidden=true;
+      if(button)button.classList.remove("active");
+      setStatus("Landmark clustering could not load: "+(error.message||String(error)),true);
+    }
+  }
 
   function setPoint(latlng,label){
     lastPoint=latlng;
