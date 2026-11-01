@@ -3401,6 +3401,10 @@
       .promise-dashboard *, .promise-dashboard *:before, .promise-dashboard *:after{transition:none!important;animation:none!important;scroll-behavior:auto!important}
     }
 
+  /* Keep map overlays light to reduce compositing cost during pan/zoom. */
+  .sidebar,.atlas-rail,.map-levels,.map-top-controls,.map-controls,.map-status,.project-map-legend,#mapLayersPanel,.atlas-welcome{
+    -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+  }
   </style>
 </head>
 <body>
@@ -3574,8 +3578,8 @@
         </div>
         <section class="map-layer-content" id="mapPlacesContent" data-map-layer-content="places">
           <div class="place-layer-switches">
-            <button class="place-layer-switch river-pill active" id="riverToggle" type="button" aria-pressed="true">〰 Rivers <small>Waterways</small></button>
-            <button class="place-layer-switch active" id="landmarkToggle" type="button" aria-pressed="true">★ Landmarks <small>Mapped places</small></button>
+            <button class="place-layer-switch river-pill" id="riverToggle" type="button" aria-pressed="false">〰 Rivers <small>Waterways · off</small></button>
+            <button class="place-layer-switch" id="landmarkToggle" type="button" aria-pressed="false">★ Landmarks <small>Mapped places · off</small></button>
             <button class="place-layer-switch" id="promiseMapToggle" type="button" aria-pressed="false">⚑ Progress <small>Verified promises</small></button>
           </div>
           <div class="river-layer-status" id="promiseMapStatus">Promise markers appear only when an exact, source-backed site coordinate is available. District associations are never turned into fake map pins.</div>
@@ -3667,11 +3671,11 @@
       <span class="project-status-key"><i style="--status-color:#169ca8"></i>Future</span>
       <span class="project-status-key"><i style="--status-color:#87918b"></i>Unverified</span>
       <small>Map-name matches: grey = division/district, blue = upazila, teal square = union. These identify administrative areas, not exact construction sites.</small>
-      <button id="adpRosterToggle" class="adp-roster-toggle" type="button" disabled>Loading FY2026–27 ADP dots…</button>
+      <button id="adpRosterToggle" class="adp-roster-toggle" type="button" aria-pressed="false">Load FY2026–27 ADP dots</button>
       <button id="adpDirectoryToggle" class="adp-directory-toggle" type="button">Browse all 1,173 projects</button>
       <small id="adpRosterStatus">Waiting for official ADP roster import…</small>
       <small id="projectMarkerCount">Loading project locations…</small>
-      <small class="river-status" id="riverStatus">Preparing Bangladesh's rivers…</small>
+      <small class="river-status" id="riverStatus">Rivers are off until enabled.</small>
       <small>River inventory reference: <a href="https://nodi.bwdb.gov.bd/RiverInfo" target="_blank" rel="noopener">BWDB River Information Management System</a>. Map lines are sourced separately and may not show every official river.</small>
     </div>
     <aside class="adp-directory-panel" id="adpDirectoryPanel" hidden aria-label="FY2026–27 ADP project directory">
@@ -3768,6 +3772,7 @@ async function ensureLeaflet(){
   let searchInputTimer=0;
   let satellite=null,historicalLayer=null,outlineMode=true,lastPoint=null,pointMarker=null;
   let projectMarkersLayer=null,selectedProjectId=null;
+  let projectMarkersBuiltFor=null,projectMarkersBuiltDistrictLayer=null;
   let adpRosterLayer=null,adpRosterLoadPromise=null,adpRosterLoaded=false;
   let adpProjectRows=[];
   const adpProjectMatches=new Map();
@@ -4507,7 +4512,7 @@ async function ensureLeaflet(){
 
   // Rivers are a first-class geographic layer, independent of projects and landmarks.
   // All lines come from mapped OSM waterway geometry; the line layer is visible by default.
-  let riversEnabled=true;
+  let riversEnabled=false;
   let riverLayer=null;
   let riverHaloLayer=null;
   let riverLabelsLayer=null;
@@ -4976,7 +4981,7 @@ async function ensureLeaflet(){
 
   // Live, viewport-based OpenStreetMap landmarks. The API is same-origin,
   // edge-cached and only queried while the visitor has the layer switched on.
-  let landmarksEnabled=true;
+  let landmarksEnabled=false;
   let landmarksLayer=null;
   let landmarkItems=[];
   let landmarkFilter="all";
@@ -6538,18 +6543,8 @@ async function ensureLeaflet(){
     if(toggle){
       toggle.disabled=false;
       toggle.classList.add("is-on");
+      toggle.setAttribute("aria-pressed","true");
       toggle.textContent="FY2026–27 ADP dots · ON";
-      toggle.onclick=()=>{
-        if(map.hasLayer(adpRosterLayer)){
-          map.removeLayer(adpRosterLayer);
-          toggle.classList.remove("is-on");
-          toggle.textContent="FY2026–27 ADP dots · OFF";
-        }else{
-          adpRosterLayer.addTo(map);
-          toggle.classList.add("is-on");
-          toggle.textContent="FY2026–27 ADP dots · ON";
-        }
-      };
     }
     const status=el("adpRosterStatus");
     const noMapName=rows.length-mentionedRows;
@@ -6612,16 +6607,56 @@ async function ensureLeaflet(){
     }
   }
 
+  function handleAdpRosterToggle(){
+    const toggle=el("adpRosterToggle");
+    if(!toggle||toggle.disabled)return;
+    if(adpRosterLoaded&&adpRosterLayer){
+      const visible=!map.hasLayer(adpRosterLayer);
+      if(visible)adpRosterLayer.addTo(map);
+      else map.removeLayer(adpRosterLayer);
+      toggle.classList.toggle("is-on",visible);
+      toggle.setAttribute("aria-pressed",String(visible));
+      toggle.textContent="FY2026–27 ADP dots · "+(visible?"ON":"OFF");
+      return;
+    }
+    if(adpRosterLoadPromise)return;
+    toggle.disabled=true;
+    toggle.textContent="Loading FY2026–27 ADP dots…";
+    const status=el("adpRosterStatus");
+    if(status)status.textContent="Loading the official roster only because you requested the map layer…";
+    adpRosterLoadPromise=loadAdpRoster().catch(error=>{
+      console.warn("ADP roster layer unavailable; retry is available.",error);
+      adpRosterLoadPromise=null;
+      toggle.disabled=false;
+      toggle.classList.remove("is-on");
+      toggle.setAttribute("aria-pressed","false");
+      toggle.textContent="Retry FY2026–27 ADP dots";
+      if(status)status.textContent="Roster could not be loaded. Check your connection and retry.";
+    });
+  }
+  function initialiseAdpRosterToggle(){
+    const toggle=el("adpRosterToggle");
+    if(!toggle)return;
+    toggle.disabled=false;
+    toggle.classList.remove("is-on");
+    toggle.setAttribute("aria-pressed","false");
+    toggle.textContent="Load FY2026–27 ADP dots";
+    toggle.addEventListener("click",handleAdpRosterToggle);
+  }
+  initialiseAdpRosterToggle();
+
   function syncProjectMarkers(){
     if(!map||!atlasData.projects||!cache.district||!cache.district.layer)return;
-    if(!adpRosterLoadPromise){
-      adpRosterLoadPromise=loadAdpRoster().catch(error=>{
-        console.warn("ADP roster layer unavailable; static project locators remain active.",error);
-        return null;
-      });
+    // Reuse the layer until one of its source datasets changes.
+    if(projectMarkersLayer&&projectMarkersBuiltFor===atlasData.projects&&
+       projectMarkersBuiltDistrictLayer===cache.district.layer){
+      if(!map.hasLayer(projectMarkersLayer))projectMarkersLayer.addTo(map);
+      return;
     }
-    if(!projectMarkersLayer)projectMarkersLayer=L.layerGroup().addTo(map);
-    projectMarkersLayer.clearLayers();
+    if(!projectMarkersLayer)projectMarkersLayer=L.layerGroup();
+    else projectMarkersLayer.clearLayers();
+    if(!map.hasLayer(projectMarkersLayer))projectMarkersLayer.addTo(map);
+    const districtIndex=new Map(cache.district.records.map(record=>[normalise(record.name),record]));
     let exactPinCount=0,areaCount=0,districtLocatorCount=0,unresolvedCount=0,unmatchedCount=0;
     const statusCounts={},districtDotOffsets=Object.create(null);
     (atlasData.projects.projects||[]).forEach(project=>{
@@ -6670,9 +6705,7 @@ async function ensureLeaflet(){
       }
       let projectHasArea=false;
       districtNames.forEach(districtName=>{
-        const districtRecord=cache.district.records.find(record=>
-          normalise(record.name)===normalise(districtName)
-        );
+        const districtRecord=districtIndex.get(normalise(districtName));
         if(!districtRecord||!districtRecord.feature?.geometry){
           unmatchedCount++;
           return;
@@ -6728,6 +6761,8 @@ async function ensureLeaflet(){
       });
       if(!projectHasArea)unresolvedCount++;
     });
+    projectMarkersBuiltFor=atlasData.projects;
+    projectMarkersBuiltDistrictLayer=cache.district.layer;
     const countNode=el("projectMarkerCount");
     if(countNode){
       const statusSummary=Object.entries(statusCounts)
@@ -8453,8 +8488,7 @@ async function ensureLeaflet(){
     await loadCountryBoundary();
     setStatus("Loading district boundaries…");
     await switchLevel("district");
-    scheduleRiverLoad(400);
-    scheduleLandmarkLoad(900);
+    // Optional map overlays load only after the visitor enables them.
     if(activeLevel==="district"&&currentLayer){
       setStatus("Bangladesh outline and district layer loaded · switch to divisions, upazilas or unions.");
     }
