@@ -2983,6 +2983,92 @@
     .river-name-label:before{display:none!important}
     .river-status{color:#367b97!important}
 
+
+    /* Compact Google-Maps-style layer dock. Keep map canvas unobstructed and mobile-safe. */
+    .map-top-controls{gap:6px}
+    .map-layers-panel{
+      position:absolute;z-index:790;right:18px;bottom:18px;width:min(390px,calc(100% - 36px));
+      max-height:min(58vh,610px);display:flex;flex-direction:column;overflow:hidden;
+      border:1px solid rgba(255,255,255,.88);border-radius:18px;
+      background:rgba(248,250,252,.97);color:#17324a;
+      box-shadow:0 16px 46px rgba(4,22,38,.28);backdrop-filter:blur(18px);
+      -webkit-backdrop-filter:blur(18px)
+    }
+    .map-layers-panel[hidden]{display:none}
+    .map-layers-panel.collapsed .map-layers-body{display:none}
+    .map-layers-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-bottom:1px solid #dce5ed}
+    .map-layers-head strong{display:block;font-size:11px;font-weight:950;letter-spacing:.12em}
+    .map-layers-head small{display:block;margin-top:2px;color:#71849a;font-size:9px}
+    .map-layers-head button{width:30px;height:30px;border:1px solid #dbe5ed;border-radius:9px;background:#fff;color:#28465f;font-size:16px}
+    .map-layers-body{display:flex;flex-direction:column;min-height:0;overflow:hidden}
+    .map-layer-tabs{display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:8px 10px;border-bottom:1px solid #e1e9ef}
+    .map-layer-tab{padding:8px 7px;border:0;border-radius:9px;background:#edf2f6;color:#5a7085;font-size:10px;font-weight:850}
+    .map-layer-tab.active{background:#173c58;color:#fff}
+    .map-layer-content{min-height:0;overflow:auto;padding:10px 11px 12px;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#c6d5df transparent}
+    .map-layer-content[hidden]{display:none}
+    .place-layer-switches{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:9px}
+    .place-layer-switch{display:flex;align-items:center;gap:6px;justify-content:flex-start;min-width:0;padding:9px 10px;border:1px solid #dbe5ed;border-radius:11px;background:#fff;color:#40586d;font-size:11px;font-weight:900}
+    .place-layer-switch small{margin-left:auto;color:#8293a2;font-size:8px;font-weight:700}
+    .place-layer-switch.active{border-color:#173c58;background:#173c58;color:#fff}
+    .place-layer-switch.active small{color:#c4d9e7}
+    .map-layers-panel .landmark-panel{position:static;display:block;width:auto;max-width:none;padding:10px 0 8px;border:0;border-radius:0;background:transparent;box-shadow:none;backdrop-filter:none}
+    .map-layers-panel .landmark-panel[hidden]{display:none}
+    .map-layers-panel .landmark-panel-head{margin-bottom:7px}
+    .map-layers-panel .landmark-panel-head strong{font-size:11px}
+    .map-layers-panel .landmark-filters{gap:5px}
+    .map-layers-panel .landmark-filter{padding:6px 8px;font-size:9px}
+    .river-layer-status{padding:9px 10px;border-radius:10px;background:#e8f5fa;color:#286a82;font-size:9px;line-height:1.5}
+    .pollution-intro{padding:2px 1px 8px}
+    .pollution-intro strong{font-size:13px}
+    .pollution-intro p{margin:4px 0 0;color:#71849a;font-size:9px;line-height:1.5}
+    .pollution-layer-list{display:grid;gap:6px}
+    .pollution-group-title{padding:9px 2px 2px;color:#7b8da0;font-size:8px;font-weight:950;letter-spacing:.13em}
+    .environment-layer{display:flex;align-items:center;gap:9px;width:100%;min-width:0;padding:8px 9px;
+      border:1px solid #e0e8ef;border-radius:11px;background:#fff;text-align:left;color:#1a354d;transition:border-color .12s,background .12s}
+    .environment-layer:hover{border-color:#9fb9cb;background:#f6fafd}
+    .environment-layer.active{border-color:#2c78a5;background:#eaf5fb;box-shadow:inset 0 0 0 1px rgba(44,120,165,.1)}
+    .environment-icon{display:grid;place-items:center;flex:0 0 31px;width:31px;height:31px;border-radius:9px;background:#edf3f7;font-size:15px;font-weight:900}
+    .environment-copy{display:block;min-width:0;flex:1}
+    .environment-copy strong{display:block;font-size:10px;line-height:1.25}
+    .environment-copy small{display:block;margin-top:3px;color:#7a8b9b;font-size:8px;line-height:1.35}
+    .environment-state{flex:0 0 auto;padding:4px 6px;border-radius:7px;background:#e5f2e9;color:#3c7850;font-size:7px;font-weight:950;letter-spacing:.04em}
+    .environment-state.pending{background:#f0f2f4;color:#87939d}
+    .pollution-details{margin-top:9px;padding:9px 10px;border:1px solid #dce7ef;border-radius:10px;background:#f2f7fb;color:#526a7e;font-size:9px;line-height:1.5}
+    .pollution-details a{color:#246f9d;text-decoration:underline;text-underline-offset:2px}
+    .pollution-footnote{margin-top:8px;color:#8796a3;font-size:8px;line-height:1.45}
+    .pollution-marker-popup{min-width:160px;color:#19364d;font:11px/1.45 "DM Sans","Noto Sans Bengali",sans-serif}
+    .pollution-marker-popup strong{display:block;margin-bottom:3px;font-size:12px}
+    .pollution-marker-popup small{display:block;margin-top:5px;color:#73879a;font-size:9px}
+    .pollution-marker-popup a{display:inline-block;margin-top:5px;color:#26749e;font-size:9px;text-decoration:underline}
+    .map-pill#mapLayersToggle{background:rgba(17,55,80,.95);border-color:#173c58;color:#fff}
+    @media(max-width:900px){
+      .map-layers-panel{right:10px;bottom:10px;width:min(390px,calc(100% - 20px));max-height:44dvh}
+      .map-layers-head{padding:9px 11px}
+      .map-layer-content{padding:8px 9px 10px}
+      .map-attribution{bottom:calc(44dvh + 18px)}
+    }
+    @media(max-width:560px){
+      .map-top-controls{top:76px;right:10px;left:auto;max-width:calc(100% - 20px);flex-wrap:nowrap}
+      .map-top-controls .map-pill{height:32px;padding:0 8px;font-size:8px}
+      .map-layers-panel{left:9px;right:9px;bottom:9px;width:auto;max-height:39dvh;border-radius:15px}
+      .map-layers-head{padding:8px 10px}
+      .map-layers-head strong{font-size:10px}
+      .map-layer-tabs{padding:6px 8px}
+      .map-layer-tab{padding:7px 5px;font-size:9px}
+      .map-layer-content{padding:7px 8px 9px}
+      .place-layer-switch{padding:7px 8px;font-size:10px}
+      .environment-layer{padding:7px}
+      .environment-icon{width:28px;height:28px;flex-basis:28px}
+      .environment-copy strong{font-size:9px}
+      .environment-copy small{font-size:7px}
+      .environment-state{font-size:6px;padding:3px 4px}
+      .map-status{bottom:calc(39dvh + 18px);top:auto;left:10px;max-width:calc(100% - 20px)}
+      .map-attribution{bottom:calc(39dvh + 4px);left:10px}
+    }
+    @media(prefers-reduced-motion:reduce){
+      .map-layers-panel *, .map-layers-panel *:before, .map-layers-panel *:after{transition:none!important}
+    }
+
   </style>
 </head>
 <body>
@@ -3130,8 +3216,7 @@
     <div class="map-top-controls">
       <button class="map-pill" id="satelliteToggle" type="button">◈ Satellite</button>
       <button class="map-pill active" id="outlineToggle" type="button">✿ Illustrated</button>
-      <button class="map-pill river-pill active" id="riverToggle" type="button" aria-pressed="true">〰 Rivers</button>
-      <button class="map-pill active" id="landmarkToggle" type="button" aria-pressed="true">★ Landmarks</button>
+      <button class="map-pill" id="mapLayersToggle" type="button" aria-expanded="true" aria-controls="mapLayersPanel">☷ Map layers</button>
     </div>
     <div class="map-controls" aria-label="Map controls">
       <button class="map-control" id="zoomIn" type="button" aria-label="Zoom in">+</button>
@@ -3140,18 +3225,99 @@
     </div>
     <div class="map-status" id="mapStatus" role="status" aria-live="polite">Loading Bangladesh outline and satellite map…</div>
 
-    <div class="landmark-panel" id="landmarkPanel" aria-live="polite">
-      <div class="landmark-panel-head"><strong>Landmarks in this map area</strong><span class="landmark-count" id="landmarkCount">ZOOM IN</span></div>
-      <div class="landmark-filters" role="group" aria-label="Filter mapped landmarks">
-        <button class="landmark-filter active" type="button" data-landmark-filter="all">All</button>
-        <button class="landmark-filter" type="button" data-landmark-filter="history">History</button>
-        <button class="landmark-filter" type="button" data-landmark-filter="culture">Culture</button>
-        <button class="landmark-filter" type="button" data-landmark-filter="nature">Nature</button>
-        <button class="landmark-filter" type="button" data-landmark-filter="transport">Transport</button>
-        <button class="landmark-filter" type="button" data-landmark-filter="attraction">Other places</button>
+    <aside class="map-layers-panel" id="mapLayersPanel" aria-label="Map layers">
+      <div class="map-layers-head">
+        <div><strong>MAP LAYERS</strong><small>Bangladesh · places, rivers and environment</small></div>
+        <button id="mapLayersCollapse" type="button" aria-label="Collapse map layers" aria-expanded="true">⌄</button>
       </div>
-      <small class="landmark-panel-status" id="landmarkStatus">Landmarks are enabled. Zoom into a district to load mapped places around you. <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors · ODbL</a></small>
-    </div>
+      <div class="map-layers-body" id="mapLayersBody">
+        <div class="map-layer-tabs" role="tablist" aria-label="Map layer groups">
+          <button class="map-layer-tab active" type="button" data-map-layer-tab="places" role="tab" aria-selected="true">Places & rivers</button>
+          <button class="map-layer-tab" type="button" data-map-layer-tab="pollution" role="tab" aria-selected="false">Pollution & environment</button>
+        </div>
+        <section class="map-layer-content" id="mapPlacesContent" data-map-layer-content="places">
+          <div class="place-layer-switches">
+            <button class="place-layer-switch river-pill active" id="riverToggle" type="button" aria-pressed="true">〰 Rivers <small>Waterways</small></button>
+            <button class="place-layer-switch active" id="landmarkToggle" type="button" aria-pressed="true">★ Landmarks <small>Mapped places</small></button>
+          </div>
+          <div class="landmark-panel" id="landmarkPanel" aria-live="polite">
+            <div class="landmark-panel-head"><strong>Landmarks in this map area</strong><span class="landmark-count" id="landmarkCount">ZOOM IN</span></div>
+            <div class="landmark-filters" role="group" aria-label="Filter mapped landmarks">
+              <button class="landmark-filter active" type="button" data-landmark-filter="all">All</button>
+              <button class="landmark-filter" type="button" data-landmark-filter="history">History</button>
+              <button class="landmark-filter" type="button" data-landmark-filter="culture">Culture</button>
+              <button class="landmark-filter" type="button" data-landmark-filter="nature">Nature</button>
+              <button class="landmark-filter" type="button" data-landmark-filter="transport">Transport</button>
+              <button class="landmark-filter" type="button" data-landmark-filter="attraction">Other places</button>
+            </div>
+            <small class="landmark-panel-status" id="landmarkStatus">Landmarks are enabled. Zoom into a district to load mapped places around you. <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors · ODbL</a></small>
+          </div>
+          <div class="river-layer-status" id="riverStatus">River lines are enabled · mapped rivers and canals load as you move around Bangladesh.</div>
+        </section>
+        <section class="map-layer-content" id="mapPollutionContent" data-map-layer-content="pollution" hidden>
+          <div class="pollution-intro">
+            <strong>Environmental monitoring</strong>
+            <p>Choose one layer at a time. Satellite indicators, mapped facilities and measured pollution are labelled separately.</p>
+          </div>
+          <div class="pollution-layer-list">
+            <div class="pollution-group-title">AIR & ATMOSPHERE</div>
+            <button class="environment-layer" type="button" data-pollution-layer="air-aerosol">
+              <span class="environment-icon">🌫</span><span class="environment-copy"><strong>Air pollution</strong><small>Satellite aerosol optical depth · not ground-level PM₂.₅</small></span><span class="environment-state">SATELLITE</span>
+            </button>
+            <button class="environment-layer" type="button" data-pollution-layer="night-radiance">
+              <span class="environment-icon">🌃</span><span class="environment-copy"><strong>Light pollution</strong><small>Night-time light and radiance · moon/cloud affected</small></span><span class="environment-state">SATELLITE</span>
+            </button>
+            <button class="environment-layer" type="button" data-pollution-layer="thermal-hotspots">
+              <span class="environment-icon">🔥</span><span class="environment-copy"><strong>Thermal pollution</strong><small>Thermal hotspots proxy · not industrial water discharge</small></span><span class="environment-state">PROXY</span>
+            </button>
+            <div class="pollution-group-title">WATER & COAST</div>
+            <button class="environment-layer" type="button" data-pollution-layer="ocean-colour">
+              <span class="environment-icon">🌊</span><span class="environment-copy"><strong>Marine / coastal context</strong><small>Satellite chlorophyll-a · not a contamination reading</small></span><span class="environment-state">RESEARCH</span>
+            </button>
+            <button class="environment-layer" type="button" data-pollution-info="microplastics">
+              <span class="environment-icon">🧪</span><span class="environment-copy"><strong>Microplastic pollution</strong><small>Microplastics in water · national sample map not connected</small></span><span class="environment-state pending">DATA NEEDED</span>
+            </button>
+            <div class="pollution-group-title">INDUSTRY & WASTE</div>
+            <button class="environment-layer" type="button" data-pollution-layer="brick-kilns">
+              <span class="environment-icon">🧱</span><span class="environment-copy"><strong>Brick kiln pollution</strong><small>Mapped kiln locations · not measured emissions</small></span><span class="environment-state">MAPPED SITES</span>
+            </button>
+            <button class="environment-layer" type="button" data-pollution-layer="industrial-sites">
+              <span class="environment-icon">🏭</span><span class="environment-copy"><strong>Industrial pollution</strong><small>Mapped factories / industrial sites · no emission values</small></span><span class="environment-state">MAPPED SITES</span>
+            </button>
+            <button class="environment-layer" type="button" data-pollution-layer="ewaste-sites">
+              <span class="environment-icon">♻</span><span class="environment-copy"><strong>E-waste pollution</strong><small>Mapped electronics-recycling locations</small></span><span class="environment-state">MAPPED SITES</span>
+            </button>
+            <button class="environment-layer" type="button" data-pollution-info="chemical">
+              <span class="environment-icon">⚗</span><span class="environment-copy"><strong>Chemical pollution</strong><small>Hazardous chemical monitoring locations not connected</small></span><span class="environment-state pending">DATA NEEDED</span>
+            </button>
+            <button class="environment-layer" type="button" data-pollution-info="agriculture">
+              <span class="environment-icon">🌾</span><span class="environment-copy"><strong>Agricultural pollution</strong><small>Fertilizer / pesticide runoff sampling not connected</small></span><span class="environment-state pending">DATA NEEDED</span>
+            </button>
+            <button class="environment-layer" type="button" data-pollution-info="odour">
+              <span class="environment-icon">👃</span><span class="environment-copy"><strong>Odour pollution</strong><small>Reported odour-complaint locations not connected</small></span><span class="environment-state pending">DATA NEEDED</span>
+            </button>
+            <div class="pollution-group-title">LAND, HEAT & EMISSIONS</div>
+            <button class="environment-layer" type="button" data-pollution-layer="urban-heat">
+              <span class="environment-icon">🌡</span><span class="environment-copy"><strong>Urban heat</strong><small>MODIS land-surface temperature · not air temperature</small></span><span class="environment-state">SATELLITE</span>
+            </button>
+            <button class="environment-layer" type="button" data-pollution-info="deforestation">
+              <span class="environment-icon">🌳</span><span class="environment-copy"><strong>Deforestation</strong><small>Forest-loss layer not yet processed for this atlas</small></span><span class="environment-state pending">DATA NEEDED</span>
+            </button>
+            <button class="environment-layer" type="button" data-pollution-info="carbon">
+              <span class="environment-icon">CO₂</span><span class="environment-copy"><strong>Carbon emissions</strong><small>Facility / sector CO₂ inventories not connected</small></span><span class="environment-state pending">DATA NEEDED</span>
+            </button>
+            <button class="environment-layer" type="button" data-pollution-info="greenhouse">
+              <span class="environment-icon">♨</span><span class="environment-copy"><strong>Greenhouse gases</strong><small>Methane and other gas observations not connected</small></span><span class="environment-state pending">DATA NEEDED</span>
+            </button>
+            <button class="environment-layer" type="button" data-pollution-info="radiation">
+              <span class="environment-icon">☢</span><span class="environment-copy"><strong>Radiation monitoring</strong><small>Official georeferenced monitoring readings not connected</small></span><span class="environment-state pending">DATA NEEDED</span>
+            </button>
+          </div>
+          <div class="pollution-details" id="pollutionDetails" aria-live="polite">Select a layer to display it on the map. Only one environmental overlay is shown at a time to keep the map responsive.</div>
+          <div class="pollution-footnote">Sources are identified per layer. Satellite proxies are not local sensor readings. Facility markers are mapped locations, not proof of an offence or measured emissions.</div>
+        </section>
+      </div>
+    </aside>
     <div class="project-map-legend" id="projectMarkerLegend" aria-live="polite">
       <strong>Project status</strong>
       <span class="project-status-key"><i style="--status-color:#238b57"></i>Completed</span>
@@ -3940,6 +4106,7 @@ async function ensureLeaflet(){
   map.createPane("projectMarkerPane");map.getPane("projectMarkerPane").style.zIndex=680;
   map.createPane("riverPane");map.getPane("riverPane").style.zIndex=520;
   map.createPane("landmarkPane");map.getPane("landmarkPane").style.zIndex=670;
+  map.createPane("pollutionSitePane");map.getPane("pollutionSitePane").style.zIndex=690;map.getPane("pollutionSitePane").style.pointerEvents="auto";
   const riverRenderer=L.canvas({pane:"riverPane",padding:0.5});
   const countryRenderer=L.svg({pane:"countryPane"});
   const adminRenderer=L.canvas({pane:"boundaryPane",padding:0.5});
@@ -3985,7 +4152,7 @@ async function ensureLeaflet(){
   document.querySelectorAll("[data-landmark-filter]").forEach(button=>{
     button.addEventListener("click",()=>setLandmarkFilter(button.getAttribute("data-landmark-filter")));
   });
-  map.on("moveend zoomend",()=>{scheduleLandmarkLoad(1200);scheduleRiverLoad(1400);});
+  map.on("moveend zoomend",()=>{scheduleLandmarkLoad(1200);scheduleRiverLoad(1400);if(pollutionSiteLayerKey)schedulePollutionSiteLoad(pollutionSiteLayerKey,1500);});
 
   el("outlineToggle").addEventListener("click",()=>{
     boundaryFallback();
@@ -4190,6 +4357,274 @@ async function ensureLeaflet(){
       setStatus("River layer hidden. Districts, landmarks and project markers are unchanged.");
     }
   }
+
+
+  // Environmental map layers are opt-in and lazy-loaded. Only one pollution overlay
+  // is active at a time; satellite tiles and point searches are cached by the browser.
+  const pollutionRasterSpecs={
+    "air-aerosol":{
+      title:"Air pollution · satellite aerosol optical depth",
+      layer:"VIIRS_NOAA21_AOD_Deep_Blue_Land_Ocean",
+      dateOffset:3,opacity:.66,
+      note:"NASA/NOAA VIIRS aerosol optical depth is a column-integrated aerosol indicator. It is not a ground-level PM2.5 concentration, AQI reading or health alert."
+    },
+    "night-radiance":{
+      title:"Light pollution · VIIRS night radiance",
+      layer:"VIIRS_SNPP_DayNightBand_ENCC",
+      dateOffset:1,opacity:.72,
+      note:"NASA/NOAA VIIRS low-light radiance. Moonlight, clouds, fires and other natural light can affect this daily imagery; it is not a calibrated persistent artificial-light map."
+    },
+    "thermal-hotspots":{
+      title:"Thermal pollution · thermal-anomaly proxy",
+      layer:"VIIRS_NOAA21_Thermal_Anomalies_375m_All",
+      dateOffset:2,opacity:.82,
+      note:"NASA/NOAA VIIRS thermal-anomaly detections can highlight unusual hot spots and fires. They do not measure industrial cooling-water discharge or factory heat emissions."
+    },
+    "urban-heat":{
+      title:"Urban heat · land-surface temperature",
+      layer:"MODIS_Terra_L3_Land_Surface_Temp_Daily_Day",
+      dateOffset:3,opacity:.68,
+      note:"NASA MODIS daytime land-surface temperature. This is the temperature of the observed land surface, not the air temperature people experience; clouds and the satellite pixel size affect coverage."
+    },
+    "ocean-colour":{
+      title:"Marine / coastal context · chlorophyll-a",
+      layer:"MODIS_Aqua_L2_Chlorophyll_A",
+      dateOffset:3,opacity:.65,
+      note:"NASA Aqua ocean-colour chlorophyll-a is a biological-productivity indicator for research context. It is not a direct measurement of sewage, oil, chemicals or microplastics."
+    }
+  };
+  const pollutionTileCache=new Map();
+  const pollutionViewportCache=new Map();
+  let activePollutionLayerKey=null;
+  let activePollutionRaster=null;
+  let pollutionSiteLayer=null;
+  let pollutionSiteRenderer=null;
+  let pollutionSiteController=null;
+  let pollutionSiteTimer=null;
+  let pollutionSiteRequestAt=0;
+  let pollutionSiteLayerKey=null;
+  const POLLUTION_BOUNDS={south:19.75,west:87.45,north:27.45,east:93.25};
+
+  function pollutionDateAgo(days){
+    return new Date(Date.now()-days*24*60*60*1000).toISOString().slice(0,10);
+  }
+  function setMapLayerTab(tab){
+    const places=tab==="places";
+    document.querySelectorAll("[data-map-layer-tab]").forEach(button=>{
+      const selected=button.getAttribute("data-map-layer-tab")===tab;
+      button.classList.toggle("active",selected);
+      button.setAttribute("aria-selected",String(selected));
+    });
+    const placesPanel=el("mapPlacesContent");
+    const pollutionPanel=el("mapPollutionContent");
+    if(placesPanel)placesPanel.hidden=!places;
+    if(pollutionPanel)pollutionPanel.hidden=places;
+  }
+  function closePollutionOverlay(){
+    if(activePollutionRaster&&map.hasLayer(activePollutionRaster))map.removeLayer(activePollutionRaster);
+    activePollutionRaster=null;
+    if(pollutionSiteLayer&&map.hasLayer(pollutionSiteLayer))map.removeLayer(pollutionSiteLayer);
+    if(pollutionSiteController)pollutionSiteController.abort();
+    clearTimeout(pollutionSiteTimer);
+    pollutionSiteLayerKey=null;
+    document.querySelectorAll("[data-pollution-layer]").forEach(button=>button.classList.remove("active"));
+  }
+  function pollutionPopup(feature,kind){
+    const properties=feature.properties||{};
+    const tags=properties.tags||{};
+    const box=document.createElement("div");
+    box.className="pollution-marker-popup";
+    const heading=document.createElement("strong");
+    heading.textContent=properties.name||kind;
+    box.appendChild(heading);
+    const note=document.createElement("span");
+    note.textContent=kind==="brick-kilns"?"Mapped brick-kiln feature":
+      kind==="ewaste-sites"?"Mapped electronics-recycling feature":"Mapped industrial feature";
+    box.appendChild(note);
+    const caveat=document.createElement("small");
+    caveat.textContent="Facility location only — not a pollution reading, inspection result or proof of emissions.";
+    box.appendChild(caveat);
+    const link=document.createElement("a");
+    link.href="https://www.openstreetmap.org/"+(properties.osm_type||"node")+"/"+properties.osm_id;
+    link.target="_blank";link.rel="noopener noreferrer";link.textContent="Open source map record";
+    box.appendChild(link);
+    return box;
+  }
+  function pollutionBoundsForViewport(){
+    const view=map.getBounds();
+    const floor=value=>Math.floor(value*10)/10;
+    const ceil=value=>Math.ceil(value*10)/10;
+    const box={
+      south:Math.max(POLLUTION_BOUNDS.south,floor(view.getSouth())),
+      west:Math.max(POLLUTION_BOUNDS.west,floor(view.getWest())),
+      north:Math.min(POLLUTION_BOUNDS.north,ceil(view.getNorth())),
+      east:Math.min(POLLUTION_BOUNDS.east,ceil(view.getEast()))
+    };
+    if(box.south>=box.north||box.west>=box.east)return null;
+    return box;
+  }
+  function drawPollutionSites(data,kind){
+    if(!pollutionSiteLayer)pollutionSiteLayer=L.layerGroup();
+    pollutionSiteLayer.clearLayers();
+    if(!pollutionSiteRenderer){
+      pollutionSiteRenderer=L.canvas({pane:"pollutionSitePane",padding:.25});
+    }
+    const colour=kind==="brick-kilns"?"#c46b31":kind==="ewaste-sites"?"#258c83":"#7655a5";
+    const features=(data.features||[]).slice(0,650);
+    for(const feature of features){
+      const coords=feature.geometry?.coordinates;
+      if(!Array.isArray(coords)||coords.length<2)continue;
+      const marker=L.circleMarker([coords[1],coords[0]],{
+        pane:"pollutionSitePane",renderer:pollutionSiteRenderer,radius:5,
+        color:"#fff",weight:1.4,fillColor:colour,fillOpacity:.92
+      });
+      marker.bindPopup(pollutionPopup(feature,kind),{maxWidth:230});
+      pollutionSiteLayer.addLayer(marker);
+    }
+    if(!map.hasLayer(pollutionSiteLayer))pollutionSiteLayer.addTo(map);
+    const status=el("pollutionDetails");
+    const label=kind==="brick-kilns"?"brick-kiln sites":kind==="ewaste-sites"?"electronics-recycling sites":"industrial sites";
+    if(status){
+      status.textContent=features.length.toLocaleString()+" "+label+" mapped in this view. Source: OpenStreetMap contributors. This is a facility-location layer only; it does not contain measured pollution values.";
+    }
+    setStatus(features.length.toLocaleString()+" mapped "+label+" shown · facility locations only.");
+  }
+  async function loadPollutionSites(kind){
+    const zoom=map.getZoom();
+    const details=el("pollutionDetails");
+    if(zoom<9){
+      if(details)details.textContent="Zoom in to level 9 or closer to search mapped sites. The search is limited to the visible map area to reduce load.";
+      setStatus("Zoom in closer to inspect mapped pollution-related facilities.");
+      return;
+    }
+    const box=pollutionBoundsForViewport();
+    if(!box)return;
+    const bbox=[box.south,box.west,box.north,box.east].map(value=>value.toFixed(1)).join(",");
+    const cacheKey=kind+"|"+bbox;
+    const cached=pollutionViewportCache.get(cacheKey);
+    if(cached){drawPollutionSites(cached,kind);return;}
+    const wait=9000-(Date.now()-pollutionSiteRequestAt);
+    if(wait>0){
+      clearTimeout(pollutionSiteTimer);
+      pollutionSiteTimer=setTimeout(()=>loadPollutionSites(kind),wait);
+      if(details)details.textContent="The public map-data service is being rate-limited politely. This map area will load after a short pause.";
+      return;
+    }
+    if(pollutionSiteController)pollutionSiteController.abort();
+    pollutionSiteController=new AbortController();
+    pollutionSiteRequestAt=Date.now();
+    if(details)details.textContent="Searching OpenStreetMap features for this visible area…";
+    try{
+      const params=new URLSearchParams({layer:kind,bbox,zoom:String(zoom)});
+      const response=await fetch("/api/pollution?"+params.toString(),{
+        headers:{Accept:"application/geo+json, application/json"},
+        signal:pollutionSiteController.signal
+      });
+      const data=await response.json();
+      if(!response.ok)throw new Error(data.error||"Mapped-site request failed.");
+      pollutionViewportCache.set(cacheKey,data);
+      while(pollutionViewportCache.size>12)pollutionViewportCache.delete(pollutionViewportCache.keys().next().value);
+      if(activePollutionLayerKey!==kind)return;
+      drawPollutionSites(data,kind);
+    }catch(error){
+      if(error?.name==="AbortError")return;
+      if(details)details.textContent=(error.message||"Mapped site data is unavailable.")+" Pan or zoom to retry.";
+      setStatus("Could not load mapped sites: "+(error.message||"data service unavailable."),true);
+    }
+  }
+  function schedulePollutionSiteLoad(kind,delay=1100){
+    if(activePollutionLayerKey!==kind)return;
+    clearTimeout(pollutionSiteTimer);
+    pollutionSiteTimer=setTimeout(()=>loadPollutionSites(kind),delay);
+  }
+  function togglePollutionLayer(kind){
+    if(activePollutionLayerKey===kind){
+      closePollutionOverlay();
+      activePollutionLayerKey=null;
+      if(el("pollutionDetails"))el("pollutionDetails").textContent="Environmental overlay switched off. Choose another layer.";
+      setStatus("Environmental layer hidden.");
+      return;
+    }
+    closePollutionOverlay();
+    activePollutionLayerKey=kind;
+    document.querySelectorAll("[data-pollution-layer]").forEach(button=>{
+      button.classList.toggle("active",button.getAttribute("data-pollution-layer")===kind);
+    });
+    const details=el("pollutionDetails");
+    const rasterSpec=pollutionRasterSpecs[kind];
+    if(rasterSpec){
+      const date=pollutionDateAgo(rasterSpec.dateOffset);
+      const key=rasterSpec.layer+"|"+date;
+      let tile=pollutionTileCache.get(key);
+      if(!tile){
+        const url="https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/"+
+          rasterSpec.layer+"/default/"+date+"/GoogleMapsCompatible_Level9/{z}/{y}/{x}.png";
+        tile=L.tileLayer(url,{
+          pane:"tilePane",bounds:[[POLLUTION_BOUNDS.south,POLLUTION_BOUNDS.west],[POLLUTION_BOUNDS.north,POLLUTION_BOUNDS.east]],
+          minZoom:6,maxZoom:19,maxNativeZoom:9,opacity:rasterSpec.opacity,
+          updateWhenIdle:true,keepBuffer:1,noWrap:true,crossOrigin:true,
+          attribution:"NASA GIBS · NASA/NOAA satellite products"
+        });
+        tile.on("tileerror",()=>setStatus("A satellite tile is temporarily unavailable; try a different environmental layer or date.",true));
+        pollutionTileCache.set(key,tile);
+        while(pollutionTileCache.size>5)pollutionTileCache.delete(pollutionTileCache.keys().next().value);
+      }
+      activePollutionRaster=tile;
+      tile.addTo(map);
+      if(details)details.textContent=rasterSpec.note+"  Source: NASA Global Imagery Browse Services (GIBS). Display date: "+date+" UTC.";
+      setStatus(rasterSpec.title+" · satellite display "+date+" UTC.");
+      return;
+    }
+    if(kind==="brick-kilns"||kind==="industrial-sites"||kind==="ewaste-sites"){
+      pollutionSiteLayerKey=kind;
+      if(details)details.textContent="Mapped OpenStreetMap features only. Zoom in to level 9 or closer; this layer does not show measured pollutant concentrations.";
+      loadPollutionSites(kind);
+      return;
+    }
+  }
+  function explainPollutionData(key){
+    const messages={
+      microplastics:"No nationwide, georeferenced microplastic sampling feed is integrated yet. Published studies are local and must be shown as individual study stations with method, sample date and units—not extrapolated across Bangladesh. See the 2025 Buriganga–Turag study: <a href='https://pubs.rsc.org/en/content/articlehtml/2025/va/d5va00118h' target='_blank' rel='noopener'>research paper</a>.",
+      chemical:"Hazardous-chemical contamination needs verified sampling locations, chemical names, units, detection limits and sample dates. A national public geospatial feed has not been connected yet.",
+      agriculture:"Fertilizer and pesticide runoff needs water/soil sampling data with coordinates, dates and analyte values. Land-use patterns alone cannot prove contamination.",
+      odour:"Odour complaints need a public complaint dataset with location, timestamp and verification status. No georeferenced reporting feed is connected yet.",
+      deforestation:"A forest-loss dataset has not yet been processed into this Bangladesh map. Do not treat annual vegetation or land-cover imagery as measured forest loss.",
+      carbon:"Facility or sector CO₂ inventories need reporting year, scope and source methodology. No verified geospatial emissions inventory is connected yet.",
+      greenhouse:"Methane and other greenhouse-gas layers require instrument/model metadata and averaging periods. No Bangladesh-ready gas layer is connected yet.",
+      radiation:"Only verified readings from recognised monitoring stations should appear here, with units, instrument, time and quality flags. No station feed is connected yet."
+    };
+    if(el("pollutionDetails"))el("pollutionDetails").innerHTML=messages[key]||"A verified georeferenced data source is not connected for this category yet.";
+    setStatus("This category is listed, but no verified Bangladesh map feed is connected yet.");
+  }
+  function initialiseMapLayersPanel(){
+    const panel=el("mapLayersPanel");
+    const opener=el("mapLayersToggle");
+    const collapse=el("mapLayersCollapse");
+    if(opener)opener.addEventListener("click",()=>{
+      if(panel)panel.hidden=false;
+      if(panel)panel.classList.remove("collapsed");
+      if(collapse){collapse.textContent="⌄";collapse.setAttribute("aria-expanded","true");}
+      opener.setAttribute("aria-expanded","true");
+    });
+    if(collapse)collapse.addEventListener("click",()=>{
+      const collapsed=panel.classList.toggle("collapsed");
+      collapse.textContent=collapsed?"⌃":"⌄";
+      collapse.setAttribute("aria-expanded",String(!collapsed));
+    });
+    document.querySelectorAll("[data-map-layer-tab]").forEach(button=>
+      button.addEventListener("click",()=>{
+        setMapLayerTab(button.getAttribute("data-map-layer-tab"));
+        if(panel)panel.classList.remove("collapsed");
+      })
+    );
+    document.querySelectorAll("[data-pollution-layer]").forEach(button=>
+      button.addEventListener("click",()=>togglePollutionLayer(button.getAttribute("data-pollution-layer")))
+    );
+    document.querySelectorAll("[data-pollution-info]").forEach(button=>
+      button.addEventListener("click",()=>explainPollutionData(button.getAttribute("data-pollution-info")))
+    );
+  }
+  initialiseMapLayersPanel();
 
   // Live, viewport-based OpenStreetMap landmarks. The API is same-origin,
   // edge-cached and only queried while the visitor has the layer switched on.
