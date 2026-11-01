@@ -211,7 +211,7 @@ export async function onRequestGet(context) {
     // Use the open gbOpen boundary only for national / division / district
     // layers. Fine-scale layers remain explicitly unavailable when their
     // documented source is down; never substitute a different admin level.
-    if (config.adm <= 2 && offsetValue === 0) {
+    if (config.adm <= 2 && offsetValue === 0 && !requestUrl.searchParams.get("point")) {
       try {
         const fallback = await fetchGeoBoundariesFallback(config.adm);
         return jsonResponse({
