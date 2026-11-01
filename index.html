@@ -2974,7 +2974,7 @@
       <span class="project-status-key"><i style="--status-color:#8158bd"></i>Planned</span>
       <span class="project-status-key"><i style="--status-color:#169ca8"></i>Future</span>
       <span class="project-status-key"><i style="--status-color:#87918b"></i>Unverified</span>
-      <small>Map-name matches: grey = district, blue = upazila, teal square = union. These identify administrative areas, not exact construction sites.</small>
+      <small>Map-name matches: grey = division/district, blue = upazila, teal square = union. These identify administrative areas, not exact construction sites.</small>
       <button id="adpRosterToggle" class="adp-roster-toggle" type="button" disabled>Loading FY2026–27 ADP dots…</button>
       <small id="adpRosterStatus">Waiting for official ADP roster import…</small>
       <small id="projectMarkerCount">Loading project locations…</small>
@@ -4531,7 +4531,7 @@ async function ensureLeaflet(){
     ["barishal","barisal"],
     ["bogura","bogra"],
     ["lakshmipur","laxmipur"],
-    ["mymensingh","myymensingh"]
+    ["mymensingh"]
   ];
   const ADP_STOP_PLACE_NAMES=new Set([
     "sadar","north","south","east","west","central","city","town","urban",
@@ -4554,7 +4554,7 @@ async function ensureLeaflet(){
   }
 
   function buildAdpLocationIndex(){
-    const levels=["district","upazila","union"];
+    const levels=["division","district","upazila","union"];
     const index=[];
     levels.forEach(level=>{
       const layer=cache[level];
@@ -4588,6 +4588,10 @@ async function ensureLeaflet(){
     if(!titleNorm)return {matches:[],ambiguous:[],mentioned:false};
     const candidates=[];
     index.forEach(item=>{
+      const excludedAlias=(item.variants||[]).some(variant=>
+        variant==="chittagong"&&titleContainsPlace(titleNorm,"chittagong hill tracts")
+      );
+      if(excludedAlias)return;
       const matchedVariant=item.variants.find(variant=>titleContainsPlace(titleNorm,variant));
       if(matchedVariant)candidates.push({...item,matchedVariant});
     });
@@ -4617,6 +4621,12 @@ async function ensureLeaflet(){
     // Keep the most specific named map-area within the same administrative
     // hierarchy. E.g. a named union suppresses its parent upazila and district.
     const selected=disambiguated.filter(candidate=>{
+      // An explicit "X Division" phrase means the division, not the same-named
+      // district. Otherwise retain the most specific nested boundary match.
+      if(candidate.level==="district"&&
+         titleContainsPlace(titleNorm,candidate.normalizedName+" division")&&
+         disambiguated.some(other=>other.level==="division"&&
+           other.normalizedName===candidate.normalizedName))return false;
       const hasMoreSpecific=disambiguated.some(other=>{
         if(other.level==="union"&&candidate.level!=="union"){
           return normalisePlaceText(other.parentUpazila)===candidate.normalizedName||
@@ -4624,6 +4634,9 @@ async function ensureLeaflet(){
         }
         if(other.level==="upazila"&&candidate.level==="district"){
           return normalisePlaceText(other.parentDistrict)===candidate.normalizedName;
+        }
+        if(other.level==="district"&&candidate.level==="division"){
+          return normalisePlaceText(other.record.division)===candidate.normalizedName;
         }
         return false;
       });
@@ -4876,7 +4889,7 @@ async function ensureLeaflet(){
       await ensureAdpLibraries();
       const parsed=await parseAdpRosterPdf();
       if(status)status.textContent="Matching project place names to district, upazila and union map names…";
-      const levelResults=await Promise.all(["upazila","union"].map(async level=>{
+      const levelResults=await Promise.all(["division","upazila","union"].map(async level=>{
         try{
           const built=await loadLevel(level);
           return {level,ok:true,count:built.records.length,source:built.sourceLabel};
