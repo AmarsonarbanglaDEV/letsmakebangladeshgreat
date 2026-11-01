@@ -3006,7 +3006,7 @@
     aria-label="Close navigation panel" aria-hidden="true" tabindex="-1"></button>
 
   <section class="map-area" id="mapArea" aria-label="Bangladesh interactive map">
-    <div id="map" role="application" aria-label="Satellite map of Bangladesh with administrative boundaries"></div>
+    <div id="map" role="application" aria-label="Illustrated map of Bangladesh with administrative boundaries and project markers"></div>
     <button class="atlas-welcome" id="exploreWelcome" type="button" aria-controls="sidebar">
       <span class="atlas-welcome-kicker">BANGLADESH · PUBLIC RECORDS</span>
       <strong>Where does the public money go?</strong>
@@ -3390,7 +3390,7 @@ async function ensureLeaflet(){
     const illustrative=outlineMode;
     const isDivision=activeLevel==="division";
     const isDistrict=activeLevel==="district";
-    const fillOpacity=selected?.78:(illustrative?(isDivision?.9:(isDistrict?.76:(activeLevel==="upazila"?.34:.20))):.018);
+    const fillOpacity=selected ? .78 : (illustrative ? (isDivision ? .90 : (isDistrict ? .76 : (activeLevel==="upazila" ? .34 : .20))) : .018);
     return {
       color:selected?"#386a46":(illustrative?(isDivision?"#f8fff2":(isDistrict?"#fffef5":"#f7fff4")):"#f8f8e8"),
       weight:selected?3.2:(illustrative?(isDivision?2.6:(isDistrict?1.35:0.9)):(isDivision?3.1:(isDistrict?1.7:1.15))),
@@ -3563,7 +3563,7 @@ async function ensureLeaflet(){
   }
 
   function scheduleCountryClip(force=false){
-    if(!countryClipData||!map)return;
+    if(outlineMode||!satellite||!map||!map.hasLayer(satellite)||!countryClipData)return;
     const elapsed=performance.now()-clipLastUpdated;
     const wait=force?0:Math.max(0,65-elapsed);
     if(wait>0){
@@ -3678,7 +3678,16 @@ async function ensureLeaflet(){
     {maxZoom:19,bounds:bounds,attribution:"Sources: Esri, Maxar, Earthstar Geographics, and the GIS User Community"}
   );
   // Satellite imagery is added only after the country mask has been installed.
-  const boundaryFallback=()=>{outlineMode=true;if(satellite&&map.hasLayer(satellite))map.removeLayer(satellite);if(historicalLayer&&map.hasLayer(historicalLayer))map.removeLayer(historicalLayer);el("outlineToggle").classList.add("active");el("satelliteToggle").classList.remove("active");};
+  const boundaryFallback=()=>{
+    outlineMode=true;
+    if(satellite&&map.hasLayer(satellite))map.removeLayer(satellite);
+    if(historicalLayer&&map.hasLayer(historicalLayer))map.removeLayer(historicalLayer);
+    map.getContainer().style.clipPath="";
+    map.getContainer().style.webkitClipPath="";
+    styleCurrentLayer();
+    el("outlineToggle").classList.add("active");
+    el("satelliteToggle").classList.remove("active");
+  };
   el("satelliteToggle").addEventListener("click",()=>{
     if(!countryClipData){
       setStatus("Satellite imagery is disabled until a Bangladesh boundary is available.",true);
@@ -3687,14 +3696,17 @@ async function ensureLeaflet(){
     outlineMode=false;
     if(historicalLayer&&map.hasLayer(historicalLayer))map.removeLayer(historicalLayer);
     if(!map.hasLayer(satellite))satellite.addTo(map);
+    styleCurrentLayer();
+    updateCountryClip();
+    scheduleCountryClip(true);
     el("satelliteToggle").classList.add("active");
     el("outlineToggle").classList.remove("active");
-    setStatus("Current satellite imagery · Bangladesh-only mask");
+    setStatus("Satellite imagery enabled · select Illustrated for the lightweight map");
     window.setTimeout(()=>setStatus(""),2500);
   });
   el("outlineToggle").addEventListener("click",()=>{
     boundaryFallback();
-    setStatus("Outline view · administrative boundaries remain selectable");
+    setStatus("Illustrated map · lightweight pastel boundaries and project dots");
     window.setTimeout(()=>setStatus(""),2500);
   });
   el("zoomIn").addEventListener("click",()=>map.zoomIn());
@@ -4866,6 +4878,7 @@ async function ensureLeaflet(){
         if(status)status.textContent="Reading official ADP PDF · page "+pageNumber+" of "+pdf.numPages+" · "+allRows.length+" project rows found";
       }
       page.cleanup();
+      if(pageNumber%4===0)await new Promise(resolve=>requestAnimationFrame(()=>resolve()));
     }
     return {rows:allRows,pages:pdf.numPages};
   }
