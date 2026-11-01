@@ -3774,6 +3774,7 @@ async function ensureLeaflet(){
   let projectMarkersLayer=null,selectedProjectId=null;
   let projectMarkersBuiltFor=null,projectMarkersBuiltDistrictLayer=null;
   let adpRosterLayer=null,adpRosterLoadPromise=null,adpRosterLoaded=false;
+  let adpRosterPages=0,adpRosterPlaceIndex=null,adpRosterLevelResults=[];
   let adpProjectRows=[];
   const adpProjectMatches=new Map();
   const adpNewsCache=new Map();
@@ -6494,13 +6495,15 @@ async function ensureLeaflet(){
     return L.layerGroup();
   }
 
-  function renderAdpRosterDots(rows,pages,placeIndex,levelResults){
-    if(adpRosterLayer&&map.hasLayer(adpRosterLayer))map.removeLayer(adpRosterLayer);
-    adpRosterLayer=createAdpRosterLayer();
+  function renderAdpRosterDots(rows,pages,placeIndex,levelResults,showOnMap=true){
+    if(showOnMap){
+      if(adpRosterLayer&&map.hasLayer(adpRosterLayer))map.removeLayer(adpRosterLayer);
+      adpRosterLayer=createAdpRosterLayer();
+    }
     adpProjectRows=rows;
     adpProjectMatches.clear();
     let locatedRows=0,mentionedRows=0,ambiguousRows=0;
-    let districtDots=0,upazilaDots=0,unionDots=0,divisionDots=0;
+    let districtDots=0,upazilaDots=0,unionDots=0,divisionDots=0,totalDots=0;
     const markers=[];
     rows.forEach(project=>{
       const result=matchAdpProjectLocations(
@@ -6512,51 +6515,52 @@ async function ensureLeaflet(){
       if(result.ambiguous.length)ambiguousRows++;
       if(!result.matches.length)return;
       locatedRows++;
+      totalDots+=result.matches.length;
       result.matches.forEach(match=>{
-        const point=match.point;
         const levelLabel=match.level==="union"?"Union":
           (match.level==="upazila"?"Upazila":
           (match.level==="division"?"Division":"District"));
-        const levelColor=match.level==="union"?"#1595a3":
-          (match.level==="upazila"?"#2878c7":
-          (match.level==="division"?"#638b62":"#778994"));
-        const icon=L.divIcon({
-          className:"adp-project-dot-shell",
-          html:'<span class="adp-project-dot adp-project-dot-'+match.level+'" style="--adp-dot-color:'+levelColor+'" aria-hidden="true"></span>',
-          iconSize:[16,16],
-          iconAnchor:[8,8]
-        });
-        const hierarchy=[match.record.division,match.record.district,match.record.upazila,match.record.union]
-          .filter(Boolean).filter((value,index,array)=>array.indexOf(value)===index).join(" · ");
-        const marker=L.marker(point,{
-          pane:"projectMarkerPane",
-          icon,
-          keyboard:true,
-          title:project.title+" · "+match.name+" · "+levelLabel+" area"
-        });
-        marker.bindTooltip(
-          escapeHtml(project.title)+"<br><small>"+escapeHtml(match.name)+
-          " · "+escapeHtml(levelLabel)+" area match · click for project profile</small>",
-          {direction:"top",offset:[0,-7],className:"project-marker-tooltip"}
-        );
-        marker.on("click",()=>renderAdpProjectProfilePopup(project,result.matches,true,marker.getElement()));
-        markers.push(marker);
+        if(showOnMap){
+          const levelColor=match.level==="union"?"#1595a3":
+            (match.level==="upazila"?"#2878c7":
+            (match.level==="division"?"#638b62":"#778994"));
+          const icon=L.divIcon({
+            className:"adp-project-dot-shell",
+            html:'<span class="adp-project-dot adp-project-dot-'+match.level+'" style="--adp-dot-color:'+levelColor+'" aria-hidden="true"></span>',
+            iconSize:[16,16],
+            iconAnchor:[8,8]
+          });
+          const marker=L.marker(match.point,{
+            pane:"projectMarkerPane",icon,keyboard:true,
+            title:project.title+" · "+match.name+" · "+levelLabel+" area"
+          });
+          marker.bindTooltip(
+            escapeHtml(project.title)+"<br><small>"+escapeHtml(match.name)+
+            " · "+escapeHtml(levelLabel)+" area match · click for project profile</small>",
+            {direction:"top",offset:[0,-7],className:"project-marker-tooltip"}
+          );
+          marker.on("click",()=>renderAdpProjectProfilePopup(project,result.matches,true,marker.getElement()));
+          markers.push(marker);
+        }
         if(match.level==="union")unionDots++;
         else if(match.level==="upazila")upazilaDots++;
         else if(match.level==="division")divisionDots++;
         else districtDots++;
       });
     });
-    if(typeof adpRosterLayer.addLayers==="function")adpRosterLayer.addLayers(markers);
-    else markers.forEach(marker=>marker.addTo(adpRosterLayer));
-    adpRosterLayer.addTo(map);
+    if(showOnMap){
+      if(typeof adpRosterLayer.addLayers==="function")adpRosterLayer.addLayers(markers);
+      else markers.forEach(marker=>marker.addTo(adpRosterLayer));
+      adpRosterLayer.addTo(map);
+    }
     adpRosterLoaded=true;
     const toggle=el("adpRosterToggle");
     if(toggle){
       toggle.disabled=false;
-      toggle.classList.add("is-on");
-      toggle.setAttribute("aria-pressed","true");
-      toggle.textContent="FY2026–27 ADP dots · ON";
+      toggle.classList.toggle("is-on",showOnMap);
+      toggle.setAttribute("aria-pressed",String(showOnMap));
+      toggle.textContent=showOnMap?"FY2026–27 ADP dots · ON":
+        "Load FY2026–27 ADP dots";
     }
     const status=el("adpRosterStatus");
     const noMapName=rows.length-mentionedRows;
@@ -6565,25 +6569,26 @@ async function ensureLeaflet(){
     if(status){
       status.textContent=rows.length.toLocaleString("en-BD")+" project profiles loaded across "+
         pages+" PDF pages · "+locatedRows.toLocaleString("en-BD")+" matched projects · "+
-        markers.length.toLocaleString("en-BD")+" clustered dots ("+divisionDots+" divisions, "+
+        totalDots.toLocaleString("en-BD")+" possible map matches ("+divisionDots+" divisions, "+
         districtDots+" districts, "+upazilaDots+" upazilas, "+unionDots+" unions) · "+
         noMapName.toLocaleString("en-BD")+" without map-name clues · "+
         unmatched.toLocaleString("en-BD")+" unresolved · "+ambiguousRows.toLocaleString("en-BD")+" ambiguous";
+      if(!showOnMap)status.textContent+=" · map dots are not drawn yet";
       if(failedLevels.length)status.textContent+=" · unavailable layers: "+failedLevels.join(", ");
       if(rows.length!==ADP_EXPECTED_PROJECTS)status.textContent+=" · expected 1,173; parser count needs review";
     }
     renderAdpDirectory();
     return {
-      rows:rows.length,locatedRows,markerCount:markers.length,unmatched,ambiguousRows,
+      rows:rows.length,locatedRows,markerCount:totalDots,unmatched,ambiguousRows,
       districtDots,upazilaDots,unionDots,divisionDots,pages,
       loadedMapLevels:(levelResults||[]).filter(item=>item.ok).map(item=>item.level)
     };
   }
-  async function loadAdpRoster(){
+  async function loadAdpRoster(showOnMap=true){
     const status=el("adpRosterStatus");
     const toggle=el("adpRosterToggle");
     if(status)status.textContent="Preparing official FY2026–27 ADP import…";
-    if(toggle){toggle.disabled=true;toggle.textContent="Loading FY2026–27 ADP dots…";}
+    if(toggle&&showOnMap){toggle.disabled=true;toggle.textContent="Loading FY2026–27 ADP dots…";}
     try{
       await ensureAdpLibraries();
       const parsed=await parseAdpRosterPdf();
@@ -6595,7 +6600,10 @@ async function ensureLeaflet(){
         console.warn("Could not load "+item.level+" boundary names for ADP matching:",item.error)
       );
       const placeIndex=buildAdpLocationIndex();
-      const summary=renderAdpRosterDots(parsed.rows,parsed.pages,placeIndex,levelResults);
+      adpRosterPages=parsed.pages;
+      adpRosterPlaceIndex=placeIndex;
+      adpRosterLevelResults=levelResults;
+      const summary=renderAdpRosterDots(parsed.rows,parsed.pages,placeIndex,levelResults,showOnMap);
       if(status){
         const countNote=summary.rows===ADP_EXPECTED_PROJECTS?
           "PDF total verified: 1,173.":
@@ -6614,7 +6622,7 @@ async function ensureLeaflet(){
     }catch(error){
       console.error("Could not load ADP roster dots",error);
       if(status)status.textContent="ADP roster dots could not load: "+String(error&&error.message||error);
-      if(toggle){toggle.disabled=true;toggle.textContent="ADP roster unavailable";}
+      if(toggle&&showOnMap){toggle.disabled=true;toggle.textContent="ADP roster unavailable";}
       throw error;
     }
   }
@@ -6622,6 +6630,10 @@ async function ensureLeaflet(){
   function handleAdpRosterToggle(){
     const toggle=el("adpRosterToggle");
     if(!toggle||toggle.disabled)return;
+    if(adpRosterLoaded&&!adpRosterLayer&&adpRosterPlaceIndex){
+      renderAdpRosterDots(adpProjectRows,adpRosterPages,adpRosterPlaceIndex,adpRosterLevelResults,true);
+      return;
+    }
     if(adpRosterLoaded&&adpRosterLayer){
       const visible=!map.hasLayer(adpRosterLayer);
       if(visible)adpRosterLayer.addTo(map);
@@ -6636,7 +6648,7 @@ async function ensureLeaflet(){
     toggle.textContent="Loading FY2026–27 ADP dots…";
     const status=el("adpRosterStatus");
     if(status)status.textContent="Loading the official roster only because you requested the map layer…";
-    adpRosterLoadPromise=loadAdpRoster().catch(error=>{
+    adpRosterLoadPromise=loadAdpRoster(true).catch(error=>{
       console.warn("ADP roster layer unavailable; retry is available.",error);
       adpRosterLoadPromise=null;
       toggle.disabled=false;
@@ -8304,12 +8316,30 @@ async function ensureLeaflet(){
         '<small>'+escapeHtml(project.projectCode)+" · "+escapeHtml(amount)+" · "+escapeHtml(location)+'</small></button>';
     }).join("");
   }
-  adpDirectoryToggle?.addEventListener("click",()=>{
+  adpDirectoryToggle?.addEventListener("click",async()=>{
     adpDirectoryPanel.hidden=!adpDirectoryPanel.hidden;
-    if(!adpDirectoryPanel.hidden){
-      renderAdpDirectory();
-      el("adpDirectorySearch")?.focus();
+    if(adpDirectoryPanel.hidden)return;
+    if(!adpRosterLoaded){
+      adpDirectoryToggle.disabled=true;
+      el("adpDirectoryMeta").textContent="Loading the official 88-page ADP register…";
+      try{
+        if(!adpRosterLoadPromise){
+          adpRosterLoadPromise=loadAdpRoster(false).catch(error=>{
+            adpRosterLoadPromise=null;
+            throw error;
+          });
+        }
+        await adpRosterLoadPromise;
+        if(!adpRosterLoaded)throw new Error("The project register could not be loaded.");
+      }catch(error){
+        el("adpDirectoryMeta").textContent="Could not load the project register. Check your connection and try again.";
+        console.warn("ADP directory could not load",error);
+      }finally{
+        adpDirectoryToggle.disabled=false;
+      }
     }
+    renderAdpDirectory();
+    el("adpDirectorySearch")?.focus();
   });
   el("adpDirectoryClose")?.addEventListener("click",()=>{adpDirectoryPanel.hidden=true;});
   el("adpDirectorySearch")?.addEventListener("input",renderAdpDirectory);
