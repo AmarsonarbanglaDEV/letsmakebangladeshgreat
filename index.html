@@ -409,7 +409,10 @@
     .adp-roster-toggle.is-on{background:#e5edf0;border-color:#a9bec7;color:#254c5c}
     .adp-roster-status{font-variant-numeric:tabular-nums}
     .adp-project-dot-shell{background:transparent;border:0}
-    .adp-project-dot{display:block;width:12px;height:12px;border:2px solid #fff;border-radius:50%;background:#778994;box-shadow:0 1px 7px rgba(20,35,45,.55),0 0 0 1px #526d7c}
+    .adp-project-dot{display:block;width:12px;height:12px;border:2px solid #fff;border-radius:50%;background:var(--adp-dot-color,#778994);box-shadow:0 1px 7px rgba(20,35,45,.55),0 0 0 1px var(--adp-dot-color,#526d7c)}
+    .adp-project-dot-district{border-style:dashed}
+    .adp-project-dot-upazila{border-style:solid}
+    .adp-project-dot-union{border-radius:3px}
     .adp-cluster-icon{background:transparent;border:0}
     .adp-cluster-icon span{display:grid;place-items:center;width:34px;height:34px;border:3px solid #fff;border-radius:50%;background:#526f7d;color:#fff;font-size:10px;font-weight:900;box-shadow:0 2px 9px rgba(18,35,45,.4)}
     .adp-project-popup{min-width:210px;max-width:300px;font:12px/1.5 "DM Sans","Noto Sans Bengali",sans-serif;color:#20382b}
@@ -2971,7 +2974,7 @@
       <span class="project-status-key"><i style="--status-color:#8158bd"></i>Planned</span>
       <span class="project-status-key"><i style="--status-color:#169ca8"></i>Future</span>
       <span class="project-status-key"><i style="--status-color:#87918b"></i>Unverified</span>
-      <small>Dashed dots = approximate district locators, not exact construction sites.</small>
+      <small>Map-name matches: grey = district, blue = upazila, teal square = union. These identify administrative areas, not exact construction sites.</small>
       <button id="adpRosterToggle" class="adp-roster-toggle" type="button" disabled>Loading FY2026–27 ADP dots…</button>
       <small id="adpRosterStatus">Waiting for official ADP roster import…</small>
       <small id="projectMarkerCount">Loading project locations…</small>
@@ -4516,19 +4519,20 @@ async function ensureLeaflet(){
       .replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g," ").trim();
   }
 
-  const ADP_PLACE_NAME_ALIASES={
-    "maheshkhali":["moheshkhali","moheshkhali"],
-    "chattogram":["chittagong"],
-    "cumilla":["comilla"],
-    "jashore":["jessore"],
-    "chapai nawabganj":["chapainawabganj","chapai nawabgonj"],
-    "cox s bazar":["cox bazar","coxs bazar"],
-    "moulvibazar":["maulvibazar"],
-    "jhenaidah":["jhenaida"],
-    "barishal":["barisal"],
-    "bogura":["bogra"],
-    "lakshmipur":["laxmipur"]
-  };
+  const ADP_PLACE_NAME_GROUPS=[
+    ["maheshkhali","moheshkhali"],
+    ["chattogram","chittagong"],
+    ["cumilla","comilla"],
+    ["jashore","jessore"],
+    ["chapai nawabganj","chapainawabganj","chapai nawabgonj"],
+    ["cox s bazar","cox bazar","coxs bazar"],
+    ["moulvibazar","maulvibazar"],
+    ["jhenaidah","jhenaida"],
+    ["barishal","barisal"],
+    ["bogura","bogra"],
+    ["lakshmipur","laxmipur"],
+    ["mymensingh","myymensingh"]
+  ];
   const ADP_STOP_PLACE_NAMES=new Set([
     "sadar","north","south","east","west","central","city","town","urban",
     "rural","district","division","upazila","union","ward","bangladesh",
@@ -4540,7 +4544,8 @@ async function ensureLeaflet(){
   function adpNameVariants(name){
     const normalized=normalisePlaceText(name);
     if(!normalized||normalized.length<4||ADP_STOP_PLACE_NAMES.has(normalized))return [];
-    const variants=[normalized,...(ADP_PLACE_NAME_ALIASES[normalized]||[])];
+    const aliasGroup=ADP_PLACE_NAME_GROUPS.find(group=>group.includes(normalized))||[];
+    const variants=[normalized,...aliasGroup];
     return [...new Set(variants.filter(value=>value.length>=4&&!ADP_STOP_PLACE_NAMES.has(value)))];
   }
 
