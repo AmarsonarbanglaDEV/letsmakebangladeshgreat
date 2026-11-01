@@ -404,6 +404,18 @@
     .atlas-project-pin{display:block;width:17px;height:17px;border:3px solid #fff;border-radius:50%;background:var(--project-status-color,#87918b);box-shadow:0 2px 8px rgba(30,40,34,.4),0 0 0 2px var(--project-status-color,#87918b);transition:transform .14s ease}
     .atlas-project-locator-shell{background:transparent;border:0}
     .atlas-project-locator-dot{display:block;width:13px;height:13px;border:2px dashed #fff;border-radius:50%;background:var(--project-status-color,#87918b);box-shadow:0 2px 7px rgba(25,35,28,.45),0 0 0 2px var(--project-status-color,#87918b);transition:transform .14s ease}
+    .adp-roster-toggle{display:inline-flex;align-items:center;gap:6px;border:1px solid #cbd5d0;border-radius:999px;padding:6px 9px;background:#eef2ef;color:#43574b;font-size:8px;font-weight:850}
+    .adp-roster-toggle:disabled{opacity:.7;cursor:wait}
+    .adp-roster-toggle.is-on{background:#e5edf0;border-color:#a9bec7;color:#254c5c}
+    .adp-roster-status{font-variant-numeric:tabular-nums}
+    .adp-project-dot-shell{background:transparent;border:0}
+    .adp-project-dot{display:block;width:12px;height:12px;border:2px solid #fff;border-radius:50%;background:#778994;box-shadow:0 1px 7px rgba(20,35,45,.55),0 0 0 1px #526d7c}
+    .adp-cluster-icon{background:transparent;border:0}
+    .adp-cluster-icon span{display:grid;place-items:center;width:34px;height:34px;border:3px solid #fff;border-radius:50%;background:#526f7d;color:#fff;font-size:10px;font-weight:900;box-shadow:0 2px 9px rgba(18,35,45,.4)}
+    .adp-project-popup{min-width:210px;max-width:300px;font:12px/1.5 "DM Sans","Noto Sans Bengali",sans-serif;color:#20382b}
+    .adp-project-popup strong{display:block;margin-bottom:5px;font-size:12px}
+    .adp-project-popup small{display:block;margin-top:5px;color:#718076;font-size:10px}
+    .adp-project-popup a{display:inline-block;margin-top:7px;color:#176b53;font-weight:800}
     .leaflet-marker-icon:hover .atlas-project-locator-dot,.leaflet-marker-icon:focus .atlas-project-locator-dot{transform:scale(1.35)}
     .leaflet-marker-icon:hover .atlas-project-pin,.leaflet-marker-icon:focus .atlas-project-pin{transform:scale(1.28)}
     .project-marker-tooltip{border:1px solid #dbe4ec;border-radius:8px;background:#fff;color:#214059;box-shadow:0 4px 14px rgba(0,0,0,.16);font-size:9px;line-height:1.5}
@@ -2960,6 +2972,8 @@
       <span class="project-status-key"><i style="--status-color:#169ca8"></i>Future</span>
       <span class="project-status-key"><i style="--status-color:#87918b"></i>Unverified</span>
       <small>Dashed dots = approximate district locators, not exact construction sites.</small>
+      <button id="adpRosterToggle" class="adp-roster-toggle" type="button" disabled>Loading FY2026–27 ADP dots…</button>
+      <small id="adpRosterStatus">Waiting for official ADP roster import…</small>
       <small id="projectMarkerCount">Loading project locations…</small>
     </div>
     <div class="map-attribution">Satellite imagery © Esri, Maxar &amp; imagery contributors · Search © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a></div>
@@ -3039,6 +3053,7 @@ async function ensureLeaflet(){
   let searchInputTimer=0;
   let satellite=null,historicalLayer=null,outlineMode=false,lastPoint=null,pointMarker=null;
   let projectMarkersLayer=null,selectedProjectId=null;
+  let adpRosterLayer=null,adpRosterLoadPromise=null,adpRosterLoaded=false;
   let waybackCore=null,lastSearchAt=0;
   const projectSpotPoints=Object.create(null);
   const projectTimeLapseStates=Object.create(null);
@@ -4388,8 +4403,373 @@ async function ensureLeaflet(){
     return {key:"unknown",label:"Status not verified",color:"#87918b"};
   }
 
+  const ADP_ROSTER_SOURCE_URL="https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-imed/2026/9/51732c2a-8082-469a-b02b-499e6aaa00b6.pdf";
+  const ADP_EXPECTED_PROJECTS=1173;
+  const ADP_DISTRICTS=[
+    {name:"Bagerhat",aliases:["Bagerhat"]},
+    {name:"Bandarban",aliases:["Bandarban"]},
+    {name:"Barguna",aliases:["Barguna"]},
+    {name:"Barishal",aliases:["Barishal","Barisal"]},
+    {name:"Bhola",aliases:["Bhola"]},
+    {name:"Bogura",aliases:["Bogura","Bogra"]},
+    {name:"Brahmanbaria",aliases:["Brahmanbaria"]},
+    {name:"Chandpur",aliases:["Chandpur"]},
+    {name:"Chattogram",aliases:["Chattogram","Chittagong"]},
+    {name:"Chuadanga",aliases:["Chuadanga"]},
+    {name:"Cox's Bazar",aliases:["Cox's Bazar","Coxs Bazar","Cox Bazar"]},
+    {name:"Cumilla",aliases:["Cumilla","Comilla"]},
+    {name:"Dhaka",aliases:["Dhaka"]},
+    {name:"Dinajpur",aliases:["Dinajpur"]},
+    {name:"Faridpur",aliases:["Faridpur"]},
+    {name:"Feni",aliases:["Feni"]},
+    {name:"Gaibandha",aliases:["Gaibandha"]},
+    {name:"Gazipur",aliases:["Gazipur"]},
+    {name:"Gopalganj",aliases:["Gopalganj"]},
+    {name:"Habiganj",aliases:["Habiganj"]},
+    {name:"Jamalpur",aliases:["Jamalpur"]},
+    {name:"Jashore",aliases:["Jashore","Jessore"]},
+    {name:"Jhalokati",aliases:["Jhalokati"]},
+    {name:"Jhenaidah",aliases:["Jhenaidah","Jhenaida"]},
+    {name:"Joypurhat",aliases:["Joypurhat"]},
+    {name:"Khagrachhari",aliases:["Khagrachhari","Khagrachari"]},
+    {name:"Kishoreganj",aliases:["Kishoreganj"]},
+    {name:"Kurigram",aliases:["Kurigram"]},
+    {name:"Kushtia",aliases:["Kushtia"]},
+    {name:"Lakshmipur",aliases:["Lakshmipur","Laxmipur"]},
+    {name:"Lalmonirhat",aliases:["Lalmonirhat"]},
+    {name:"Madaripur",aliases:["Madaripur"]},
+    {name:"Magura",aliases:["Magura"]},
+    {name:"Manikganj",aliases:["Manikganj"]},
+    {name:"Meherpur",aliases:["Meherpur"]},
+    {name:"Moulvibazar",aliases:["Moulvibazar","Maulvibazar"]},
+    {name:"Munshiganj",aliases:["Munshiganj"]},
+    {name:"Mymensingh",aliases:["Mymensingh"]},
+    {name:"Naogaon",aliases:["Naogaon","Noagaon"]},
+    {name:"Narail",aliases:["Narail"]},
+    {name:"Narayanganj",aliases:["Narayanganj"]},
+    {name:"Narsingdi",aliases:["Narsingdi"]},
+    {name:"Natore",aliases:["Natore"]},
+    {name:"Chapai Nawabganj",aliases:["Chapai Nawabganj","Chapainawabganj","Chapai Nawabgonj"]},
+    {name:"Netrokona",aliases:["Netrokona"]},
+    {name:"Nilphamari",aliases:["Nilphamari"]},
+    {name:"Noakhali",aliases:["Noakhali"]},
+    {name:"Pabna",aliases:["Pabna"]},
+    {name:"Panchagarh",aliases:["Panchagarh"]},
+    {name:"Patuakhali",aliases:["Patuakhali"]},
+    {name:"Pirojpur",aliases:["Pirojpur"]},
+    {name:"Rajbari",aliases:["Rajbari"]},
+    {name:"Rajshahi",aliases:["Rajshahi"]},
+    {name:"Rangamati",aliases:["Rangamati"]},
+    {name:"Rangpur",aliases:["Rangpur"]},
+    {name:"Satkhira",aliases:["Satkhira"]},
+    {name:"Shariatpur",aliases:["Shariatpur"]},
+    {name:"Sherpur",aliases:["Sherpur"]},
+    {name:"Sirajganj",aliases:["Sirajganj"]},
+    {name:"Sunamganj",aliases:["Sunamganj"]},
+    {name:"Sylhet",aliases:["Sylhet"]},
+    {name:"Tangail",aliases:["Tangail"]},
+    {name:"Thakurgaon",aliases:["Thakurgaon"]}
+  ];
+
+  function loadAdpScript(src,test){
+    if(test())return Promise.resolve();
+    return new Promise((resolve,reject)=>{
+      const existing=[...document.scripts].find(script=>script.src===src);
+      if(existing){
+        existing.addEventListener("load",()=>test()?resolve():reject(new Error("Library did not initialise: "+src)),{once:true});
+        existing.addEventListener("error",()=>reject(new Error("Could not load library: "+src)),{once:true});
+        return;
+      }
+      const script=document.createElement("script");
+      script.src=src;script.async=true;
+      const timeout=window.setTimeout(()=>{script.remove();reject(new Error("Timed out loading map import library"));},18000);
+      script.onload=()=>{window.clearTimeout(timeout);test()?resolve():reject(new Error("Library did not initialise: "+src));};
+      script.onerror=()=>{window.clearTimeout(timeout);script.remove();reject(new Error("Could not load library: "+src));};
+      document.head.appendChild(script);
+    });
+  }
+
+  async function ensureAdpLibraries(){
+    const cssUrls=[
+      "https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css",
+      "https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css"
+    ];
+    cssUrls.forEach(url=>{
+      if(!document.querySelector('link[href="'+url+'"]')){
+        const link=document.createElement("link");link.rel="stylesheet";link.href=url;document.head.appendChild(link);
+      }
+    });
+    await loadAdpScript(
+      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js",
+      ()=>!!window.pdfjsLib
+    );
+    await loadAdpScript(
+      "https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.js",
+      ()=>!!(window.L&&L.markerClusterGroup)
+    );
+    pdfjsLib.GlobalWorkerOptions.workerSrc=
+      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+  }
+
+  function normalisePlaceText(value){
+    return String(value||"").toLowerCase().normalize("NFKD")
+      .replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g," ").trim();
+  }
+
+  function getAdpDistrictMatches(title){
+    const haystack=" "+normalisePlaceText(title)+" ";
+    return ADP_DISTRICTS.filter(district=>district.aliases.some(alias=>{
+      const needle=" "+normalisePlaceText(alias)+" ";
+      return needle.length>2&&haystack.includes(needle);
+    })).map(district=>district.name);
+  }
+
+  function makeAdpPdfLines(textItems){
+    const sorted=(textItems||[])
+      .filter(item=>item&&typeof item.str==="string"&&item.str.trim())
+      .map(item=>({
+        str:item.str.trim(),
+        x:Number(item.transform&&item.transform[4])||0,
+        y:Number(item.transform&&item.transform[5])||0
+      }))
+      .sort((a,b)=>b.y-a.y||a.x-b.x);
+    const lines=[];
+    sorted.forEach(item=>{
+      let line=lines[lines.length-1];
+      if(!line||Math.abs(line.y-item.y)>2.2){
+        line={y:item.y,items:[]};
+        lines.push(line);
+      }
+      line.items.push(item);
+    });
+    lines.forEach(line=>{
+      line.items.sort((a,b)=>a.x-b.x);
+      line.text=line.items.map(item=>item.str).join(" ").replace(/\s+/g," ").trim();
+    });
+    return lines;
+  }
+
+  function parseAdpPageLines(lines,pageWidth,pageNumber){
+    const rows=[];
+    let current=null;
+    const codeAtStart=/^\s*(\d{9})\b/;
+    const footer=/number\s+of\s+projects|adp\s+sub\s+total|page\s+no/i;
+    const allocationPattern=/\b\d[\d,]*\.\d{2}\b/;
+    function finish(){
+      if(!current)return;
+      const title=current.titleParts.join(" ").replace(/\s+/g," ").trim()
+        .replace(/^[\s:;,.–—-]+|[\s:;,.–—-]+$/g,"");
+      rows.push({
+        id:"ADP26-"+current.code+"-"+pageNumber+"-"+rows.length,
+        projectCode:current.code,
+        title:title||("ADP project "+current.code),
+        allocationLakh:current.allocation,
+        page:pageNumber,
+        source:"IMED ADP 2026-27"
+      });
+      current=null;
+    }
+    lines.forEach(line=>{
+      const match=line.text.match(codeAtStart);
+      if(match){
+        finish();
+        current={code:match[1],titleParts:[],titleEnded:false,allocation:null};
+      }
+      if(!current)return;
+      if(footer.test(line.text)){
+        finish();
+        return;
+      }
+      // The amount is printed in the rightmost column. Keep it separate from
+      // the title; project names are read only from the English description column.
+      line.items.forEach(item=>{
+        if(item.x>=pageWidth*.80){
+          const amount=item.str.match(allocationPattern);
+          if(amount&&current.allocation===null)current.allocation=Number(amount[0].replace(/,/g,""));
+        }
+      });
+      if(current.titleEnded)return;
+      const titleItems=line.items.filter(item=>item.x<pageWidth*.64);
+      const englishParts=[];
+      for(const item of titleItems){
+        let part=item.str.replace(/^\s*\d{9}\s*/,"").trim();
+        if(!part)continue;
+        const banglaIndex=part.search(/[\u0980-\u09FF]/);
+        if(banglaIndex>=0)part=part.slice(0,banglaIndex).trim();
+        if(/[A-Za-z]/.test(part))englishParts.push(part);
+      }
+      const englishLine=englishParts.join(" ").replace(/\s+/g," ").trim();
+      if(englishLine){
+        const cleaned=englishLine.replace(allocationPattern,"").trim();
+        if(cleaned)current.titleParts.push(cleaned);
+      }else if(line!==current.startLine&&current.titleParts.length){
+        // Bangla translation / amount rows signal the end of the English title.
+        if(/[\u0980-\u09FF]/.test(line.text)||allocationPattern.test(line.text)){
+          current.titleEnded=true;
+        }
+      }
+    });
+    finish();
+    return rows;
+  }
+
+  async function parseAdpRosterPdf(){
+    const loadingTask=pdfjsLib.getDocument({
+      url:"/api/adp-roster",
+      withCredentials:false,
+      rangeChunkSize:65536,
+      disableAutoFetch:false,
+      disableStream:false
+    });
+    const pdf=await loadingTask.promise;
+    const allRows=[];
+    for(let pageNumber=1;pageNumber<=pdf.numPages;pageNumber++){
+      const page=await pdf.getPage(pageNumber);
+      const [content,viewport]=await Promise.all([
+        page.getTextContent(),
+        Promise.resolve(page.getViewport({scale:1}))
+      ]);
+      const lines=makeAdpPdfLines(content.items);
+      const rows=parseAdpPageLines(lines,viewport.width,pageNumber);
+      allRows.push(...rows);
+      if(pageNumber===1||pageNumber%8===0||pageNumber===pdf.numPages){
+        const status=el("adpRosterStatus");
+        if(status)status.textContent="Reading official ADP PDF · page "+pageNumber+" of "+pdf.numPages+" · "+allRows.length+" project rows found";
+      }
+      page.cleanup();
+    }
+    return {rows:allRows,pages:pdf.numPages};
+  }
+
+  function createAdpRosterLayer(){
+    if(L.markerClusterGroup){
+      return L.markerClusterGroup({
+        maxClusterRadius:35,
+        disableClusteringAtZoom:11,
+        spiderfyOnMaxZoom:true,
+        showCoverageOnHover:false,
+        zoomToBoundsOnClick:true,
+        iconCreateFunction:cluster=>L.divIcon({
+          className:"adp-cluster-icon",
+          html:"<span>"+cluster.getChildCount()+"</span>",
+          iconSize:[34,34],
+          iconAnchor:[17,17]
+        })
+      });
+    }
+    return L.layerGroup();
+  }
+
+  function renderAdpRosterDots(rows,pages){
+    if(adpRosterLayer&&map.hasLayer(adpRosterLayer))map.removeLayer(adpRosterLayer);
+    adpRosterLayer=createAdpRosterLayer();
+    const districtRecords=cache.district&&cache.district.records||[];
+    const districtLookup=new Map();
+    ADP_DISTRICTS.forEach(district=>{
+      const aliases=[district.name,...district.aliases];
+      const record=districtRecords.find(item=>
+        aliases.some(alias=>normalise(item.name)===normalise(alias))
+      );
+      if(record&&record.feature&&record.feature.geometry){
+        const featureLayer=L.geoJSON(record.feature);
+        const center=featureLayer.getBounds().getCenter();
+        if(bounds.contains(center))districtLookup.set(district.name,center);
+      }
+    });
+    let locatedRows=0,markerCount=0;
+    rows.forEach(project=>{
+      const districtNames=getAdpDistrictMatches(project.title);
+      if(districtNames.length)locatedRows++;
+      districtNames.forEach(districtName=>{
+        const point=districtLookup.get(districtName);
+        if(!point)return;
+        const icon=L.divIcon({
+          className:"adp-project-dot-shell",
+          html:'<span class="adp-project-dot" aria-hidden="true"></span>',
+          iconSize:[16,16],
+          iconAnchor:[8,8]
+        });
+        const marker=L.marker(point,{
+          icon,
+          keyboard:true,
+          title:project.title+" · "+districtName+" district locator"
+        });
+        marker.bindPopup(
+          '<div class="adp-project-popup">'+
+            '<strong>'+escapeHtml(project.title)+'</strong>'+
+            '<div>Project code: '+escapeHtml(project.projectCode)+'</div>'+
+            '<div>ADP allocation: '+(project.allocationLakh===null?"Not extracted":project.allocationLakh.toLocaleString("en-BD",{maximumFractionDigits:2}))+' lakh taka</div>'+
+            '<div>Location clue: '+escapeHtml(districtName)+' district is named in the official project description.</div>'+
+            '<small>Area locator only. The ADP roster does not provide a surveyed project-site coordinate or implementation status.</small>'+
+            '<a href="'+ADP_ROSTER_SOURCE_URL+'#page='+project.page+'" target="_blank" rel="noopener">Open official ADP PDF · page '+project.page+'</a>'+
+          '</div>'
+        );
+        marker.addTo(adpRosterLayer);
+        markerCount++;
+      });
+    });
+    adpRosterLayer.addTo(map);
+    adpRosterLoaded=true;
+    const toggle=el("adpRosterToggle");
+    if(toggle){
+      toggle.disabled=false;
+      toggle.classList.add("is-on");
+      toggle.textContent="FY2026–27 ADP dots · ON";
+      toggle.onclick=()=>{
+        if(map.hasLayer(adpRosterLayer)){
+          map.removeLayer(adpRosterLayer);
+          toggle.classList.remove("is-on");
+          toggle.textContent="FY2026–27 ADP dots · OFF";
+        }else{
+          adpRosterLayer.addTo(map);
+          toggle.classList.add("is-on");
+          toggle.textContent="FY2026–27 ADP dots · ON";
+        }
+      };
+    }
+    const status=el("adpRosterStatus");
+    if(status){
+      const unmatched=rows.length-locatedRows;
+      status.textContent=rows.length.toLocaleString("en-BD")+" project entries parsed across "+
+        pages+" PDF pages · "+markerCount.toLocaleString("en-BD")+" district locator dots for "+
+        locatedRows.toLocaleString("en-BD")+" projects · "+unmatched.toLocaleString("en-BD")+
+        " without a district name in the title · status not verified";
+    }
+    return {rows:rows.length,locatedRows,markerCount,unmatched:rows.length-locatedRows,pages};
+  }
+
+  async function loadAdpRoster(){
+    const status=el("adpRosterStatus");
+    const toggle=el("adpRosterToggle");
+    if(status)status.textContent="Preparing official FY2026–27 ADP import…";
+    if(toggle){toggle.disabled=true;toggle.textContent="Loading FY2026–27 ADP dots…";}
+    try{
+      await ensureAdpLibraries();
+      const parsed=await parseAdpRosterPdf();
+      const summary=renderAdpRosterDots(parsed.rows,parsed.pages);
+      if(status){
+        const countNote=summary.rows===ADP_EXPECTED_PROJECTS?
+          "Official roster total verified: 1,173.":
+          "PDF reports 1,173 projects; parser found "+summary.rows+". Review needed.";
+        status.textContent+= " "+countNote;
+      }
+      return summary;
+    }catch(error){
+      console.error("Could not load ADP roster dots",error);
+      if(status)status.textContent="ADP roster dots could not load: "+String(error&&error.message||error);
+      if(toggle){toggle.disabled=true;toggle.textContent="ADP roster unavailable";}
+      throw error;
+    }
+  }
+
   function syncProjectMarkers(){
     if(!map||!atlasData.projects||!cache.district||!cache.district.layer)return;
+    if(!adpRosterLoadPromise){
+      adpRosterLoadPromise=loadAdpRoster().catch(error=>{
+        console.warn("ADP roster layer unavailable; static project locators remain active.",error);
+        return null;
+      });
+    }
     if(!projectMarkersLayer)projectMarkersLayer=L.layerGroup().addTo(map);
     projectMarkersLayer.clearLayers();
     let exactPinCount=0,areaCount=0,districtLocatorCount=0,unresolvedCount=0,unmatchedCount=0;
