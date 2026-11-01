@@ -34,7 +34,7 @@
       ],
       "knownSourceGaps": [
         "The national project register does not yet contain all ADP/RADP project rows for FY1972-73 through FY2025-26.",
-        "The FY2026-27 ADP source contains 1,173 listed projects across 88 pages; those rows have not yet been imported into this pilot register.",
+        "The FY2026-27 ADP source is parsed by the website at runtime; rows are not yet committed as a static JSON export, and location dots appear only for projects with explicit district clues.",
         "Historic cancelled, terminated, shelved, proposed and future projects need separate official decisions and dated source evidence.",
         "Newspaper, television, radio and online media archives are leads and corroborating evidence, not a complete or authoritative national project ledger.",
         "Exact site coordinates and route geometries are missing for most historical projects; project names that mention a district are not enough to establish an exact pin."
@@ -47,7 +47,22 @@
         "listedProjects": 1173,
         "totalAllocationLakh": 19474064.07,
         "importedRecords": 0,
-        "note": "Source roster identified but not imported row-by-row. Allocation is the ADP 2026-27 list total, not expenditure."
+        "note": "The official roster contains 1,173 project entries. The site now imports the PDF at runtime and renders dots for explicit district-name matches; a static row-by-row JSON export is not yet present in this file.",
+        "runtimeImport": {
+          "enabled": true,
+          "method": "Browser-side PDF.js extraction of the official 88-page roster through same-site /api/adp-roster endpoint",
+          "expectedProjectRows": 1173,
+          "extractFields": [
+            "project code",
+            "English project description",
+            "ADP allocation in lakh taka",
+            "PDF page number"
+          ],
+          "locationRule": "Add a district-area locator only when an English district alias occurs explicitly in the project description and matches the loaded official district boundary layer.",
+          "unmatchedRule": "Do not invent coordinates or use a district-centre fallback for entries without an explicit district reference; these remain counted as unlocated.",
+          "statusRule": "The source PDF is an allocation roster and does not provide a project-by-project lifecycle status field. Status remains unverified unless corroborated from another official source.",
+          "storageNote": "Rows are parsed in the browser on demand; a static 1,173-row JSON export has not yet been committed."
+        }
       },
       "mediaEvidencePolicy": "Attach article/video/audio/photo sources to an identified project only with publisher, publication date, source URL, claim summary and corroboration state. Media alone must not establish final project cancellation, completion, expenditure or exact coordinates.",
       "importedExamples": {
