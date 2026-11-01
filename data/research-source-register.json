@@ -1,0 +1,433 @@
+{
+  "schemaVersion": "lm-bg-research-sources/1.0",
+  "updatedAt": "2026-11-01",
+  "purpose": "Source catalogue for building a national, historical register of public development projects in Bangladesh. This file is a source inventory, not a claim that every project has already been imported.",
+  "targetCoverage": {
+    "from": "1971-01-01",
+    "to": "2026-11-01",
+    "geography": "Bangladesh, with overseas government projects separately classified",
+    "sectors": [
+      "transport",
+      "bridges",
+      "roads",
+      "rail",
+      "ports",
+      "aviation",
+      "power",
+      "energy",
+      "water",
+      "irrigation",
+      "flood control",
+      "education",
+      "health",
+      "housing",
+      "urban development",
+      "local government",
+      "agriculture",
+      "industry",
+      "ICT",
+      "culture",
+      "social protection",
+      "public administration",
+      "environment",
+      "disaster management"
+    ]
+  },
+  "temporalCoverage": {
+    "1971": {
+      "note": "ERD's foreign-assistance series begins in FY1971/72. These tables are aggregate aid/commitment/disbursement evidence, not a complete list of named project sites.",
+      "sourceIds": [
+        "erd-historical-aid",
+        "erd-aims"
+      ]
+    },
+    "1972-1974": {
+      "note": "The national ADP programme begins in FY1972/73. Early Five-Year Plan documents provide programme-level context; individual DPPs and agency archives are needed for project rows.",
+      "sourceIds": [
+        "planning-history",
+        "ged-plan-archive"
+      ]
+    },
+    "1975-1999": {
+      "note": "Historical project evidence must be reconstructed from annual ADPs, IMED predecessor records, ministry/agency archives and development-partner files. BWDB preserves selected long-run allocation/expenditure data from 1959/60 onward.",
+      "sourceIds": [
+        "imed-history",
+        "bwdb-project-archive",
+        "ged-plan-archive",
+        "erd-historical-aid"
+      ]
+    },
+    "2000-2015": {
+      "note": "Use agency project lists, IMED evaluations, donor project documents, procurement notices and independent reporting. No single national archive currently covers all lifecycle states and exact locations.",
+      "sourceIds": [
+        "imed-report-archive",
+        "data-gov-adp",
+        "lged-project-list",
+        "bwdb-project-archive",
+        "erd-aims",
+        "bppa"
+      ]
+    },
+    "2016-2026": {
+      "note": "Annual ADP/RADP lists, current IMED reports, ministry/agency portals and BPPA procurement evidence provide stronger coverage, but project-to-site geometry still needs verification.",
+      "sourceIds": [
+        "adp-annual-portal",
+        "imed-report-archive",
+        "imed-adp-2026-27",
+        "imed-completed-projects",
+        "imed-ongoing-projects",
+        "bppa",
+        "rhd-projects",
+        "lged-project-list",
+        "bwdb-project-archive"
+      ]
+    },
+    "2026-2027": {
+      "note": "The FY2026-27 ADP list dated 14 October 2026 lists 1,173 projects over 88 pages. It is a current-year roster snapshot; it is not the full historical register and its allocation list does not itself provide exact site coordinates.",
+      "sourceIds": [
+        "imed-adp-2026-27"
+      ]
+    }
+  },
+  "importPolicy": {
+    "primaryEvidence": "DPP/RDPP, ECNEC or competent approval, ministry/agency project register, IMED implementation/evaluation report, ADP/RADP list, completion report, official GIS/route/chainage data, BPPA procurement/tender records, audited records.",
+    "secondaryEvidence": "News articles, investigative reports, interviews, press coverage, satellite imagery and photographs may identify leads, dates, locations, disputes, delays or cancellation claims. Link each item to the project record, publication date, claim excerpt/summary and source URL; corroborate status and finance against primary records wherever possible.",
+    "locationPrecision": [
+      "surveyed exact site coordinate",
+      "official GIS or as-built route geometry",
+      "chainage / named corridor",
+      "named facility or settlement",
+      "upazila/district only",
+      "national or multi-district coverage",
+      "unclear or conflicting"
+    ],
+    "markerRule": "Only a surveyed site coordinate or official project-site geometry may create a precise point/line. A district, upazila or locality mention may create an explicitly labelled area/corridor locator only at that supported level. Never geocode a district centroid and present it as a project location.",
+    "statusRule": "Completed, ongoing, delayed/suspended, cancelled, proposed/planned and future must each be based on dated evidence. A missed end date does not prove suspension; a press report that a project may be cancelled is not final cancellation without confirmation.",
+    "deduplication": "Match on project code, original DPP title, implementing agency, approval date, geography, financing agreement and predecessor/successor references. Keep phases and revisions linked, not merged without evidence.",
+    "privacyAndFairness": "Do not publish personal contact details, allegations as facts, or inferred corruption claims. Separate audit observations, reported allegations and established findings."
+  },
+  "sources": [
+    {
+      "id": "adp-annual-portal",
+      "publisher": "Bangladesh Planning Commission",
+      "title": "Approved Annual Development Programme (ADP) and Revised ADP archive",
+      "type": "official annual project lists",
+      "url": "https://adp.plancomm.gov.bd/pub/apr",
+      "coverage": "The portal currently shows FY2016-17 onward in its visible archive, including FY2026-27 and recent RADPs.",
+      "useFor": [
+        "annual project roster",
+        "project title and code where supplied",
+        "ministry/division",
+        "allocation"
+      ],
+      "limitations": "The visible archive does not cover the full 1971-2026 period; not a geospatial site database."
+    },
+    {
+      "id": "imed-adp-2026-27",
+      "publisher": "Implementation Monitoring and Evaluation Division (IMED)",
+      "title": "List of Project in ADP 2026-27",
+      "type": "official PDF project roster",
+      "url": "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-imed/2026/9/51732c2a-8082-469a-b02b-499e6aaa00b6.pdf",
+      "publicationDate": "2026-10-14",
+      "coverage": "FY2026-27; 88 pages; 1,173 project entries; allocation total 19,474,064.07 lakh taka.",
+      "importStatus": "source identified; individual rows not yet imported into the main national register",
+      "useFor": [
+        "current-year project title",
+        "project code",
+        "ministry/agency",
+        "allocation",
+        "location clues stated in project title"
+      ],
+      "limitations": "Not an exact location dataset; multi-location and national programmes need separate area parsing; overseas government projects must be kept outside the Bangladesh map."
+    },
+    {
+      "id": "imed-report-archive",
+      "publisher": "IMED",
+      "title": "Various reports archive",
+      "type": "official monitoring and evaluation reports",
+      "url": "https://imed.gov.bd/pages/reports",
+      "coverage": "Includes monthly ADP implementation progress, annual project lists, monitoring reports and impact/evaluation reports; current portal snapshot displays 94 report entries across paginated results.",
+      "useFor": [
+        "progress",
+        "monitoring",
+        "evaluation",
+        "project lists",
+        "completion evidence"
+      ],
+      "limitations": "Archive is paginated and not a single complete historical project register."
+    },
+    {
+      "id": "imed-completed-projects",
+      "publisher": "IMED",
+      "title": "Completed Projects of IMED",
+      "type": "official completed-project list",
+      "url": "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-imed/2026/4/7b5ad4fd-ec3a-43d9-96c4-2fa75d617c91.pdf",
+      "publicationDate": "2026-05-12 page update",
+      "coverage": "Five IMED-owned completed institutional projects with implementation periods, revised cost and reported cumulative financial progress.",
+      "useFor": [
+        "IMED project-specific lifecycle and finance"
+      ],
+      "limitations": "Only IMED's own listed projects; does not represent all completed projects in Bangladesh. Financial progress is not the same as physical completion."
+    },
+    {
+      "id": "imed-ongoing-projects",
+      "publisher": "IMED",
+      "title": "Ongoing projects of IMED",
+      "type": "official agency project list",
+      "url": "https://imed.gov.bd/pages/projects/6940317435ce18e1c0551ab2",
+      "publicationDate": "2026-09-21",
+      "coverage": "Three IMED's own ongoing institutional projects as displayed on the page.",
+      "useFor": [
+        "current IMED project lifecycle",
+        "approved periods and costs"
+      ],
+      "limitations": "Agency-specific list only; not the national ongoing project count."
+    },
+    {
+      "id": "erd-historical-aid",
+      "publisher": "Economic Relations Division (ERD), Ministry of Finance",
+      "title": "Foreign Assistance to Bangladesh at a Glance (1971/72-2024/25)",
+      "type": "official historical financial series",
+      "url": "https://erd.gov.bd/pages/static-pages/694032e435ce18e1c0563f63",
+      "coverage": "FY1971/72 through FY2024/25.",
+      "useFor": [
+        "historical foreign-aid commitments",
+        "disbursements",
+        "project aid and budget support trends"
+      ],
+      "limitations": "Aggregate financial series; cannot be treated as a list of individual projects or physical locations."
+    },
+    {
+      "id": "erd-aims",
+      "publisher": "ERD / Development Partners",
+      "title": "Bangladesh Aid Information Management System (AIMS)",
+      "type": "public foreign-assistance information system",
+      "url": "https://aims.erd.gov.bd/Account/Logon",
+      "coverage": "Development-partner-funded activities and related aid flows; historical depth depends on records entered by donors.",
+      "useFor": [
+        "donor-funded project names",
+        "development partner",
+        "aid commitments/disbursements",
+        "project documents where publicly exposed"
+      ],
+      "limitations": "Public portal requires navigation; project-level temporal and geographic completeness needs validation."
+    },
+    {
+      "id": "planning-history",
+      "publisher": "General Economics Division / Bangladesh Planning Commission",
+      "title": "History of the Bangladesh Planning Commission",
+      "type": "official institutional history",
+      "url": "https://gedkp.gov.bd/about/history/",
+      "coverage": "Planning Commission established on 31 January 1972; describes its responsibility for ADP, Five-Year Plans and appraisal.",
+      "useFor": [
+        "historical institutional context",
+        "chronology of planning records"
+      ],
+      "limitations": "Institutional history, not a project inventory."
+    },
+    {
+      "id": "ged-plan-archive",
+      "publisher": "General Economics Division / Bangladesh Planning Commission",
+      "title": "Five-Year Plan and plan document archive",
+      "type": "official historical planning documents",
+      "url": "https://gedkp.gov.bd/knowledge-archive/five-year-plans/plan-documents/?cn=five-year-plans-plan-documents",
+      "coverage": "Includes the First Five Year Plan 1973-78 and later national plans.",
+      "useFor": [
+        "historical programme/project context",
+        "planned sectors and geographic priorities",
+        "programme-to-project leads"
+      ],
+      "limitations": "Plan-level targets are not proof that every named activity became an approved project or was completed."
+    },
+    {
+      "id": "imed-history",
+      "publisher": "IMED",
+      "title": "History of project monitoring and evaluation in Bangladesh",
+      "type": "official institutional history",
+      "url": "https://imed.gov.bd/pages/static-pages/694032dc35ce18e1c0563922",
+      "coverage": "PIB created January 1975; PMD established 1977; renamed IMED in 1982.",
+      "useFor": [
+        "chronology and provenance of monitoring archives"
+      ],
+      "limitations": "Does not itself contain project rows."
+    },
+    {
+      "id": "data-gov-adp",
+      "publisher": "Bangladesh Open Data",
+      "title": "ADP Projects Database and ADP Projects Implementation Database",
+      "type": "open-data catalogue records",
+      "url": "https://data.gov.bd/dataset/adp-projects-database",
+      "coverage": "IMED ministry/division-wise ADP project and implementation databases; dataset metadata records 2018 release/modified dates.",
+      "useFor": [
+        "historical project roster / progress backfill where the resource file remains accessible"
+      ],
+      "limitations": "Data.gov metadata says license not specified and resources timed out during inspection; check rights and file freshness before reuse."
+    },
+    {
+      "id": "lged-project-list",
+      "publisher": "Local Government Engineering Department (LGED)",
+      "title": "LGED Project Information / Project List",
+      "type": "official agency project catalogue",
+      "url": "https://oldweb.lged.gov.bd/ProjectList.aspx",
+      "coverage": "Paged project catalogue covering rural, urban, water, education and other local infrastructure projects.",
+      "useFor": [
+        "project titles",
+        "short codes",
+        "sector",
+        "project detail pages"
+      ],
+      "limitations": "The page is paginated; record-level dates, finance and location need individual verification."
+    },
+    {
+      "id": "lged-gis",
+      "publisher": "LGED GIS Unit",
+      "title": "LGED GIS, digital upazila base maps and infrastructure spatial database",
+      "type": "official geospatial infrastructure source",
+      "url": "https://oldweb.lged.gov.bd/UnitAbout.aspx?unitID=+5",
+      "coverage": "GIS institutionalised in the early 1990s; upazila base maps digitised nationwide with infrastructure and settlement layers.",
+      "useFor": [
+        "local infrastructure geography",
+        "upazila and physical-infrastructure context"
+      ],
+      "limitations": "A base map is not proof that a particular project funded or constructed a specific feature; feature provenance and date need checking."
+    },
+    {
+      "id": "bwdb-project-archive",
+      "publisher": "Bangladesh Water Development Board (BWDB)",
+      "title": "BWDB project reports, completed projects and historical ADP reports",
+      "type": "official agency archive",
+      "url": "https://bwdb.gov.bd/project-report",
+      "coverage": "Includes project briefs, completed project lists, completed-project reports for 2007-08 to 2012-13, FY2023-24 completion list and yearwise BWDB ADP allocation/expenditure 1959-60 to 1998-99.",
+      "useFor": [
+        "water, irrigation, barrage, river-training and flood-control projects",
+        "agency-specific historic finance",
+        "project briefs and completion leads"
+      ],
+      "limitations": "Agency-specific; the 1959-60 to 1970-71 portion predates Bangladesh's independence and must be separately labelled as inherited East Pakistan-era records."
+    },
+    {
+      "id": "rhd-projects",
+      "publisher": "Roads and Highways Department",
+      "title": "RHD approved projects and online road network / chainage records",
+      "type": "official project and route evidence",
+      "url": "https://rhd.gov.bd/OnlineRoadNetwork/",
+      "coverage": "Approved project register and route network with road identifiers and chainage.",
+      "useFor": [
+        "road project corridors",
+        "road identifiers",
+        "district chainage ranges",
+        "route geometry leads"
+      ],
+      "limitations": "Chainage is not a coordinate unless the route alignment and reference origin are verified."
+    },
+    {
+      "id": "bppa",
+      "publisher": "Bangladesh Public Procurement Authority",
+      "title": "BPPA/e-GP procurement notices and contract records",
+      "type": "official procurement evidence",
+      "url": "https://www.bppa.gov.bd/",
+      "coverage": "Procurement notices, tender packages, contract-related records and work locations where specified.",
+      "useFor": [
+        "work-package location",
+        "chainage",
+        "contract scope",
+        "contractor and award evidence"
+      ],
+      "limitations": "A tender is not by itself proof of physical completion or final expenditure; distinguish re-tender, cancellation and contract award."
+    },
+    {
+      "id": "national-mega-projects",
+      "publisher": "Bangladesh National Portal",
+      "title": "Mega projects and initiatives",
+      "type": "official public project directory",
+      "url": "https://bangladesh.gov.bd/pages/mega-projects-initiatives",
+      "publicationDate": "2026-03-05",
+      "coverage": "The page lists four featured mega-projects: Padma Bridge, Dhaka Metro Rail, Rooppur Nuclear Power Plant and Dhaka Elevated Expressway, with displayed statuses.",
+      "useFor": [
+        "featured national mega-project leads",
+        "status cross-check"
+      ],
+      "limitations": "Only featured mega projects; not a comprehensive national register."
+    },
+    {
+      "id": "parliament-cultural-projects",
+      "publisher": "Bangladesh Parliament",
+      "title": "President's Address 2023 — completed infrastructure projects under Ministry of Cultural Affairs",
+      "type": "official parliamentary report",
+      "url": "https://www.parliament.gov.bd/uploads/pdf/President_address/address-2023_054837_.pdf",
+      "coverage": "Names completed cultural infrastructure initiatives including district/upazila facilities.",
+      "useFor": [
+        "historical completed cultural projects",
+        "named facilities and district clues"
+      ],
+      "limitations": "Narrative summary, not a complete project register; dates, finance and coordinates need separate sources."
+    },
+    {
+      "id": "tbs-cancelled-29",
+      "publisher": "The Business Standard",
+      "title": "29 projects scrapped after spending Tk6,755cr",
+      "type": "news / investigative lead",
+      "url": "https://www.tbsnews.net/bangladesh/29-projects-scrapped-after-spending-tk6755cr-1333711",
+      "publicationDate": "2026-01-14",
+      "coverage": "Reports 29 projects declared closed without completion in FY2024-25, across 12 ministries/divisions, citing IMED's ADP review; names selected projects.",
+      "useFor": [
+        "identify cancellation/closure candidates",
+        "cross-reference named project and location with official IMED report"
+      ],
+      "limitations": "Article is not the full 29-row primary list; article wording and reported costs should be corroborated against IMED's report."
+    },
+    {
+      "id": "tbs-cancel-explainer",
+      "publisher": "The Business Standard",
+      "title": "Crores spent, plans abandoned: Why govt scrapped notable projects last fiscal",
+      "type": "news / explanatory report",
+      "url": "https://www.tbsnews.net/explainer/crores-spent-plans-abandoned-why-govt-scrapped-notable-projects-last-fiscal-1333911",
+      "publicationDate": "2026-01-14",
+      "coverage": "Reports on the Bangabandhu Sheikh Mujibur Rahman Space Observation Centre and other projects; identifies Bhanga, Faridpur as its intended location.",
+      "useFor": [
+        "project identity and site-area lead",
+        "link to cancellation reporting"
+      ],
+      "limitations": "Use Bhanga/Faridpur as a named-area reference only; article does not provide surveyed coordinates."
+    },
+    {
+      "id": "prothomalo-cancellations",
+      "publisher": "Prothom Alo",
+      "title": "ADP: Ex-ministers, MPs' 'arbitrary' projects get cancelled",
+      "type": "news / investigative lead",
+      "url": "https://en.prothomalo.com/bangladesh/mdcxzcor8w",
+      "coverage": "Reports on proposed and decided cancellations, including local economic-zone and other initiatives.",
+      "useFor": [
+        "candidate cancelled / proposed / halted status leads",
+        "project-area and ministry leads"
+      ],
+      "limitations": "Different projects may be at different decision stages; do not convert a proposal or report into final cancellation without official evidence."
+    },
+    {
+      "id": "tbs-2024-cancellation-proposals",
+      "publisher": "The Business Standard",
+      "title": "Politically driven, unimportant, redundant: Projects worth Tk5,067cr being cancelled",
+      "type": "news / investigative lead",
+      "url": "https://www.tbsnews.net/bangladesh/politically-driven-unimportant-redundant-projects-worth-tk5067cr-being-cancelled-1023596",
+      "publicationDate": "2024-12-21",
+      "coverage": "Reports on proposals to cancel or drop projects and schemes.",
+      "useFor": [
+        "identify candidate projects and overlapping geographic coverage"
+      ],
+      "limitations": "A proposed cancellation is not the same as a formal cancellation order."
+    },
+    {
+      "id": "daily-star-ecnec-2026",
+      "publisher": "The Daily Star",
+      "title": "ECNEC scraps one project, sends back another",
+      "type": "news / decision lead",
+      "url": "https://www.thedailystar.net/business/economy/news/ecnec-scraps-one-project-sends-back-another-4145256",
+      "publicationDate": "2026-04-07",
+      "coverage": "Reports on an ECNEC project decision and a Karatoya river-system proposal returned for cost review.",
+      "useFor": [
+        "ECNEC decision and project proposal status clues"
+      ],
+      "limitations": "A proposal sent back is not automatically cancelled; confirm with ECNEC minutes or official decision."
+    }
+  ]
+}
