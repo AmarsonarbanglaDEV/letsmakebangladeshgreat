@@ -4766,7 +4766,7 @@ async function ensureLeaflet(){
         placeIndex
       );
       if(result.mentioned)mentionedRows++;
-      if(result.ambiguous.length&&!result.matches.length)ambiguousRows++;
+      if(result.ambiguous.length)ambiguousRows++;
       if(!result.matches.length)return;
       locatedRows++;
       result.matches.forEach(match=>{
