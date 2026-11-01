@@ -3171,6 +3171,19 @@
       .promise-status{font-size:6px;padding:4px 5px}
     }
 
+
+    .promise-pager{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:9px;color:#77867b;font-size:8px}
+    .promise-pager .promise-action:disabled{opacity:.4;cursor:not-allowed}
+    .promise-pending-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+    .promise-pending-chip{display:flex;align-items:center;gap:7px;min-width:0;padding:9px;border:1px solid #e2e9e2;border-radius:9px;background:#fff;text-align:left;color:#526b5a}
+    .promise-pending-chip strong{flex:1;min-width:0;font-size:8px}
+    .promise-pending-chip b{font-size:12px;color:#244735}
+    .promise-sector-sub{display:block;margin-top:4px;color:#819087;font-size:7px;line-height:1.4}
+    .promise-compare-selects{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:8px}
+    .promise-period-stats{margin:8px 0;color:#64776a;font-size:8px;line-height:1.6}
+    .promise-period-stats b{color:#234d37}
+    @media(max-width:420px){.promise-pager{align-items:flex-start;flex-direction:column}.promise-pager>div{display:flex;gap:6px}.promise-pager .promise-action{min-height:28px}}
+
   </style>
 </head>
 <body>
@@ -7167,7 +7180,7 @@ async function ensureLeaflet(){
   let promiseDatasetState="waiting";
   let promiseDatasetError="";
   let promiseDatasetLoad=null;
-  let promiseFilters={q:"",status:"all",sector:"all",government:"all"};
+  let promiseFilters={q:"",status:"all",sector:"all",government:"all",page:0,compareA:"",compareB:""};
   let activePromiseId=null;
   let promiseMapLayer=null;
   let promiseFocusLayer=null;
@@ -7358,6 +7371,50 @@ async function ensureLeaflet(){
       return true;
     });
   }
+
+  function promiseTermStats(governmentId){
+    const rows=(promiseDataset?.promises||[]).filter(item=>item.governmentId===governmentId);
+    const counts={};Object.keys(PROMISE_STATUS_META).forEach(key=>counts[key]=rows.filter(x=>x.status===key).length);
+    const measured=rows.map(promiseProgress).filter(Boolean);
+    const mean=measured.length?Math.round(measured.reduce((sum,item)=>sum+item.percent,0)/measured.length):null;
+    return {rows,counts,mean,measuredCount:measured.length};
+  }
+  function renderPromiseTermComparison(governments){
+    if(governments.length<2){
+      return '<div class="promise-empty">Add at least two clearly defined administration periods and source-reviewed commitments before comparing periods.</div>';
+    }
+    const first=governments.find(item=>item.id===promiseFilters.compareA)||governments[0];
+    const second=governments.find(item=>item.id===promiseFilters.compareB)||governments.find(item=>item.id!==first.id)||governments[1];
+    promiseFilters.compareA=first.id;promiseFilters.compareB=second.id;
+    const a=promiseTermStats(first.id),b=promiseTermStats(second.id);
+    const summary=(govt,stats)=>'<article class="promise-period-card"><strong>'+escapeHtml(govt.name)+'</strong>'+
+      '<small>'+escapeHtml(promiseDate(govt.startDate))+' – '+escapeHtml(promiseDate(govt.endDate))+' · '+escapeHtml(govt.party||govt.governmentType||"")+'</small>'+
+      '<div class="promise-period-stats"><b>'+stats.rows.length+'</b> imported commitments · <b>'+stats.counts.fulfilled+'</b> fulfilled · <b>'+stats.counts.delayed+'</b> delayed · <b>'+stats.counts.insufficient_evidence+'</b> insufficient evidence</div>'+
+      '<small>Evidence-backed measurable mean: '+(stats.mean===null?"Not available":stats.mean+"% across "+stats.measuredCount+" commitment(s)")+'</small></article>';
+    return '<div class="promise-compare-selects"><select class="promise-filter" data-promise-compare="A" aria-label="First administration">'+
+      governments.map(govt=>'<option value="'+escapeHtml(govt.id)+'"'+(govt.id===first.id?" selected":"")+'>'+escapeHtml(govt.name)+'</option>').join("")+
+      '</select><select class="promise-filter" data-promise-compare="B" aria-label="Second administration">'+
+      governments.map(govt=>'<option value="'+escapeHtml(govt.id)+'"'+(govt.id===second.id?" selected":"")+'>'+escapeHtml(govt.name)+'</option>').join("")+
+      '</select></div><div class="promise-period-grid">'+summary(first,a)+summary(second,b)+'</div>';
+  }
+  function renderPromiseJourney(records,achievements){
+    const events=[];
+    records.forEach(record=>{
+      if(record.announcedDate)events.push({date:record.announcedDate,title:"Commitment recorded: "+(record.title||record.id),detail:(promiseGovernment(record)?.name||"Administration not linked")+" · original commitment"});
+      (record.updateHistory||[]).forEach(update=>{
+        if(update.date)events.push({date:update.date,title:update.title||"Promise evaluation update",detail:record.title+" · "+(update.description||update.status||"")});
+      });
+    });
+    achievements.forEach(item=>{
+      if(item.completionDate)events.push({date:item.completionDate,title:"Verified achievement: "+item.title,detail:item.sector||"Development milestone"});
+    });
+    events.sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+    if(!events.length)return '<div class="promise-empty">The national journey timeline will appear as dated, source-backed commitments and verified achievements are imported.</div>';
+    return '<div class="promise-timeline">'+events.slice(0,18).map(event=>
+      '<div class="promise-timeline-item"><span class="promise-timeline-date">'+escapeHtml(promiseDate(event.date))+'</span><span class="promise-timeline-dot"></span><span class="promise-timeline-copy"><strong>'+escapeHtml(event.title)+'</strong><small>'+escapeHtml(event.detail)+'</small></span></div>'
+    ).join("")+'</div>';
+  }
+
   function promiseKpi(label,value,style,sub){
     return '<div class="promise-kpi '+style+'"><small>'+escapeHtml(label)+'</small><strong>'+escapeHtml(value)+'</strong><em>'+escapeHtml(sub||"")+'</em></div>';
   }
@@ -7424,6 +7481,10 @@ async function ensureLeaflet(){
     const data=promiseDataset||{promises:[],governments:[],achievements:[],evidence:[],sectors:[]};
     const records=data.promises||[];
     const activeRecords=promiseFilteredRecords();
+    const pageSize=30;
+    const pageCount=Math.max(1,Math.ceil(activeRecords.length/pageSize));
+    promiseFilters.page=Math.max(0,Math.min(promiseFilters.page,pageCount-1));
+    const pageRecords=activeRecords.slice(promiseFilters.page*pageSize,(promiseFilters.page+1)*pageSize);
     const counts={};Object.keys(PROMISE_STATUS_META).forEach(key=>counts[key]=records.filter(x=>x.status===key).length);
     const measured=records.map(record=>({record,progress:promiseProgress(record)})).filter(item=>item.progress);
     const rate=measured.length?Math.round(measured.reduce((sum,item)=>sum+item.progress.percent,0)/measured.length):null;
@@ -7453,9 +7514,13 @@ async function ensureLeaflet(){
     html+='<select class="promise-filter" data-promise-sector aria-label="Filter by sector"><option value="all">All sectors</option>'+sectors.map(sector=>'<option value="'+escapeHtml(sector)+'"'+(promiseFilters.sector===sector?" selected":"")+'>'+escapeHtml(sector)+'</option>').join("")+'</select>';
     html+='<select class="promise-filter" data-promise-government aria-label="Filter by government period"><option value="all">All administrations</option>'+governments.map(govt=>'<option value="'+escapeHtml(govt.id)+'"'+(promiseFilters.government===govt.id?" selected":"")+'>'+escapeHtml(govt.name)+'</option>').join("")+'</select></div>';
     html+='<div class="promise-list">';
-    if(activeRecords.length)html+=activeRecords.map(promiseRecordCard).join("");
-    else html+='<div class="promise-empty"><strong>'+(records.length?"No commitments match these filters.":"The promise register is ready for source-reviewed records.")+'</strong>'+(records.length?"Try another search, status or administration.":"No commitments have been imported yet. This is a data-coverage gap, not evidence that promises do not exist.")+'</div>';
-    html+='</div></section>';
+    if(activeRecords.length){
+      html+=pageRecords.map(promiseRecordCard).join("");
+      html+='</div><div class="promise-pager"><span>Showing '+(promiseFilters.page*pageSize+1)+'–'+Math.min((promiseFilters.page+1)*pageSize,activeRecords.length)+' of '+activeRecords.length+' matching records</span><div><button type="button" class="promise-action" data-promise-page="prev"'+(promiseFilters.page===0?" disabled":"")+'>← Previous</button> <button type="button" class="promise-action" data-promise-page="next"'+(promiseFilters.page>=pageCount-1?" disabled":"")+'>Next →</button></div></div>';
+    }else{
+      html+='<div class="promise-empty"><strong>'+(records.length?"No commitments match these filters.":"The promise register is ready for source-reviewed records.")+'</strong>'+(records.length?"Try another search, status or administration.":"No commitments have been imported yet. This is a data-coverage gap, not evidence that promises do not exist.")+'</div></div>';
+    }
+    html+='</section>';
 
     html+='<section class="promise-section"><div class="promise-section-head"><div><span class="promise-section-kicker">SECTOR VIEW</span><h3>Development commitments by sector</h3><p>Average verified progress only among commitments with reproducible calculations; record counts show coverage.</p></div></div>';
     if(sectors.length){
@@ -7463,14 +7528,22 @@ async function ensureLeaflet(){
         const items=records.filter(x=>x.sector===sector);
         const vals=items.map(promiseProgress).filter(Boolean);
         const average=vals.length?Math.round(vals.reduce((sum,item)=>sum+item.percent,0)/vals.length):null;
-        return '<div class="promise-sector-row"><span class="promise-sector-name">'+escapeHtml(sector)+'</span><span class="promise-sector-bar"><span style="width:'+(average??0)+'%"></span></span><span class="promise-sector-stats">'+(average===null?"—":average+"%")+' · '+items.length+' record(s)</span></div>';
+        const statusCounts=Object.entries(PROMISE_STATUS_META).map(([key,meta])=>{
+          const total=items.filter(item=>item.status===key).length;
+          return total?meta.label+": "+total:null;
+        }).filter(Boolean).join(" · ");
+        return '<div class="promise-sector-row"><span class="promise-sector-name">'+escapeHtml(sector)+'</span><span><span class="promise-sector-bar"><span style="width:'+(average??0)+'%"></span></span><small class="promise-sector-sub">'+escapeHtml(statusCounts||"No status records")+'</small></span><span class="promise-sector-stats">'+(average===null?"—":average+"%")+' · '+vals.length+'/'+items.length+' measured</span></div>';
       }).join("")+'</div>';
     }else html+='<div class="promise-empty">Sector results will appear after commitments are imported.</div>';
     html+='<p class="promise-method-note">No composite political ranking is calculated. Sector averages exclude records with missing or unverified progress denominators.</p></section>';
 
     html+='<section class="promise-section"><div class="promise-section-head"><div><span class="promise-section-kicker">PENDING WORK</span><h3>Promises still pending</h3><p>Incomplete, delayed, not-started, cancelled, under-review and insufficient-evidence records remain visible with their exact status.</p></div></div>';
-    const pending=activeRecords.filter(item=>item.status!=="fulfilled");
-    html+=pending.length?'<div class="promise-list">'+pending.map(promiseRecordCard).join("")+'</div>':'<div class="promise-empty">'+(records.length?"No pending commitments in the current filter.":"No pending list can be calculated until records are imported.")+'</div>';
+    const pendingStatuses=["partially_fulfilled","in_progress","not_started","delayed","cancelled_withdrawn","insufficient_evidence","under_review"];
+    const pendingTotal=pendingStatuses.reduce((sum,key)=>sum+activeRecords.filter(item=>item.status===key).length,0);
+    html+=pendingTotal?'<div class="promise-pending-grid">'+pendingStatuses.map(key=>{
+      const meta=PROMISE_STATUS_META[key],total=activeRecords.filter(item=>item.status===key).length;
+      return total?'<button type="button" class="promise-pending-chip" data-promise-pending="'+key+'"><span style="color:'+meta.color+'">'+meta.icon+'</span><strong>'+escapeHtml(meta.label)+'</strong><b>'+total+'</b></button>':"";
+    }).join("")+'</div><p class="promise-method-note" style="margin-top:8px">Select a status to filter the full commitment register. Pending means not marked fulfilled; it does not imply wrongdoing.</p>':'<div class="promise-empty">'+(records.length?"No pending commitments in the current filter.":"No pending list can be calculated until records are imported.")+'</div>';
     html+='</section>';
 
     html+='<section class="promise-section"><div class="promise-section-head"><div><span class="promise-section-kicker">VERIFIED OUTCOMES</span><h3>Development achievements</h3><p>Achievement badges are shown only when a linked evidence record is explicitly verified.</p></div></div>';
@@ -7482,6 +7555,8 @@ async function ensureLeaflet(){
     html+='<section class="promise-section"><div class="promise-section-head"><div><span class="promise-section-kicker">DISTRICT CONNECTION</span><h3>District-wise commitments</h3><p>Area association is displayed as geography, not as an invented project-site coordinate.</p></div></div>';
     html+='<div class="promise-register-note">Current map selection: <strong>'+escapeHtml(selectedArea)+'</strong> · '+districtRecords.length+' matching commitment(s) in this register.</div>';
     html+='<div class="promise-dashboard-actions" style="margin-top:9px"><button class="promise-action" type="button" data-promise-open-map>⌖ Explore selected district on map</button></div>';
+    if(districtRecords.length)html+='<div class="promise-list" style="margin-top:9px">'+districtRecords.slice(0,8).map(promiseRecordCard).join("")+'</div>';
+    else html+='<div class="promise-empty" style="margin-top:9px">No commitment in the current register is linked to this district. This is not evidence that the district received no public investment.</div>';
     html+='</section>';
 
     html+='<section class="promise-section"><div class="promise-section-head"><div><span class="promise-section-kicker">ADMINISTRATION ARCHIVE</span><h3>Government terms &amp; historical comparison</h3><p>Periods are shown separately; comparisons require compatible targets, definitions and source coverage.</p></div></div>';
@@ -7491,9 +7566,12 @@ async function ensureLeaflet(){
         const fulfilled=rows.filter(item=>item.status==="fulfilled").length;
         return '<article class="promise-period-card"><strong>'+escapeHtml(govt.name)+'</strong><small>'+escapeHtml(promiseDate(govt.startDate))+' – '+escapeHtml(promiseDate(govt.endDate))+' · '+escapeHtml(govt.party||govt.governmentType||"")+'</small><small>'+rows.length+' imported promises · '+fulfilled+' fulfilled · '+rows.filter(x=>x.status==="delayed").length+' delayed · '+rows.filter(x=>x.status==="insufficient_evidence").length+' insufficient evidence</small></article>';
       }).join("")+'</div>';
-      if(governments.length<2)html+='<div class="promise-method-note" style="margin-top:9px">A historical comparison view will become available when at least two administration periods have source-reviewed records.</div>';
+      html+='<h4 style="margin:13px 0 7px;color:#244735;font-size:11px">Side-by-side record coverage</h4>'+renderPromiseTermComparison(governments);
+      html+='<div class="promise-method-note" style="margin-top:9px">This compares imported record counts and evidence-backed progress coverage only. It does not adjust for different manifesto scope, government duration, target difficulty, inherited conditions or source availability, and it does not identify a political winner.</div>';
     }else html+='<div class="promise-empty">No administration periods have been added yet. Each term must have clear start/end dates and sources before comparison.</div>';
     html+='</section>';
+
+    html+='<section class="promise-section"><div class="promise-section-head"><div><span class="promise-section-kicker">NATIONAL PROGRESS JOURNEY</span><h3>Commitments &amp; milestones through time</h3><p>Dated events are included only when present in a source-reviewed register record.</p></div></div>'+renderPromiseJourney(records,achievements)+'</section>';
 
     html+='<section class="promise-section"><div class="promise-section-head"><div><span class="promise-section-kicker">PUBLIC METHODOLOGY</span><h3>How the tracker calculates progress</h3><p>Transparent rules for reproducible results.</p></div></div>';
     html+='<div class="promise-method-note">Numeric progress = evidence-backed completed value ÷ original measurable target. Milestone progress = evidence-verified completed milestones ÷ all pre-defined milestones. Percentages are capped at 100%. An announcement is not a completed output. Missing data is not automatically “not started”. Allocation, release, expenditure, physical output and public outcome stay separate.</div>';
@@ -7601,14 +7679,19 @@ async function ensureLeaflet(){
         });
       }
       let promiseFilterAttribute="";
-      if(target.matches("[data-promise-search]")){promiseFilters.q=target.value;promiseFilterAttribute="data-promise-search";}
-      if(target.matches("[data-promise-status]")){promiseFilters.status=target.value;promiseFilterAttribute="data-promise-status";}
-      if(target.matches("[data-promise-sector]")){promiseFilters.sector=target.value;promiseFilterAttribute="data-promise-sector";}
-      if(target.matches("[data-promise-government]")){promiseFilters.government=target.value;promiseFilterAttribute="data-promise-government";}
+      if(target.matches("[data-promise-search]")){promiseFilters.q=target.value;promiseFilters.page=0;promiseFilterAttribute="data-promise-search";}
+      if(target.matches("[data-promise-status]")){promiseFilters.status=target.value;promiseFilters.page=0;promiseFilterAttribute="data-promise-status";}
+      if(target.matches("[data-promise-sector]")){promiseFilters.sector=target.value;promiseFilters.page=0;promiseFilterAttribute="data-promise-sector";}
+      if(target.matches("[data-promise-government]")){promiseFilters.government=target.value;promiseFilters.page=0;promiseFilterAttribute="data-promise-government";}
+      if(target.matches("[data-promise-compare]")){
+        promiseFilters[target.getAttribute("data-promise-compare")==="A"?"compareA":"compareB"]=target.value;
+        promiseFilterAttribute="data-promise-compare";
       if(promiseFilterAttribute){
         const start=target.selectionStart,end=target.selectionEnd;
         refreshPromiseDashboard();
-        const replacement=panel.querySelector("["+promiseFilterAttribute+"]");
+        const replacement=promiseFilterAttribute==="data-promise-compare"
+          ?panel.querySelector('[data-promise-compare="'+target.getAttribute("data-promise-compare")+'"]')
+          :panel.querySelector("["+promiseFilterAttribute+"]");
         if(replacement){replacement.focus();if(start!==null&&replacement.setSelectionRange)replacement.setSelectionRange(start,end);}
       }
     });
@@ -7670,6 +7753,17 @@ async function ensureLeaflet(){
       if(promiseExport){exportPromiseRegister();return;}
       const promiseRetry=event.target.closest("[data-promise-retry]");
       if(promiseRetry){promiseDatasetLoad=null;promiseDatasetState="waiting";loadPromiseDataset();refreshPromiseDashboard();return;}
+      const promisePage=event.target.closest("[data-promise-page]");
+      if(promisePage){
+        const direction=promisePage.getAttribute("data-promise-page");
+        promiseFilters.page=Math.max(0,promiseFilters.page+(direction==="next"?1:-1));
+        refreshPromiseDashboard();return;
+      }
+      const promisePending=event.target.closest("[data-promise-pending]");
+      if(promisePending){
+        promiseFilters.status=promisePending.getAttribute("data-promise-pending");
+        promiseFilters.page=0;refreshPromiseDashboard();return;
+      }
       const promiseCard=event.target.closest("[data-promise-open]");
       if(promiseCard){return;}
       const profileButton=event.target.closest("[data-view-project-profile]");
