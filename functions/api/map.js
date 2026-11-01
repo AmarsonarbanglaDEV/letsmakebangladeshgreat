@@ -130,6 +130,19 @@ async function fetchArcGisPage(config, offset, requestedLimit) {
   });
   if (oid) params.set("orderByFields", oid + " ASC");
 
+  const bboxText = requestUrl.searchParams.get("bbox");
+  if (bboxText) {
+    const values = bboxText.split(",").map(Number);
+    if (values.length !== 4 || values.some(value => !Number.isFinite(value)) ||
+        values[0] < 88 || values[2] > 92.8 || values[1] < 20.5 ||
+        values[3] > 26.8 || values[0] >= values[2] || values[1] >= values[3]) {
+      throw new Error("Invalid Bangladesh map viewport bounds.");
+    }
+    params.set("geometry", values.join(","));
+    params.set("geometryType", "esriGeometryEnvelope");
+    params.set("spatialRel", "esriSpatialRelIntersects");
+  }
+
   const queryUrl = config.url + "/query?" + params.toString();
   const queryResponse = await fetchWithTimeout(queryUrl, {
     headers: { Accept: "application/geo+json, application/json" },
