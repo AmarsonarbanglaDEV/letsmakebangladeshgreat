@@ -1501,6 +1501,268 @@
       .sidebar-tab-icon{width:20px;height:20px}
     }
 
+  
+
+    /* Atlas sidebar — one fixed shell, one content scroller */
+    .sidebar{
+      display:grid !important;
+      grid-template-columns:minmax(0,1fr);
+      grid-template-rows:auto auto auto minmax(0,1fr) auto;
+      align-content:stretch;
+      min-width:0;
+      min-height:0;
+      overflow:hidden;
+      overscroll-behavior:contain;
+      isolation:isolate;
+      scroll-behavior:auto;
+    }
+    .sidebar-sheet-handle{display:none}
+    .sidebar-head{
+      position:relative;
+      min-width:0;
+      padding:19px 56px 14px 20px;
+      flex:none;
+    }
+    .sidebar-head .eyebrow{font-size:8px;letter-spacing:.16em;color:#087352}
+    .sidebar-head h1{font-size:22px;line-height:1.12;margin:7px 0 6px;color:#153d2c}
+    .sidebar-head p{font-size:10px;line-height:1.55;color:#667c70;max-width:295px}
+    .selected-area{
+      min-width:0;
+      margin:0 15px 12px;
+      padding:10px 13px;
+      border:1px solid #dce8dc;
+      border-radius:14px;
+      background:linear-gradient(115deg,#f0f6ee,#f8f9f3);
+      box-shadow:0 3px 12px rgba(23,62,41,.035);
+    }
+    .selected-top small{font-size:8px;letter-spacing:.13em}
+    #selectedAreaName{font-size:15px;line-height:1.25;margin:4px 0 1px}
+    #selectedAreaBn{font-size:10px}
+    #selectedPath{font-size:9px;line-height:1.4;margin-top:4px}
+    .sidebar-tabs{
+      display:grid !important;
+      grid-template-columns:minmax(0,1fr);
+      grid-template-rows:auto auto;
+      gap:7px;
+      align-content:start;
+      align-self:start;
+      min-width:0;
+      min-height:0;
+      max-height:none !important;
+      height:auto;
+      margin:0;
+      padding:0 14px 13px;
+      overflow:visible !important;
+      border:0;
+      background:transparent;
+      scrollbar-width:none;
+      flex:none !important;
+    }
+    .national-report-tab{
+      grid-column:1;
+      width:100%;
+      min-height:48px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:8px 11px;
+      border:1px solid #c9ddca;
+      border-radius:13px;
+      background:linear-gradient(105deg,#e4f0e5,#f1f6ec);
+      color:#155239;
+      box-shadow:0 4px 13px rgba(20,82,53,.06);
+      text-align:left;
+    }
+    .national-report-tab:hover{background:#deeddf;border-color:#a9cbb0}
+    .national-report-icon{
+      flex:none;width:31px;height:31px;display:grid;place-items:center;
+      border-radius:10px;background:#087451;color:#fff;font-size:15px;font-weight:900;
+    }
+    .national-report-copy{display:grid;gap:1px;min-width:0;flex:1}
+    .national-report-copy strong{font-size:11px;line-height:1.2}
+    .national-report-copy small{font-size:9px;color:#6b8273;line-height:1.25}
+    .national-report-arrow{flex:none;color:#387451;font-size:14px}
+    .sidebar-nav-kicker{
+      padding:3px 2px 0;
+      color:#829185;
+      font-size:8px;
+      font-weight:900;
+      letter-spacing:.16em;
+      line-height:1.2;
+    }
+    .sidebar-nav-grid{
+      display:grid !important;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      grid-auto-rows:minmax(37px,auto);
+      gap:6px;
+      min-width:0;
+    }
+    .sidebar-nav-grid .sidebar-tab{
+      display:flex;
+      align-items:center;
+      justify-content:flex-start;
+      gap:6px;
+      min-width:0;
+      min-height:37px;
+      padding:5px 7px;
+      border:1px solid #e3e9df;
+      border-radius:10px;
+      background:#fffefa;
+      color:#536b5d;
+      font-size:9px;
+      font-weight:800;
+      line-height:1.15;
+      text-align:left;
+      box-shadow:0 2px 6px rgba(18,54,33,.025);
+      transition:background .16s,border-color .16s,color .16s,box-shadow .16s;
+    }
+    .sidebar-nav-grid .sidebar-tab:hover{
+      background:#f0f6ef;border-color:#cadcc8;color:#14563a;
+    }
+    .sidebar-nav-grid .sidebar-tab.active{
+      background:#e5f1e6;
+      border-color:#acd0b2;
+      color:#07583e;
+      box-shadow:inset 3px 0 #087b55,0 3px 10px rgba(0,89,61,.06);
+    }
+    .sidebar-tab-icon{
+      flex:none;
+      width:22px;height:22px;
+      display:grid;place-items:center;
+      border:1px solid #e4ebe1;
+      border-radius:7px;
+      background:#fff;
+      color:#648272;
+      font-size:11px;
+      line-height:1;
+    }
+    .sidebar-nav-grid .sidebar-tab.active .sidebar-tab-icon{
+      border-color:#c8dfca;background:#d8eadb;color:#08734f;
+    }
+    .sidebar-nav-grid .sidebar-tab>span:last-child{
+      min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+    }
+    .side-content{
+      grid-row:4;
+      min-width:0;
+      min-height:0;
+      height:100%;
+      max-height:none;
+      margin:0;
+      padding:15px 16px 22px;
+      overflow-x:hidden;
+      overflow-y:auto;
+      overscroll-behavior:contain;
+      -webkit-overflow-scrolling:touch;
+      border-top:1px solid #e2eade;
+      background:linear-gradient(180deg,#f5f8f1 0%,#fffefa 56px);
+      color:#1b3b2b;
+      scrollbar-width:thin;
+      scrollbar-color:#cad8c9 transparent;
+    }
+    .side-content h2{
+      display:block;
+      margin:0 0 7px;
+      padding:0;
+      color:#173f2e;
+      font-size:20px;
+      line-height:1.2;
+      letter-spacing:-.04em;
+      overflow-wrap:anywhere;
+    }
+    .side-content h3{margin:18px 0 8px;color:#275a3f;font-size:12px}
+    .side-content .side-intro{margin:0 0 13px;color:#6b7e71;font-size:11px;line-height:1.65}
+    .side-content .data-status{padding:11px 12px;border-radius:12px;line-height:1.55}
+    .side-content .data-card{
+      margin:9px 0;
+      padding:12px;
+      border:1px solid #e3e9df;
+      border-radius:12px;
+      background:#fff;
+      box-shadow:0 3px 12px rgba(22,58,37,.035);
+    }
+    .side-content .data-card strong{font-size:11px;color:#294e38}
+    .side-content .data-card p{font-size:10px;line-height:1.6}
+    .side-content .data-source{
+      min-height:51px;
+      padding:10px 11px;
+      border:1px solid #e2e9df;
+      border-radius:11px;
+      background:#fff;
+    }
+    .side-content .method-note{margin:13px 0 2px}
+    .sidebar-foot{
+      grid-row:5;
+      min-width:0;
+      padding:9px 14px;
+      border-top:1px solid #e3eadf;
+      background:#f5f8f1;
+      color:#7d8b80;
+      font-size:8px;
+      line-height:1.45;
+    }
+    .side-content::-webkit-scrollbar{width:5px}
+    .side-content::-webkit-scrollbar-thumb{border-radius:12px;background:#cad8c9}
+    .side-content::-webkit-scrollbar-track{background:transparent}
+    @media(max-width:760px){
+      .sidebar{
+        grid-template-rows:16px auto auto auto minmax(0,1fr) auto;
+        height:min(88dvh,780px);
+        max-height:calc(100dvh - 72px);
+        min-height:0;
+        top:auto;
+        left:8px;right:8px;bottom:8px;width:auto;
+        border-radius:23px 23px 19px 19px;
+      }
+      .sidebar-sheet-handle{
+        grid-row:1;
+        display:grid;
+        place-items:center;
+        width:100%;
+        height:16px;
+        background:#fbfcf7;
+        border-radius:22px 22px 0 0;
+      }
+      .sidebar-sheet-handle span{width:38px;height:4px;border-radius:9px;background:#c7d5c7}
+      .sidebar-head{grid-row:2;padding:11px 48px 10px 15px}
+      .sidebar-head h1{font-size:19px;margin:5px 0 4px}
+      .sidebar-head p{font-size:9px;line-height:1.45}
+      .selected-area{grid-row:3;margin:0 10px 9px;padding:8px 10px}
+      .sidebar-tabs{grid-row:4;padding:0 10px 10px;gap:5px}
+      .national-report-tab{min-height:43px;padding:6px 9px}
+      .national-report-icon{width:28px;height:28px}
+      .sidebar-nav-kicker{font-size:7px}
+      .sidebar-nav-grid{grid-auto-rows:minmax(34px,auto);gap:5px}
+      .sidebar-nav-grid .sidebar-tab{min-height:34px;padding:4px 6px;gap:5px;font-size:8.5px}
+      .sidebar-tab-icon{width:20px;height:20px;font-size:10px}
+      .side-content{grid-row:5;padding:12px 13px 20px}
+      .sidebar-foot{grid-row:6;padding:8px 11px}
+    }
+    @media(max-width:420px){
+      .sidebar{left:6px;right:6px;bottom:6px}
+      .sidebar-head{padding-left:13px}
+      .sidebar-nav-grid{grid-auto-rows:minmax(33px,auto);gap:4px}
+      .sidebar-nav-grid .sidebar-tab{padding:4px 5px;gap:4px;font-size:8px}
+      .sidebar-tab-icon{width:19px;height:19px}
+      .side-content{padding:11px 11px 18px}
+      .side-content h2{font-size:18px}
+    }
+    @media(max-height:650px) and (max-width:760px){
+      .sidebar{height:calc(100dvh - 72px);max-height:calc(100dvh - 72px)}
+      .sidebar-head{padding-top:8px;padding-bottom:7px}
+      .sidebar-head h1{font-size:17px;margin:4px 0}
+      .sidebar-head p{line-height:1.35}
+      .selected-area{margin-bottom:6px;padding:6px 9px}
+      .sidebar-tabs{padding-bottom:7px;gap:4px}
+      .national-report-tab{min-height:39px}
+      .sidebar-nav-grid{grid-auto-rows:31px;gap:4px}
+      .sidebar-nav-grid .sidebar-tab{min-height:31px}
+      .side-content{padding-top:10px}
+    }
+    @media(prefers-reduced-motion:reduce){
+      .sidebar,.sidebar-tabs,.side-content,.sidebar-tab,.national-report-tab{scroll-behavior:auto!important;transition:none!important}
+    }
+
   </style>
 </head>
 <body>
@@ -1552,42 +1814,24 @@
       <div id="selectedPath" data-en="National view · choose an area on the map" data-bn="জাতীয় মানচিত্র · মানচিত্র থেকে এলাকা নির্বাচন করুন">National view · choose an area on the map</div>
     </div>
 
-    <nav class="sidebar-tabs" aria-label="Government information sections">
-      <section class="sidebar-nav-group sidebar-nav-feature">
-        <div class="sidebar-nav-label">YOUR COUNTRY</div>
-        <button class="sidebar-tab national-report-tab" data-panel="national" type="button">
-          <span class="national-report-icon" aria-hidden="true">৳</span>
-          <span class="national-report-copy"><strong>National report</strong><small>Budget · spending · development</small></span>
-          <span class="national-report-arrow" aria-hidden="true">↗</span>
-        </button>
-      </section>
-
-      <section class="sidebar-nav-group">
-        <div class="sidebar-nav-label">EXPLORE THE ATLAS</div>
-        <div class="sidebar-nav-grid">
-          <button class="sidebar-tab active" data-panel="overview" type="button"><span class="sidebar-tab-icon" aria-hidden="true">⌖</span><span>Overview</span></button>
-          <button class="sidebar-tab" data-panel="budget" type="button"><span class="sidebar-tab-icon" aria-hidden="true">৳</span><span>Budget</span></button>
-        </div>
-      </section>
-
-      <section class="sidebar-nav-group">
-        <div class="sidebar-nav-label">DELIVERY TRACKING</div>
-        <div class="sidebar-nav-grid">
-          <button class="sidebar-tab" data-panel="ministries" type="button"><span class="sidebar-tab-icon" aria-hidden="true">▤</span><span>Ministries</span></button>
-          <button class="sidebar-tab" data-panel="projects" type="button"><span class="sidebar-tab-icon" aria-hidden="true">◫</span><span>Projects</span></button>
-          <button class="sidebar-tab" data-panel="procurement" type="button"><span class="sidebar-tab-icon" aria-hidden="true">↗</span><span>Procurement</span></button>
-        </div>
-      </section>
-
-      <section class="sidebar-nav-group">
-        <div class="sidebar-nav-label">PUBLIC ACCOUNTABILITY</div>
-        <div class="sidebar-nav-grid">
-          <button class="sidebar-tab" data-panel="audit" type="button"><span class="sidebar-tab-icon" aria-hidden="true">✓</span><span>Audit</span></button>
-          <button class="sidebar-tab" data-panel="environment" type="button"><span class="sidebar-tab-icon" aria-hidden="true">♧</span><span>Environment</span></button>
-          <button class="sidebar-tab" data-panel="indicators" type="button"><span class="sidebar-tab-icon" aria-hidden="true">⌁</span><span>Indicators</span></button>
-          <button class="sidebar-tab" data-panel="sources" type="button"><span class="sidebar-tab-icon" aria-hidden="true">◎</span><span>Sources</span></button>
-        </div>
-      </section>
+    <nav class="sidebar-tabs" id="sidebarTabs" aria-label="Government information sections">
+      <button class="sidebar-tab national-report-tab" data-panel="national" type="button">
+        <span class="national-report-icon" aria-hidden="true">৳</span>
+        <span class="national-report-copy"><strong>National report</strong><small>Budget · spending · development</small></span>
+        <span class="national-report-arrow" aria-hidden="true">↗</span>
+      </button>
+      <div class="sidebar-nav-kicker">BROWSE SECTIONS</div>
+      <div class="sidebar-nav-grid">
+        <button class="sidebar-tab active" data-panel="overview" type="button"><span class="sidebar-tab-icon" aria-hidden="true">⌖</span><span>Overview</span></button>
+        <button class="sidebar-tab" data-panel="budget" type="button"><span class="sidebar-tab-icon" aria-hidden="true">৳</span><span>Budget</span></button>
+        <button class="sidebar-tab" data-panel="ministries" type="button"><span class="sidebar-tab-icon" aria-hidden="true">▤</span><span>Ministries</span></button>
+        <button class="sidebar-tab" data-panel="projects" type="button"><span class="sidebar-tab-icon" aria-hidden="true">◫</span><span>Projects</span></button>
+        <button class="sidebar-tab" data-panel="procurement" type="button"><span class="sidebar-tab-icon" aria-hidden="true">↗</span><span>Procurement</span></button>
+        <button class="sidebar-tab" data-panel="audit" type="button"><span class="sidebar-tab-icon" aria-hidden="true">✓</span><span>Audit</span></button>
+        <button class="sidebar-tab" data-panel="environment" type="button"><span class="sidebar-tab-icon" aria-hidden="true">♧</span><span>Environment</span></button>
+        <button class="sidebar-tab" data-panel="indicators" type="button"><span class="sidebar-tab-icon" aria-hidden="true">⌁</span><span>Indicators</span></button>
+        <button class="sidebar-tab" data-panel="sources" type="button"><span class="sidebar-tab-icon" aria-hidden="true">◎</span><span>Sources</span></button>
+      </div>
     </nav>
 
     <section class="side-content" id="sideContent" aria-live="polite">
@@ -3371,9 +3615,9 @@ async function ensureLeaflet(){
     sideContent.innerHTML=html;
     // Reset stale scroll offsets so each new section opens at its heading.
     sideContent.scrollTop=0;
-    // Keep the currently selected destination visible when opened from top navigation.
-    const activeSidebarItem=document.querySelector(".sidebar-tabs .sidebar-tab.active");
-    if(activeSidebarItem)activeSidebarItem.scrollIntoView({block:"nearest",inline:"nearest"});
+    // Navigation is deliberately not auto-scrolled: only the content pane scrolls.
+    const sidebarMenu=el("sidebarTabs");
+    if(sidebarMenu)sidebarMenu.scrollTop=0;
   }
   document.querySelectorAll(".sidebar-tab[data-panel], .national-report-tab, .atlas-primary-nav [data-panel], .about-data-button[data-panel]").forEach(button=>{
     button.addEventListener("click",()=>{
