@@ -4777,58 +4777,52 @@ async function ensureLeaflet(){
     return L.layerGroup();
   }
 
-  function renderAdpRosterDots(rows,pages){
+  function renderAdpRosterDots(rows,pages,placeIndex,levelResults){
     if(adpRosterLayer&&map.hasLayer(adpRosterLayer))map.removeLayer(adpRosterLayer);
     adpRosterLayer=createAdpRosterLayer();
-    const districtRecords=cache.district&&cache.district.records||[];
-    const districtLookup=new Map();
-    ADP_DISTRICTS.forEach(district=>{
-      const aliases=[district.name,...district.aliases];
-      const record=districtRecords.find(item=>
-        aliases.some(alias=>normalise(item.name)===normalise(alias))
-      );
-      if(record&&record.feature&&record.feature.geometry){
-        const featureLayer=L.geoJSON(record.feature);
-        const center=featureLayer.getBounds().getCenter();
-        if(bounds.contains(center))districtLookup.set(district.name,center);
-      }
-    });
-    let locatedRows=0,mentionedRows=0,markerCount=0,boundaryUnmatchedRows=0;
+    let locatedRows=0,mentionedRows=0,markerCount=0,ambiguousRows=0;
+    let districtDots=0,upazilaDots=0,unionDots=0;
     rows.forEach(project=>{
-      const districtNames=getAdpDistrictMatches(project.title);
-      if(districtNames.length)mentionedRows++;
-      let rowPlaced=false;
-      districtNames.forEach(districtName=>{
-        const point=districtLookup.get(districtName);
-        if(!point)return;
+      const result=matchAdpProjectLocations(project.title,placeIndex);
+      if(result.mentioned)mentionedRows++;
+      if(result.ambiguous.length&&!result.matches.length)ambiguousRows++;
+      if(!result.matches.length)return;
+      locatedRows++;
+      result.matches.forEach(match=>{
+        const point=match.point;
+        const levelLabel=match.level==="union"?"Union":(match.level==="upazila"?"Upazila":"District");
+        const levelColor=match.level==="union"?"#1595a3":(match.level==="upazila"?"#2878c7":"#778994");
         const icon=L.divIcon({
           className:"adp-project-dot-shell",
-          html:'<span class="adp-project-dot" aria-hidden="true"></span>',
+          html:'<span class="adp-project-dot adp-project-dot-'+match.level+'" style="--adp-dot-color:'+levelColor+'" aria-hidden="true"></span>',
           iconSize:[16,16],
           iconAnchor:[8,8]
         });
+        const hierarchy=[match.record.division,match.record.district,match.record.upazila,match.record.union]
+          .filter(Boolean).filter((value,index,array)=>array.indexOf(value)===index).join(" · ");
         const marker=L.marker(point,{
           pane:"projectMarkerPane",
           icon,
           keyboard:true,
-          title:project.title+" · "+districtName+" district locator"
+          title:project.title+" · matched map name: "+match.name+" ("+levelLabel+")"
         });
         marker.bindPopup(
           '<div class="adp-project-popup">'+
             '<strong>'+escapeHtml(project.title)+'</strong>'+
             '<div>Project code: '+escapeHtml(project.projectCode)+'</div>'+
             '<div>ADP allocation: '+(project.allocationLakh===null?"Not extracted":project.allocationLakh.toLocaleString("en-BD",{maximumFractionDigits:2}))+' lakh taka</div>'+
-            '<div>Location clue: '+escapeHtml(districtName)+' district is named in the official project description.</div>'+
-            '<small>Area locator only. The ADP roster does not provide a surveyed project-site coordinate or implementation status.</small>'+
+            '<div><b>Map-name match:</b> '+escapeHtml(match.name)+' ('+escapeHtml(levelLabel)+')</div>'+
+            (hierarchy?'<div><b>Administrative path:</b> '+escapeHtml(hierarchy)+'</div>':"")+
+            '<small>This dot identifies the matched administrative area, not a surveyed construction-site coordinate. The ADP roster does not provide project lifecycle status.</small>'+
             '<a href="'+ADP_ROSTER_SOURCE_URL+'#page='+project.page+'" target="_blank" rel="noopener">Open official ADP PDF · page '+project.page+'</a>'+
           '</div>'
         );
         marker.addTo(adpRosterLayer);
         markerCount++;
-        rowPlaced=true;
+        if(match.level==="union")unionDots++;
+        else if(match.level==="upazila")upazilaDots++;
+        else districtDots++;
       });
-      if(rowPlaced)locatedRows++;
-      else if(districtNames.length)boundaryUnmatchedRows++;
     });
     adpRosterLayer.addTo(map);
     adpRosterLoaded=true;
@@ -4850,17 +4844,24 @@ async function ensureLeaflet(){
       };
     }
     const status=el("adpRosterStatus");
+    const noMapName=rows.length-mentionedRows;
+    const unmatched=mentionedRows-locatedRows;
+    const failedLevels=(levelResults||[]).filter(item=>!item.ok).map(item=>item.level);
     if(status){
-      const noDistrict=rows.length-mentionedRows;
       status.textContent=rows.length.toLocaleString("en-BD")+" project entries parsed across "+
-        pages+" PDF pages · "+markerCount.toLocaleString("en-BD")+" district locator dots for "+
-        locatedRows.toLocaleString("en-BD")+" projects · "+noDistrict.toLocaleString("en-BD")+
-        " without a district name · "+boundaryUnmatchedRows.toLocaleString("en-BD")+
-        " with district names but no boundary match · status not verified";
+        pages+" PDF pages · "+locatedRows.toLocaleString("en-BD")+" projects matched to map names · "+
+        markerCount.toLocaleString("en-BD")+" dots ("+districtDots+" districts, "+upazilaDots+
+        " upazilas, "+unionDots+" unions) · "+noMapName.toLocaleString("en-BD")+
+        " have no matching map name in the title · "+unmatched.toLocaleString("en-BD")+
+        " name matches unresolved · "+ambiguousRows.toLocaleString("en-BD")+" ambiguous";
+      if(failedLevels.length)status.textContent+=" · unavailable map layers: "+failedLevels.join(", ");
     }
-    return {rows:rows.length,locatedRows,markerCount,unmatched:rows.length-locatedRows,pages};
+    return {
+      rows:rows.length,locatedRows,markerCount,unmatched,ambiguousRows,
+      districtDots,upazilaDots,unionDots,pages,
+      loadedMapLevels:(levelResults||[]).filter(item=>item.ok).map(item=>item.level)
+    };
   }
-
   async function loadAdpRoster(){
     const status=el("adpRosterStatus");
     const toggle=el("adpRosterToggle");
@@ -4869,12 +4870,25 @@ async function ensureLeaflet(){
     try{
       await ensureAdpLibraries();
       const parsed=await parseAdpRosterPdf();
-      const summary=renderAdpRosterDots(parsed.rows,parsed.pages);
+      if(status)status.textContent="Matching project place names to district, upazila and union map names…";
+      const levelResults=await Promise.all(["upazila","union"].map(async level=>{
+        try{
+          const built=await loadLevel(level);
+          return {level,ok:true,count:built.records.length,source:built.sourceLabel};
+        }catch(error){
+          console.warn("Could not load "+level+" boundary names for ADP matching:",error);
+          return {level,ok:false,error:error.message};
+        }
+      }));
+      const placeIndex=buildAdpLocationIndex();
+      const summary=renderAdpRosterDots(parsed.rows,parsed.pages,placeIndex,levelResults);
       if(status){
         const countNote=summary.rows===ADP_EXPECTED_PROJECTS?
           "Official roster total verified: 1,173.":
           "PDF reports 1,173 projects; parser found "+summary.rows+". Review needed.";
-        status.textContent+= " "+countNote;
+        status.textContent+= " "+countNote+" · map-name index: "+
+          summary.loadedMapLevels.join(", ")+".";
+
       }
       return summary;
     }catch(error){
