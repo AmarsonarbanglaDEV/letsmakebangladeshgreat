@@ -2971,6 +2971,14 @@
       .landmark-panel{right:10px;bottom:10px;width:min(310px,calc(100% - 20px))}
     }
 
+  
+    .map-pill.river-pill{border-color:#b8dfec;color:#176d91}
+    .map-pill.river-pill.active{background:#176f96;border-color:#176f96;color:#fff}
+    .river-tooltip{padding:5px 8px!important;border:1px solid #a5d9ed!important;border-radius:7px!important;background:#f1fcff!important;color:#135a79!important;font-size:10px!important;font-weight:900!important;box-shadow:0 4px 14px rgba(20,76,100,.16)!important}
+    .river-name-label{padding:2px 5px;border:0!important;border-radius:5px!important;background:rgba(233,250,255,.78)!important;color:#176e94!important;font-size:9px!important;font-weight:900!important;box-shadow:none!important;white-space:nowrap}
+    .river-name-label:before{display:none!important}
+    .river-status{color:#367b97!important}
+
   </style>
 </head>
 <body>
@@ -3118,6 +3126,7 @@
     <div class="map-top-controls">
       <button class="map-pill" id="satelliteToggle" type="button">◈ Satellite</button>
       <button class="map-pill active" id="outlineToggle" type="button">✿ Illustrated</button>
+      <button class="map-pill river-pill active" id="riverToggle" type="button" aria-pressed="true">〰 Rivers</button>
       <button class="map-pill" id="landmarkToggle" type="button" aria-pressed="false">★ Landmarks</button>
     </div>
     <div class="map-controls" aria-label="Map controls">
@@ -3153,6 +3162,7 @@
       <button id="adpDirectoryToggle" class="adp-directory-toggle" type="button">Browse all 1,173 projects</button>
       <small id="adpRosterStatus">Waiting for official ADP roster import…</small>
       <small id="projectMarkerCount">Loading project locations…</small>
+      <small class="river-status" id="riverStatus">Preparing Bangladesh's rivers…</small>
     </div>
     <aside class="adp-directory-panel" id="adpDirectoryPanel" hidden aria-label="FY2026–27 ADP project directory">
       <header class="adp-directory-head">
@@ -3923,7 +3933,9 @@ async function ensureLeaflet(){
   map.createPane("countryPane");map.getPane("countryPane").style.zIndex=420;map.getPane("countryPane").style.pointerEvents="none";
   map.createPane("boundaryPane");map.getPane("boundaryPane").style.zIndex=450;
   map.createPane("projectMarkerPane");map.getPane("projectMarkerPane").style.zIndex=680;
+  map.createPane("riverPane");map.getPane("riverPane").style.zIndex=520;
   map.createPane("landmarkPane");map.getPane("landmarkPane").style.zIndex=670;
+  const riverRenderer=L.canvas({pane:"riverPane",padding:0.5});
   const countryRenderer=L.svg({pane:"countryPane"});
   const adminRenderer=L.canvas({pane:"boundaryPane",padding:0.5});
   map.getContainer().style.backgroundColor="#dcefeb";
@@ -3963,11 +3975,13 @@ async function ensureLeaflet(){
     setStatus("Satellite imagery enabled · select Illustrated for the lightweight map");
     window.setTimeout(()=>setStatus(""),2500);
   });
+  el("riverToggle").addEventListener("click",toggleRivers);
+  map.on("moveend zoomend",()=>scheduleRiverLoad(1400));
   el("landmarkToggle").addEventListener("click",toggleLandmarks);
   document.querySelectorAll("[data-landmark-filter]").forEach(button=>{
     button.addEventListener("click",()=>setLandmarkFilter(button.getAttribute("data-landmark-filter")));
   });
-  map.on("moveend zoomend",()=>scheduleLandmarkLoad(1200));
+  map.on("moveend zoomend",()=>{scheduleLandmarkLoad(1200);scheduleRiverLoad(1400);});
 
   el("outlineToggle").addEventListener("click",()=>{
     boundaryFallback();
@@ -3978,6 +3992,197 @@ async function ensureLeaflet(){
   el("zoomOut").addEventListener("click",()=>map.zoomOut());
   el("fitBangladesh").addEventListener("click",()=>map.fitBounds(bounds,{padding:[30,30]}));
 
+
+
+  // Rivers are a first-class geographic layer, independent of projects and landmarks.
+  // All lines come from mapped OSM waterway geometry; the line layer is visible by default.
+  let riversEnabled=true;
+  let riverLayer=null;
+  let riverHaloLayer=null;
+  let riverLabelsLayer=null;
+  let riverItems=[];
+  let riverTimer=null;
+  let riverController=null;
+  let riverLastRequestAt=0;
+  const riverCache=new Map();
+  const BANGLADESH_RIVER_BOUNDS={south:19.75,west:87.45,north:27.45,east:93.25};
+  const MAJOR_RIVER_NAMES=new Set([
+    "padma","jamuna","meghna","brahmaputra","teesta","tista","karnaphuli",
+    "surma","kushiyara","buriganga","dhaleshwari","ganges","lohajang",
+    "arial khan","gorai","madhumati","rupsha","pashur","passur","feni river"
+  ]);
+
+  function riverBoundsForViewport(){
+    const view=map.getBounds();
+    const floor=v=>Math.floor(v*10)/10;
+    const ceil=v=>Math.ceil(v*10)/10;
+    const south=Math.max(BANGLADESH_RIVER_BOUNDS.south,floor(view.getSouth()));
+    const west=Math.max(BANGLADESH_RIVER_BOUNDS.west,floor(view.getWest()));
+    const north=Math.min(BANGLADESH_RIVER_BOUNDS.north,ceil(view.getNorth()));
+    const east=Math.min(BANGLADESH_RIVER_BOUNDS.east,ceil(view.getEast()));
+    if(south>=north||west>=east)return null;
+    return {south,west,north,east};
+  }
+
+  function drawRiverNames(features){
+    if(riverLabelsLayer&&map.hasLayer(riverLabelsLayer))map.removeLayer(riverLabelsLayer);
+    riverLabelsLayer=L.layerGroup();
+    const candidates=new Map();
+    (features||[]).forEach(feature=>{
+      const name=String(feature.properties?.name||"").trim();
+      const key=normalise(name);
+      if(!name||!MAJOR_RIVER_NAMES.has(key))return;
+      const points=feature.geometry?.coordinates||[];
+      if(points.length<2)return;
+      const previous=candidates.get(key);
+      if(!previous||points.length>previous.points.length){
+        candidates.set(key,{name,points});
+      }
+    });
+    candidates.forEach(item=>{
+      const point=item.points[Math.floor(item.points.length*.5)];
+      if(!point||!Number.isFinite(point[0])||!Number.isFinite(point[1]))return;
+      const icon=L.divIcon({
+        className:"river-name-label",
+        html:escapeHtml(item.name),
+        iconSize:[Math.max(44,item.name.length*6+10),18],
+        iconAnchor:[Math.max(22,item.name.length*3+5),9]
+      });
+      riverLabelsLayer.addLayer(L.marker([point[1],point[0]],{
+        icon,interactive:false,keyboard:false,pane:"riverPane"
+      }));
+    });
+    if(riversEnabled)riverLabelsLayer.addTo(map);
+  }
+
+  function drawRiverLayer(data){
+    const features=Array.isArray(data.features)?data.features:[];
+    riverItems=features;
+    if(riverLayer&&map.hasLayer(riverLayer))map.removeLayer(riverLayer);
+    if(riverHaloLayer&&map.hasLayer(riverHaloLayer))map.removeLayer(riverHaloLayer);
+
+    const styleFor=feature=>{
+      const type=feature.properties?.waterway||"river";
+      const stream=type==="stream";
+      const canal=type==="canal"||type==="ditch";
+      return {
+        color:stream?"#4bafd0":(canal?"#49aeca":"#168fc4"),
+        weight:stream?1.35:(canal?1.9:3.0),
+        opacity:stream?.82:.96,
+        lineCap:"round",
+        lineJoin:"round",
+        dashArray:canal?"5 4":null
+      };
+    };
+    riverHaloLayer=L.geoJSON(data,{
+      pane:"riverPane",renderer:riverRenderer,interactive:false,
+      style:feature=>({
+        color:"#e9fbff",
+        weight:(feature.properties?.waterway==="river"?5.7:3.6),
+        opacity:.88,lineCap:"round",lineJoin:"round"
+      })
+    });
+    riverLayer=L.geoJSON(data,{
+      pane:"riverPane",renderer:riverRenderer,
+      style:styleFor,
+      onEachFeature:(feature,path)=>{
+        const name=feature.properties?.name||"Unnamed waterway";
+        const bn=feature.properties?.name_bn;
+        path.bindTooltip(escapeHtml(name+(bn&&bn!==name?" / "+bn:"")),{
+          sticky:true,className:"river-tooltip",direction:"auto"
+        });
+        path.on("click",event=>{
+          if(event.originalEvent)L.DomEvent.stopPropagation(event.originalEvent);
+          path.openTooltip();
+        });
+      }
+    });
+    riverHaloLayer.addTo(map);
+    riverLayer.addTo(map);
+    drawRiverNames(features);
+    const status=el("riverStatus");
+    if(status){
+      const stamp=data.timestamp?" · OSM "+String(data.timestamp).replace("T"," ").replace("Z"," UTC"):"";
+      status.textContent=features.length.toLocaleString()+" mapped waterway lines shown"+(data.capped?" · zoom in for additional detail":"")+stamp+" · © OpenStreetMap contributors";
+    }
+    const toggle=el("riverToggle");
+    if(toggle)toggle.classList.toggle("active",riversEnabled);
+  }
+
+  async function loadRiversForViewport(){
+    if(!riversEnabled)return;
+    const zoom=map.getZoom();
+    const status=el("riverStatus");
+    if(zoom<6){
+      if(status)status.textContent="Zoom to Bangladesh to see mapped rivers.";
+      return;
+    }
+    const box=riverBoundsForViewport();
+    if(!box)return;
+    const bbox=[box.south,box.west,box.north,box.east].map(value=>value.toFixed(1)).join(",");
+    const cacheKey=bbox+"|"+Math.floor(zoom);
+    const cached=riverCache.get(cacheKey);
+    if(cached){
+      drawRiverLayer(cached);
+      return;
+    }
+    const wait=7000-(Date.now()-riverLastRequestAt);
+    if(wait>0){
+      clearTimeout(riverTimer);
+      riverTimer=setTimeout(loadRiversForViewport,wait);
+      return;
+    }
+    if(riverController)riverController.abort();
+    riverController=new AbortController();
+    riverLastRequestAt=Date.now();
+    if(status)status.textContent="Loading named rivers, canals and waterways…";
+    try{
+      const params=new URLSearchParams({bbox,zoom:String(zoom)});
+      const response=await fetch("/api/rivers?"+params.toString(),{
+        method:"GET",headers:{Accept:"application/json"},signal:riverController.signal
+      });
+      const data=await response.json();
+      if(!response.ok)throw new Error(data.error||"River map request failed.");
+      riverCache.set(cacheKey,data);
+      while(riverCache.size>18)riverCache.delete(riverCache.keys().next().value);
+      if(!riversEnabled)return;
+      drawRiverLayer(data);
+      setStatus(data.count.toLocaleString()+" mapped rivers and waterways drawn in this view.");
+    }catch(error){
+      if(error&&error.name==="AbortError")return;
+      console.error("River layer failed",error);
+      if(status)status.textContent=(error.message||"River data service unavailable.")+" Pan or zoom to retry.";
+      setStatus("River data could not load: "+(error.message||"service unavailable."),true);
+    }
+  }
+
+  function scheduleRiverLoad(delay=1200){
+    if(!riversEnabled)return;
+    clearTimeout(riverTimer);
+    riverTimer=setTimeout(loadRiversForViewport,delay);
+  }
+
+  function toggleRivers(){
+    riversEnabled=!riversEnabled;
+    const button=el("riverToggle");
+    if(button){
+      button.classList.toggle("active",riversEnabled);
+      button.setAttribute("aria-pressed",String(riversEnabled));
+    }
+    [riverHaloLayer,riverLayer,riverLabelsLayer].forEach(layer=>{
+      if(!layer)return;
+      if(riversEnabled&&!map.hasLayer(layer))layer.addTo(map);
+      if(!riversEnabled&&map.hasLayer(layer))map.removeLayer(layer);
+    });
+    if(riversEnabled){
+      if(!riverItems.length)scheduleRiverLoad(0);
+      else setStatus("River map enabled · "+riverItems.length.toLocaleString()+" mapped waterways visible.");
+    }else{
+      clearTimeout(riverTimer);
+      if(riverController)riverController.abort();
+      setStatus("River layer hidden. Districts, landmarks and project markers are unchanged.");
+    }
+  }
 
   // Live, viewport-based OpenStreetMap landmarks. The API is same-origin,
   // edge-cached and only queried while the visitor has the layer switched on.
@@ -6822,6 +7027,7 @@ async function ensureLeaflet(){
     await loadCountryBoundary();
     setStatus("Loading district boundaries…");
     await switchLevel("district");
+    scheduleRiverLoad(400);
     if(activeLevel==="district"&&currentLayer){
       setStatus("Bangladesh outline and district layer loaded · switch to divisions, upazilas or unions.");
     }
