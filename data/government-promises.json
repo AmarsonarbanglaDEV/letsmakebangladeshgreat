@@ -1,0 +1,109 @@
+{
+  "schemaVersion": "1.0.0",
+  "datasetId": "bangladesh-government-promises",
+  "title": "Bangladesh Government Promises & Achievements Register",
+  "coverage": {
+    "country": "Bangladesh",
+    "status": "initial_empty_register",
+    "note": "No promise records have been imported or verified in this initial dataset. A zero record count describes this register only; it does not mean no public commitments exist.",
+    "governmentsIncluded": [],
+    "periodsCovered": [],
+    "lastReviewedAt": null
+  },
+  "methodology": {
+    "evidenceFirst": true,
+    "politicalScoring": false,
+    "statusDefinitions": {
+      "fulfilled": "The documented success criteria or target have been achieved and supported by verified evidence.",
+      "partially_fulfilled": "At least one measurable component is achieved, but the full target or all material components are not achieved.",
+      "in_progress": "Documented implementation has begun; this is not inferred from an announcement alone.",
+      "not_started": "The record has been reviewed and no documented implementation has been identified within the stated evidence scope.",
+      "delayed": "A documented deadline has passed and the target remains incomplete.",
+      "cancelled_withdrawn": "An official source documents withdrawal, cancellation or replacement of the commitment.",
+      "insufficient_evidence": "Available records do not establish the current status or measurable progress.",
+      "under_review": "Evidence is being evaluated; no final status conclusion is published."
+    },
+    "progressRules": [
+      "Numeric progress is calculated as verified completed value divided by original target value, capped at 100 percent.",
+      "Milestone progress is calculated as completed, evidence-verified milestones divided by the total pre-defined milestones.",
+      "Each completed value or milestone must cite one or more evidence records with verificationStatus set to verified.",
+      "No progress percentage is shown when the calculation method, denominator or supporting evidence is missing.",
+      "Cancelled, withdrawn, not-started and insufficient-evidence records are not assigned artificial completion percentages.",
+      "A government announcement or project listing is not evidence that an outcome has been delivered."
+    ],
+    "sectorRate": "Sector figures are descriptive averages of commitments with a valid evidence-backed progress calculation. They are not a government score or a ranking of political parties.",
+    "comparisonWarning": "Comparisons across administrations require compatible definitions, comparable targets and disclosed differences in source coverage, scope and reporting periods."
+  },
+  "statusDefinitions": [
+    {
+      "id": "fulfilled",
+      "label": "Fulfilled",
+      "icon": "✓",
+      "color": "#218552"
+    },
+    {
+      "id": "partially_fulfilled",
+      "label": "Partially fulfilled",
+      "icon": "◐",
+      "color": "#3b83bd"
+    },
+    {
+      "id": "in_progress",
+      "label": "In progress",
+      "icon": "↗",
+      "color": "#2878c8"
+    },
+    {
+      "id": "not_started",
+      "label": "Not started",
+      "icon": "○",
+      "color": "#8a9299"
+    },
+    {
+      "id": "delayed",
+      "label": "Delayed",
+      "icon": "!",
+      "color": "#c27a22"
+    },
+    {
+      "id": "cancelled_withdrawn",
+      "label": "Cancelled / withdrawn",
+      "icon": "×",
+      "color": "#b24c4c"
+    },
+    {
+      "id": "insufficient_evidence",
+      "label": "Insufficient evidence",
+      "icon": "?",
+      "color": "#8b6bb0"
+    },
+    {
+      "id": "under_review",
+      "label": "Under review",
+      "icon": "⌕",
+      "color": "#667a88"
+    }
+  ],
+  "sectors": [
+    "Infrastructure",
+    "Transportation",
+    "Education",
+    "Healthcare",
+    "Electricity and Energy",
+    "Agriculture",
+    "Digital Services",
+    "Employment",
+    "Poverty Reduction",
+    "Environment",
+    "Housing",
+    "Water and Sanitation",
+    "Social Protection",
+    "Technology",
+    "Economic Development",
+    "Public Safety"
+  ],
+  "governments": [],
+  "promises": [],
+  "achievements": [],
+  "evidence": []
+}
