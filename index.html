@@ -4582,10 +4582,14 @@ async function ensureLeaflet(){
       }
       // The amount is printed in the rightmost column. Keep it separate from
       // the title; project names are read only from the English description column.
+      let amountFoundOnLine=false;
       line.items.forEach(item=>{
         if(item.x>=pageWidth*.80){
           const amount=item.str.match(allocationPattern);
-          if(amount&&current.allocation===null)current.allocation=Number(amount[0].replace(/,/g,""));
+          if(amount){
+            amountFoundOnLine=true;
+            if(current.allocation===null)current.allocation=Number(amount[0].replace(/,/g,""));
+          }
         }
       });
       if(current.titleEnded)return;
@@ -4602,7 +4606,8 @@ async function ensureLeaflet(){
       if(englishLine){
         const cleaned=englishLine.replace(allocationPattern,"").trim();
         if(cleaned)current.titleParts.push(cleaned);
-      }else if(line!==current.startLine&&current.titleParts.length){
+        if(amountFoundOnLine)current.titleEnded=true;
+      }else if(current.titleParts.length){
         // Bangla translation / amount rows signal the end of the English title.
         if(/[\u0980-\u09FF]/.test(line.text)||allocationPattern.test(line.text)){
           current.titleEnded=true;
