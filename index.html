@@ -2810,6 +2810,80 @@
       .project-profile-panel,.project-profile-stat,.project-profile-doc{break-inside:avoid;box-shadow:none}
     }
 
+      /* Lightweight illustrated Bangladesh map and searchable ADP atlas. */
+    .map-area{background:#c7e6e9}
+    #map,.leaflet-container{background:#c7e6e9!important}
+    .leaflet-container{font-family:"DM Sans","Noto Sans Bengali",system-ui,sans-serif}
+    .leaflet-control-attribution{background:rgba(255,255,246,.9)!important;color:#49695b!important}
+    .leaflet-control-attribution a{color:#176b53!important}
+    .leaflet-tooltip.area-label{
+      background:rgba(255,255,246,.95);color:#25563d;border:1px solid #c8dcc0;
+      border-radius:10px;box-shadow:0 2px 8px rgba(33,75,49,.12);font-weight:850
+    }
+    .project-map-legend{background:rgba(255,255,246,.97);border-color:#dcebd7}
+    .adp-roster-toggle{background:#e7f2e3;border-color:#c4ddc1;color:#1e6040}
+    .adp-roster-toggle.is-on{background:#075c42;border-color:#075c42;color:white}
+    .adp-project-dot{background:var(--adp-dot-color,#778994);box-shadow:0 1px 7px rgba(20,35,45,.32),0 0 0 1px rgba(25,70,45,.45)}
+    .adp-project-dot-district{border-style:dashed}
+    .adp-project-dot-upazila{border-style:solid}
+    .adp-project-dot-union{border-radius:3px}
+    .adp-cluster-icon span{background:#2c7356;border-color:#f9fff0;box-shadow:0 2px 8px rgba(31,74,48,.25)}
+    .adp-directory-toggle{display:inline-flex;align-items:center;gap:6px;margin-top:3px;padding:7px 10px;border:1px solid #c8ddc2;border-radius:999px;background:#eaf3e4;color:#215a3d;font-size:9px;font-weight:900;cursor:pointer}
+    .adp-directory-toggle:hover{background:#dcebd5}
+    .adp-directory-panel{
+      position:absolute;z-index:790;top:150px;right:20px;width:min(410px,calc(100vw - 40px));
+      max-height:calc(100dvh - 220px);display:flex;flex-direction:column;overflow:hidden;
+      border:1px solid #d6e4d1;border-radius:19px;background:rgba(255,255,247,.98);
+      box-shadow:0 15px 42px rgba(35,76,48,.2);color:#183c2a
+    }
+    .adp-directory-panel[hidden]{display:none}
+    .adp-directory-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:14px 15px 10px;border-bottom:1px solid #e1eadc}
+    .adp-directory-head small{display:block;color:#6d826d;font-size:8px;font-weight:900;letter-spacing:.14em;text-transform:uppercase}
+    .adp-directory-head h2{margin:4px 0 0;font-size:17px;letter-spacing:-.04em;color:#16452e}
+    .adp-directory-close{width:30px;height:30px;border:1px solid #dce7d8;border-radius:9px;background:#fff;color:#315a3d;font-size:19px}
+    .adp-directory-tools{display:grid;grid-template-columns:minmax(0,1fr) 116px;gap:7px;padding:11px 13px;border-bottom:1px solid #e6ede2}
+    .adp-directory-tools input,.adp-directory-tools select{
+      min-width:0;height:37px;padding:0 10px;border:1px solid #d5e2d1;border-radius:10px;background:#fff;color:#234b34;font:inherit;font-size:10px;outline:none
+    }
+    .adp-directory-tools input:focus,.adp-directory-tools select:focus{border-color:#78a982;box-shadow:0 0 0 3px rgba(36,117,75,.09)}
+    .adp-directory-meta{padding:8px 14px 3px;color:#748576;font-size:9px}
+    .adp-directory-results{min-height:80px;overflow:auto;padding:5px 10px 12px;overscroll-behavior:contain}
+    .adp-directory-item{display:block;width:100%;padding:10px 10px;text-align:left;border:1px solid transparent;border-radius:11px;background:transparent;color:#254a33;cursor:pointer}
+    .adp-directory-item:hover{background:#eef5e9;border-color:#dce9d5}
+    .adp-directory-item strong{display:block;font-size:10px;line-height:1.45;color:#183f2b}
+    .adp-directory-item small{display:block;margin-top:4px;color:#748474;font-size:8px;line-height:1.45}
+    .adp-directory-empty{padding:18px 10px;color:#78877a;font-size:10px;line-height:1.6}
+    .adp-profile-intro{padding:14px;border:1px solid #dbe8d5;border-radius:13px;background:linear-gradient(135deg,#f0f7eb,#fbfcf5);margin-bottom:12px}
+    .adp-profile-kicker{display:block;color:#4e7b55;font-size:8px;font-weight:900;letter-spacing:.13em}
+    .adp-profile-intro h3{margin:7px 0 8px;color:#183f2b;font-size:16px;line-height:1.4;letter-spacing:-.025em}
+    .adp-profile-summary{color:#657867;font-size:10px;line-height:1.65}
+    .adp-profile-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0}
+    .adp-profile-stat{min-width:0;padding:11px;border:1px solid #e0e9dc;border-radius:11px;background:#fff}
+    .adp-profile-stat small{display:block;color:#748574;font-size:8px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+    .adp-profile-stat strong{display:block;margin-top:5px;color:#1a5639;font-size:13px;overflow-wrap:anywhere}
+    .adp-profile-stat em{display:block;margin-top:4px;color:#849084;font-size:8px;font-style:normal;line-height:1.5}
+    .adp-profile-note{margin:10px 0;padding:11px 12px;border-left:3px solid #d5a74b;border-radius:8px;background:#fff8e9;color:#795f31;font-size:9px;line-height:1.6}
+    .adp-profile-section{margin:12px 0;padding:13px;border:1px solid #e0e9dc;border-radius:12px;background:#fff}
+    .adp-profile-section h3{margin:0 0 8px;color:#22583a;font-size:11px}
+    .adp-profile-row{display:grid;grid-template-columns:minmax(95px,.8fr) minmax(0,1.4fr);gap:12px;padding:7px 0;border-bottom:1px solid #edf1e9;font-size:9px;line-height:1.5}
+    .adp-profile-row:last-child{border-bottom:0}
+    .adp-profile-row span{color:#7c897d}
+    .adp-profile-row strong{color:#335943;text-align:right;overflow-wrap:anywhere}
+    .adp-profile-actions{display:flex;gap:7px;flex-wrap:wrap;margin:9px 0}
+    .adp-profile-link{display:inline-flex;align-items:center;gap:5px;padding:8px 10px;border:1px solid #d8e5d3;border-radius:9px;background:#f4f8ef;color:#236044;font-size:9px;font-weight:850;text-decoration:none}
+    .adp-profile-link:hover{background:#e6f1df;border-color:#bcd5b6}
+    .adp-news-card{display:block;margin:9px 0;padding:11px 12px;border:1px solid #e0e9dc;border-radius:11px;background:#fff;color:#264d36;text-decoration:none}
+    .adp-news-card:hover{border-color:#bcd5b6;background:#f7faf3}
+    .adp-news-card strong{display:block;font-size:10px;line-height:1.5}
+    .adp-news-card small{display:block;margin-top:5px;color:#7c897c;font-size:8px}
+    .adp-news-empty{padding:12px;border:1px dashed #d6e2d1;border-radius:10px;color:#758476;font-size:9px;line-height:1.6}
+    @media(max-width:760px){
+      .adp-directory-panel{top:auto;right:8px;left:8px;bottom:148px;width:auto;max-height:min(58dvh,520px);border-radius:17px}
+      .adp-directory-tools{grid-template-columns:minmax(0,1fr) 105px}
+      .adp-profile-grid{gap:6px}
+      .adp-profile-stat{padding:9px}
+    }
+
   </style>
 </head>
 <body>
@@ -2955,8 +3029,8 @@
     </div>
 
     <div class="map-top-controls">
-      <button class="map-pill active" id="satelliteToggle" type="button">◈ Satellite</button>
-      <button class="map-pill" id="outlineToggle" type="button">▧ Outline</button>
+      <button class="map-pill" id="satelliteToggle" type="button">◈ Satellite</button>
+      <button class="map-pill active" id="outlineToggle" type="button">✿ Illustrated</button>
     </div>
     <div class="map-controls" aria-label="Map controls">
       <button class="map-control" id="zoomIn" type="button" aria-label="Zoom in">+</button>
@@ -2976,9 +3050,26 @@
       <span class="project-status-key"><i style="--status-color:#87918b"></i>Unverified</span>
       <small>Map-name matches: grey = division/district, blue = upazila, teal square = union. These identify administrative areas, not exact construction sites.</small>
       <button id="adpRosterToggle" class="adp-roster-toggle" type="button" disabled>Loading FY2026–27 ADP dots…</button>
+      <button id="adpDirectoryToggle" class="adp-directory-toggle" type="button">Browse all 1,173 projects</button>
       <small id="adpRosterStatus">Waiting for official ADP roster import…</small>
       <small id="projectMarkerCount">Loading project locations…</small>
     </div>
+    <aside class="adp-directory-panel" id="adpDirectoryPanel" hidden aria-label="FY2026–27 ADP project directory">
+      <header class="adp-directory-head">
+        <div><small>OFFICIAL ADP 2026–27</small><h2>Project directory</h2></div>
+        <button class="adp-directory-close" id="adpDirectoryClose" type="button" aria-label="Close directory">×</button>
+      </header>
+      <div class="adp-directory-tools">
+        <input id="adpDirectorySearch" type="search" placeholder="Search project name or code…" autocomplete="off">
+        <select id="adpDirectoryFilter" aria-label="Filter by location match">
+          <option value="all">All entries</option>
+          <option value="located">Mapped names</option>
+          <option value="unlocated">No map match</option>
+        </select>
+      </div>
+      <div class="adp-directory-meta" id="adpDirectoryMeta">Importing the 88-page source…</div>
+      <div class="adp-directory-results" id="adpDirectoryResults"></div>
+    </aside>
     <div class="map-attribution">Satellite imagery © Esri, Maxar &amp; imagery contributors · Search © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a></div>
   </section>
 </main>
@@ -3054,9 +3145,13 @@ async function ensureLeaflet(){
   let fallbackDivisionLayer=null,clipFrameScheduled=0,clipThrottleTimer=0,clipLastUpdated=0;
   let countryClipSupported=null;
   let searchInputTimer=0;
-  let satellite=null,historicalLayer=null,outlineMode=false,lastPoint=null,pointMarker=null;
+  let satellite=null,historicalLayer=null,outlineMode=true,lastPoint=null,pointMarker=null;
   let projectMarkersLayer=null,selectedProjectId=null;
   let adpRosterLayer=null,adpRosterLoadPromise=null,adpRosterLoaded=false;
+  let adpProjectRows=[];
+  const adpProjectMatches=new Map();
+  const adpNewsCache=new Map();
+  let activeAdpProjectRecord=null,activeAdpProjectMatches=[];
   let waybackCore=null,lastSearchAt=0;
   const projectSpotPoints=Object.create(null);
   const projectTimeLapseStates=Object.create(null);
@@ -3292,11 +3387,16 @@ async function ensureLeaflet(){
   function basePathStyle(path){
     const r=path&&path._atlasRecord;
     const selected=!!(selectedArea&&r&&selectedArea.id===r.id);
+    const illustrative=outlineMode;
+    const isDivision=activeLevel==="division";
+    const isDistrict=activeLevel==="district";
+    const fillOpacity=selected?.78:(illustrative?(isDivision?.9:(isDistrict?.76:(activeLevel==="upazila"?.34:.20))):.018);
     return {
-      color:selected?"#d9ed8e":(activeLevel==="division"?"#e9f5db":"#f8f8e8"),
-      weight:selected?3.7:(activeLevel==="division"?3.1:(activeLevel==="district"?1.7:1.15)),
-      fillColor:selected?"#d9ed8e":(r?r.color:"#dce8d7"),
-      fillOpacity:selected?.14:.018
+      color:selected?"#386a46":(illustrative?(isDivision?"#f8fff2":(isDistrict?"#fffef5":"#f7fff4")):"#f8f8e8"),
+      weight:selected?3.2:(illustrative?(isDivision?2.6:(isDistrict?1.35:0.9)):(isDivision?3.1:(isDistrict?1.7:1.15))),
+      opacity:illustrative?1:.9,
+      fillColor:selected?"#bfe4a8":(r?r.color:"#dce8d7"),
+      fillOpacity:fillOpacity
     };
   }
   function styleCurrentLayer(){
@@ -3499,20 +3599,19 @@ async function ensureLeaflet(){
     countryOutline=L.geoJSON(data,{
       pane:"countryPane",renderer:countryRenderer,interactive:false,
       smoothFactor:1.5,
-      style:{color:"#d5e4cd",weight:1.2,opacity:.82,fill:false}
+      style:{color:"#427a54",weight:2.6,opacity:1,fill:true,fillColor:"#dcefc9",fillOpacity:1}
     }).addTo(map);
     const countryBounds=countryOutline.getBounds();
     if(!countryBounds.isValid())throw new Error("The national boundary has invalid map bounds.");
     map.fitBounds(countryBounds.pad(.11),{padding:[25,25],animate:false});
-    updateCountryClip();
-    scheduleCountryClip();
+    if(!outlineMode){updateCountryClip();scheduleCountryClip(true);}
   }
   async function loadCountryBoundary(){
     setStatus("Loading Bangladesh outline from the boundary service…");
     try{
       const data=await fetchArcGISLayer(levelInfo.country.url);
       installBangladeshMask(data);
-      if(!outlineMode&&satellite&&!map.hasLayer(satellite))satellite.addTo(map);
+      if(!outlineMode&&satellite&&!map.hasLayer(satellite)){satellite.addTo(map);updateCountryClip();scheduleCountryClip(true);}
       setStatus(data.fallbackReason
         ?"Bangladesh outline loaded · geoBoundaries backup source"
         :"Bangladesh national outline loaded · BBS ADM0");
@@ -3535,13 +3634,11 @@ async function ensureLeaflet(){
         const divisionBounds=fallbackDivisionLayer.getBounds();
         if(!divisionBounds.isValid())throw new Error("Division outline bounds are invalid.");
         map.fitBounds(divisionBounds.pad(.11),{padding:[25,25],animate:false});
-        updateCountryClip();
-        outlineMode=false;
-        if(satellite&&!map.hasLayer(satellite))satellite.addTo(map);
+        outlineMode=true;
         el("satelliteToggle").disabled=false;
-        el("satelliteToggle").classList.add("active");
-        el("outlineToggle").classList.remove("active");
-        el("satelliteToggle").title="Satellite imagery is clipped to the combined division footprint.";
+        el("satelliteToggle").classList.remove("active");
+        el("outlineToggle").classList.add("active");
+        el("satelliteToggle").title="Optional satellite imagery. Illustrated map is the lightweight default.";
         setStatus("National boundary service unavailable. Showing the eight division outlines as a verified fallback. "+error.message,true);
         return true;
       }catch(divisionError){
@@ -3572,9 +3669,9 @@ async function ensureLeaflet(){
   map.createPane("projectMarkerPane");map.getPane("projectMarkerPane").style.zIndex=680;
   const countryRenderer=L.svg({pane:"countryPane"});
   const adminRenderer=L.canvas({pane:"boundaryPane",padding:0.5});
-  map.getContainer().style.background="#081923";
-  map.on("move",()=>scheduleCountryClip(false));
-  map.on("moveend zoomend resize viewreset",()=>scheduleCountryClip(true));
+  map.getContainer().style.background="#c7e6e9";
+  map.on("move",()=>{if(!outlineMode&&satellite&&map.hasLayer(satellite))scheduleCountryClip(false);});
+  map.on("moveend zoomend resize viewreset",()=>{if(!outlineMode&&satellite&&map.hasLayer(satellite))scheduleCountryClip(true);});
 
   satellite=L.tileLayer(
     "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
@@ -5845,7 +5942,7 @@ async function ensureLeaflet(){
   });
 
   async function start(){
-    el("map").style.background="#e6e9df";
+    el("map").style.background="#c7e6e9";
     setStatus("Preparing Bangladesh map…");
     await loadCountryBoundary();
     setStatus("Loading district boundaries…");
