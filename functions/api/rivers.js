@@ -29,7 +29,7 @@ function parseBounds(value) {
 
 function buildQuery(box, zoom) {
   const b = [box.south, box.west, box.north, box.east].join(",");
-  const waterTypes = zoom >= 9 ? "river|canal|stream" : "river|canal";
+  const waterTypes = zoom >= 9 ? "(river|canal|stream)" : "(river|canal)";
   return `[out:json][timeout:22][maxsize:67108864];
 (
   way["waterway"~"^${waterTypes}$"](${b});
