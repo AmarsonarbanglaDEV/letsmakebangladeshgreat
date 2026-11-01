@@ -248,7 +248,12 @@
         "note": "Cumulative sum of the annual project-report expenditure rows, including the partial FY2025-26 row through February 2026. Not a current FY2026-27 total or independently audited total."
       },
       "contractPackages": [],
-      "contractStatusNote": "No individual supplier/contractor package records have been linked to the current project register using a matching procurement reference in this pilot dataset."
+      "contractStatusNote": "No individual supplier/contractor package records have been linked to the current project register using a matching procurement reference in this pilot dataset.",
+      "locationEvidence": {
+        "precision": "district coverage only",
+        "exactCoordinatesAvailable": false,
+        "note": "No source-verified project-site latitude/longitude or route geometry has been entered. The map shows administrative coverage only, not an exact site point."
+      }
     },
     {
       "id": "RTHD-N6-CHAPAINAWABGANJ",
@@ -322,7 +327,12 @@
       "projectDirector": null,
       "contractPackages": [],
       "contractStatusNote": "No BPPA award has been linked to this approved-project record by a matching tender/project reference. Supplier names from other road awards are not assumed to belong to this project.",
-      "managementNote": "The approved-project listing names the ministry/agency/project area but does not identify the individual Project Director or responsible engineer."
+      "managementNote": "The approved-project listing names the ministry/agency/project area but does not identify the individual Project Director or responsible engineer.",
+      "locationEvidence": {
+        "precision": "administrative coverage at district/upazila level",
+        "exactCoordinatesAvailable": false,
+        "note": "No source-verified project-site latitude/longitude or route geometry has been entered. The map shows administrative coverage only, not an exact site point."
+      }
     },
     {
       "id": "RTHD-CUMILLA-4-DISTRICT-HIGHWAYS",
@@ -414,7 +424,12 @@
       "projectDirector": null,
       "contractPackages": [],
       "contractStatusNote": "No BPPA award has been linked to this approved-project record by a matching tender/project reference. Supplier names from other road awards are not assumed to belong to this project.",
-      "managementNote": "The approved-project listing names the ministry/agency/project area but does not identify the individual Project Director or responsible engineer."
+      "managementNote": "The approved-project listing names the ministry/agency/project area but does not identify the individual Project Director or responsible engineer.",
+      "locationEvidence": {
+        "precision": "administrative coverage at district/upazila level",
+        "exactCoordinatesAvailable": false,
+        "note": "No source-verified project-site latitude/longitude or route geometry has been entered. The map shows administrative coverage only, not an exact site point."
+      }
     },
     {
       "id": "RTHD-SONAPUR-KABIRHAT-DAGANBHUINYA",
@@ -501,7 +516,38 @@
       "projectDirector": null,
       "contractPackages": [],
       "contractStatusNote": "No BPPA award has been linked to this approved-project record by a matching tender/project reference. Supplier names from other road awards are not assumed to belong to this project.",
-      "managementNote": "The approved-project listing names the ministry/agency/project area but does not identify the individual Project Director or responsible engineer."
+      "managementNote": "The approved-project listing names the ministry/agency/project area but does not identify the individual Project Director or responsible engineer.",
+      "locationEvidence": {
+        "precision": "official_route_chainage_by_district; no verified coordinate geometry",
+        "exactCoordinatesAvailable": false,
+        "routeReference": "R-148 Sonapur–Kabirhat–Companiganj (Bashurhat)–Daganbhuiyan",
+        "segments": [
+          {
+            "district": "Noakhali",
+            "startChainageKm": 0,
+            "endChainageKm": 23.704
+          },
+          {
+            "district": "Feni",
+            "startChainageKm": 23.704,
+            "endChainageKm": 30.06
+          }
+        ],
+        "sources": [
+          {
+            "title": "RHD Online Road Network — R-148 road location",
+            "url": "https://rhd.gov.bd/OnlineRoadNetwork/roadlocation.asp?RoadID=2074&RoadName=Sonapur-Kabirhat-Companiganj+%28Bashurhat%29-Daganbhuiyan+Road&RoadNo=R148",
+            "authority": "Roads & Highways Department",
+            "note": "Official district-wise road chainage; not a GIS route geometry."
+          },
+          {
+            "title": "RHD e-GP survey notice, tender 961903",
+            "url": "https://www.dorpatra.com/egp-961903",
+            "authority": "Tender notice reproduction; Feni Road Division",
+            "note": "Reports survey chainage from 23.704 km to 30.260 km; secondary copy of procurement notice."
+          }
+        ]
+      }
     },
     {
       "id": "RTHD-ULIPUR-CHILMARI-LINK",
@@ -573,7 +619,12 @@
       "projectDirector": null,
       "contractPackages": [],
       "contractStatusNote": "No BPPA award has been linked to this approved-project record by a matching tender/project reference. Supplier names from other road awards are not assumed to belong to this project.",
-      "managementNote": "The approved-project listing names the ministry/agency/project area but does not identify the individual Project Director or responsible engineer."
+      "managementNote": "The approved-project listing names the ministry/agency/project area but does not identify the individual Project Director or responsible engineer.",
+      "locationEvidence": {
+        "precision": "administrative coverage at district/upazila level",
+        "exactCoordinatesAvailable": false,
+        "note": "No source-verified project-site latitude/longitude or route geometry has been entered. The map shows administrative coverage only, not an exact site point."
+      }
     },
     {
       "id": "RTHD-BARABHANGA-BRIDGE-SYLHET",
@@ -645,7 +696,12 @@
       "projectDirector": null,
       "contractPackages": [],
       "contractStatusNote": "No BPPA award has been linked to this approved-project record by a matching tender/project reference. Supplier names from other road awards are not assumed to belong to this project.",
-      "managementNote": "The approved-project listing names the ministry/agency/project area but does not identify the individual Project Director or responsible engineer."
+      "managementNote": "The approved-project listing names the ministry/agency/project area but does not identify the individual Project Director or responsible engineer.",
+      "locationEvidence": {
+        "precision": "administrative coverage at district/upazila level",
+        "exactCoordinatesAvailable": false,
+        "note": "No source-verified project-site latitude/longitude or route geometry has been entered. The map shows administrative coverage only, not an exact site point."
+      }
     },
     {
       "id": "RTHD-RAMERKANDA-LAKSHARCHAR-R823",
@@ -720,7 +776,12 @@
       "projectDirector": null,
       "contractPackages": [],
       "contractStatusNote": "No BPPA award has been linked to this approved-project record by a matching tender/project reference. Supplier names from other road awards are not assumed to belong to this project.",
-      "managementNote": "The approved-project listing names the ministry/agency/project area but does not identify the individual Project Director or responsible engineer."
+      "managementNote": "The approved-project listing names the ministry/agency/project area but does not identify the individual Project Director or responsible engineer.",
+      "locationEvidence": {
+        "precision": "unresolved_conflicting_administrative_area",
+        "exactCoordinatesAvailable": false,
+        "note": "No source-verified project-site latitude/longitude or route geometry has been entered. The map shows administrative coverage only, not an exact site point."
+      }
     },
     {
       "id": "RTHD-BHULTA-ARAIHAZAR-BANCHHARAMPUR-R203-R220",
@@ -807,7 +868,12 @@
       "projectDirector": null,
       "contractPackages": [],
       "contractStatusNote": "No BPPA award has been linked to this approved-project record by a matching tender/project reference. Supplier names from other road awards are not assumed to belong to this project.",
-      "managementNote": "The approved-project listing names the ministry/agency/project area but does not identify the individual Project Director or responsible engineer."
+      "managementNote": "The approved-project listing names the ministry/agency/project area but does not identify the individual Project Director or responsible engineer.",
+      "locationEvidence": {
+        "precision": "administrative coverage at district/upazila level",
+        "exactCoordinatesAvailable": false,
+        "note": "No source-verified project-site latitude/longitude or route geometry has been entered. The map shows administrative coverage only, not an exact site point."
+      }
     },
     {
       "id": "RTHD-GALACHIPA-BRIDGE-Z8806",
@@ -879,7 +945,21 @@
       "projectDirector": null,
       "contractPackages": [],
       "contractStatusNote": "No BPPA award has been linked to this approved-project record by a matching tender/project reference. Supplier names from other road awards are not assumed to belong to this project.",
-      "managementNote": "The approved-project listing names the ministry/agency/project area but does not identify the individual Project Director or responsible engineer."
+      "managementNote": "The approved-project listing names the ministry/agency/project area but does not identify the individual Project Director or responsible engineer.",
+      "locationEvidence": {
+        "precision": "official road chainage; no verified coordinate",
+        "exactCoordinatesAvailable": false,
+        "routeReference": "Z-8806 Lebukhali–Bauphal–Golachipa–Amragachia Road",
+        "chainageKm": 69.289265,
+        "sources": [
+          {
+            "title": "BPPA works tender — Rabnabad Bridge at chainage 69+289.265 m",
+            "url": "https://www.bppa.gov.bd/advertisement-works/details-83629.html",
+            "authority": "Bangladesh Public Procurement Authority",
+            "note": "Official tender specifies bridge site by road chainage and district procuring entity; it does not publish latitude/longitude."
+          }
+        ]
+      }
     },
     {
       "id": "RTHD-GHONAPARA-MAUSOLEUM-ROAD",
@@ -951,7 +1031,12 @@
       "projectDirector": null,
       "contractPackages": [],
       "contractStatusNote": "No BPPA award has been linked to this approved-project record by a matching tender/project reference. Supplier names from other road awards are not assumed to belong to this project.",
-      "managementNote": "The approved-project listing names the ministry/agency/project area but does not identify the individual Project Director or responsible engineer."
+      "managementNote": "The approved-project listing names the ministry/agency/project area but does not identify the individual Project Director or responsible engineer.",
+      "locationEvidence": {
+        "precision": "administrative coverage at district/upazila level",
+        "exactCoordinatesAvailable": false,
+        "note": "No source-verified project-site latitude/longitude or route geometry has been entered. The map shows administrative coverage only, not an exact site point."
+      }
     },
     {
       "id": "RTHD-NARSINGDI-R211-R114",
@@ -1038,7 +1123,12 @@
       "projectDirector": null,
       "contractPackages": [],
       "contractStatusNote": "No BPPA award has been linked to this approved-project record by a matching tender/project reference. Supplier names from other road awards are not assumed to belong to this project.",
-      "managementNote": "The approved-project listing names the ministry/agency/project area but does not identify the individual Project Director or responsible engineer."
+      "managementNote": "The approved-project listing names the ministry/agency/project area but does not identify the individual Project Director or responsible engineer.",
+      "locationEvidence": {
+        "precision": "administrative coverage at district/upazila level",
+        "exactCoordinatesAvailable": false,
+        "note": "No source-verified project-site latitude/longitude or route geometry has been entered. The map shows administrative coverage only, not an exact site point."
+      }
     }
   ]
 }
