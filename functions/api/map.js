@@ -140,6 +140,7 @@ async function fetchArcGisPage(config, offset, requestedLimit) {
     }
     params.set("geometry", values.join(","));
     params.set("geometryType", "esriGeometryEnvelope");
+    params.set("inSR", "4326");
     params.set("spatialRel", "esriSpatialRelIntersects");
   }
 
