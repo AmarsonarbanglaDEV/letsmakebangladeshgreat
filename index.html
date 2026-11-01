@@ -4516,7 +4516,7 @@ async function ensureLeaflet(){
 
   function normalisePlaceText(value){
     return String(value||"").toLowerCase().normalize("NFKD")
-      .replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g," ").trim();
+      .replace(/[\u0300-\u036f]/g,"").replace(/[^\p{L}\p{N}]+/gu," ").trim();
   }
 
   const ADP_PLACE_NAME_GROUPS=[
@@ -4561,7 +4561,10 @@ async function ensureLeaflet(){
       if(!layer||!Array.isArray(layer.records))return;
       layer.records.forEach(record=>{
         if(!record||!record.name||!record.feature||!record.feature.geometry)return;
-        const variants=adpNameVariants(record.name);
+        const variants=[...new Set([
+          ...adpNameVariants(record.name),
+          ...adpNameVariants(record.bn)
+        ])];
         if(!variants.length)return;
         const geometryLayer=L.geoJSON(record.feature);
         const featureBounds=geometryLayer.getBounds();
@@ -4694,6 +4697,7 @@ async function ensureLeaflet(){
         id:"ADP26-"+current.code+"-"+pageNumber+"-"+rows.length,
         projectCode:current.code,
         title:title||("ADP project "+current.code),
+        locationText:current.banglaTitleParts.join(" ").replace(/\s+/g," ").trim(),
         allocationLakh:current.allocation,
         page:pageNumber,
         source:"IMED ADP 2026-27"
@@ -4704,7 +4708,7 @@ async function ensureLeaflet(){
       const match=line.text.match(codeAtStart);
       if(match){
         finish();
-        current={code:match[1],titleParts:[],titleEnded:false,allocation:null};
+        current={code:match[1],titleParts:[],banglaTitleParts:[],titleEnded:false,allocation:null};
       }
       if(!current)return;
       if(footer.test(line.text)){
@@ -4723,6 +4727,12 @@ async function ensureLeaflet(){
           }
         }
       });
+      // Preserve the Bangla location spelling too. The English column is
+      // used for project display; the Bangla column helps match Bengali
+      // spellings already present in the boundary map's name_bn attributes.
+      const banglaItems=line.items.filter(item=>item.x>=pageWidth*.64&&item.x<pageWidth*.80);
+      const banglaLine=banglaItems.map(item=>item.str).filter(part=>/[\u0980-\u09FF]/.test(part)).join(" ").trim();
+      if(banglaLine)current.banglaTitleParts.push(banglaLine);
       if(current.titleEnded)return;
       const titleItems=line.items.filter(item=>item.x<pageWidth*.64);
       const englishParts=[];
@@ -4802,7 +4812,10 @@ async function ensureLeaflet(){
     let locatedRows=0,mentionedRows=0,markerCount=0,ambiguousRows=0;
     let districtDots=0,upazilaDots=0,unionDots=0;
     rows.forEach(project=>{
-      const result=matchAdpProjectLocations(project.title,placeIndex);
+      const result=matchAdpProjectLocations(
+        project.title+" "+(project.locationText||""),
+        placeIndex
+      );
       if(result.mentioned)mentionedRows++;
       if(result.ambiguous.length&&!result.matches.length)ambiguousRows++;
       if(!result.matches.length)return;
