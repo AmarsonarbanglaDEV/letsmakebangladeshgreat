@@ -56,7 +56,7 @@ function buildQuery(box) {
   nwr["name"]["boundary"="protected_area"](${b});
   nwr["name"]["sport"="stadium"](${b});
 );
-out center tags;
+out center tags qt 1800;
 `;
 }
 
@@ -152,7 +152,7 @@ export async function onRequestGet(context) {
     return json({
       elements,
       count: elements.length,
-      capped: raw.elements.length > MAX_RESULTS,
+      capped: raw.elements.length >= MAX_RESULTS,
       source: "© OpenStreetMap contributors",
       license: "Open Database License (ODbL)",
       timestamp: raw.osm3s?.timestamp_osm_base || null,
