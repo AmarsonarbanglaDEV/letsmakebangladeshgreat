@@ -395,12 +395,13 @@
     .atlas-location-chip.is-context{color:#64778a;background:#f7f9fb}
     .atlas-project-card,.atlas-contract-card{padding:14px;margin:14px 0;border:1px solid #d7e2ee;border-radius:16px;background:#fff;box-shadow:0 5px 18px rgba(18,43,70,.06)}
 
-    .project-map-legend{position:absolute;z-index:760;left:14px;bottom:16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;max-width:min(440px,calc(100% - 28px));padding:9px 12px;border:1px solid rgba(255,255,255,.85);border-radius:13px;background:rgba(255,254,250,.96);box-shadow:0 8px 25px rgba(10,30,21,.18);backdrop-filter:blur(12px);font-size:9px;color:#45596b}
-    .project-map-legend strong{font-size:10px;color:#183b53}
-    .project-map-legend small{flex-basis:100%;margin-left:17px;color:#718397;font-size:8px}
-    .project-map-dot{display:inline-block;width:10px;height:10px;flex:none;border:2px solid #fff;border-radius:50%;background:#f28a19;box-shadow:0 0 0 2px #c86b0c}
+    .project-map-legend{position:absolute;z-index:760;left:14px;bottom:16px;display:flex;align-items:center;gap:8px 11px;flex-wrap:wrap;max-width:min(520px,calc(100% - 28px));padding:10px 12px;border:1px solid rgba(255,255,255,.9);border-radius:13px;background:rgba(255,254,250,.97);box-shadow:0 8px 25px rgba(10,30,21,.18);backdrop-filter:blur(12px);font-size:9px;color:#45596b}
+    .project-map-legend strong{font-size:10px;color:#183b53;flex-basis:100%}
+    .project-map-legend small{flex-basis:100%;color:#718397;font-size:8px}
+    .project-status-key{display:inline-flex;align-items:center;gap:5px;white-space:nowrap;font-size:8px;color:#53645a}
+    .project-status-key i{display:inline-block;width:9px;height:9px;border:1px solid rgba(20,35,25,.18);border-radius:50%;background:var(--status-color);box-shadow:0 0 0 1px #fff}
     .atlas-project-pin-shell{background:transparent;border:0}
-    .atlas-project-pin{display:block;width:17px;height:17px;border:3px solid #fff;border-radius:50%;background:#f28a19;box-shadow:0 2px 8px rgba(65,37,10,.5),0 0 0 2px #c86b0c;transition:transform .14s ease}
+    .atlas-project-pin{display:block;width:17px;height:17px;border:3px solid #fff;border-radius:50%;background:var(--project-status-color,#87918b);box-shadow:0 2px 8px rgba(30,40,34,.4),0 0 0 2px var(--project-status-color,#87918b);transition:transform .14s ease}
     .leaflet-marker-icon:hover .atlas-project-pin,.leaflet-marker-icon:focus .atlas-project-pin{transform:scale(1.28)}
     .project-marker-tooltip{border:1px solid #dbe4ec;border-radius:8px;background:#fff;color:#214059;box-shadow:0 4px 14px rgba(0,0,0,.16);font-size:9px;line-height:1.5}
     .project-marker-tooltip small{color:#718397}
@@ -2941,8 +2942,14 @@
     <div class="map-status" id="mapStatus" role="status" aria-live="polite">Loading Bangladesh outline and satellite map…</div>
 
     <div class="project-map-legend" id="projectMarkerLegend" aria-live="polite">
-      <span class="project-map-dot" aria-hidden="true"></span>
-      <span><strong>Projects</strong> · approximate district locators</span>
+      <strong>Project status</strong>
+      <span class="project-status-key"><i style="--status-color:#238b57"></i>Completed</span>
+      <span class="project-status-key"><i style="--status-color:#2878c7"></i>Ongoing</span>
+      <span class="project-status-key"><i style="--status-color:#d18a19"></i>Suspended / delayed</span>
+      <span class="project-status-key"><i style="--status-color:#d14d4d"></i>Cancelled</span>
+      <span class="project-status-key"><i style="--status-color:#8158bd"></i>Planned</span>
+      <span class="project-status-key"><i style="--status-color:#169ca8"></i>Future</span>
+      <span class="project-status-key"><i style="--status-color:#87918b"></i>Unverified</span>
       <small id="projectMarkerCount">Loading project locations…</small>
     </div>
     <div class="map-attribution">Satellite imagery © Esri, Maxar &amp; imagery contributors · Search © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a></div>
@@ -4351,12 +4358,28 @@ async function ensureLeaflet(){
     if(focusPoint&&bounds.contains(focusPoint))map.setView(focusPoint,Math.max(map.getZoom(),9));
   }
 
+  function projectStatusMeta(project){
+    const raw=[project.status,project.activityStatus,project.projectStatus,project.implementationStatus]
+      .find(value=>typeof value==="string"&&value.trim());
+    const value=String(raw||"").trim().toLowerCase().replace(/[\\s_-]+/g," ");
+    if(/cancel|terminated|dropped|abandoned/.test(value))return {key:"cancelled",label:"Cancelled",color:"#d14d4d"};
+    if(/suspend|halt|stopp|delayed|overdue|on hold/.test(value))return {key:"delayed",label:"Suspended / delayed",color:"#d18a19"};
+    if(/complete|closed|finished|implemented|operational/.test(value))return {key:"completed",label:"Completed",color:"#238b57"};
+    if(/ongoing|in progress|under implementation|underway|active|construction/.test(value))return {key:"ongoing",label:"Ongoing",color:"#2878c7"};
+    if(/future|long term|long-term/.test(value))return {key:"future",label:"Future",color:"#169ca8"};
+    if(/planned|approved|proposed|pipeline|preparation/.test(value))return {key:"planned",label:"Planned",color:"#8158bd"};
+    return {key:"unknown",label:"Status not verified",color:"#87918b"};
+  }
+
   function syncProjectMarkers(){
     if(!map||!atlasData.projects||!cache.district||!cache.district.layer)return;
     if(!projectMarkersLayer)projectMarkersLayer=L.layerGroup().addTo(map);
     projectMarkersLayer.clearLayers();
     let exactPinCount=0,areaCount=0,unresolvedCount=0,unmatchedCount=0;
+    const statusCounts={};
     (atlasData.projects.projects||[]).forEach(project=>{
+      const statusMeta=projectStatusMeta(project);
+      statusCounts[statusMeta.key]=(statusCounts[statusMeta.key]||0)+1;
       if(project.mapDisplay?.areaConflict){
         unresolvedCount++;
         return;
@@ -4374,16 +4397,16 @@ async function ensureLeaflet(){
       if(exactPoint){
         const icon=L.divIcon({
           className:"atlas-project-pin-shell",
-          html:'<span class="atlas-project-pin" aria-hidden="true"></span>',
+          html:'<span class="atlas-project-pin" style="--project-status-color:'+statusMeta.color+'" aria-hidden="true"></span>',
           iconSize:[22,22],
           iconAnchor:[11,11]
         });
         const marker=L.marker(point,{
           pane:"projectMarkerPane",icon,keyboard:true,
-          title:project.name+" · verified project-site location"
+          title:project.name+" · "+statusMeta.label+" · verified project-site location"
         });
         marker.bindTooltip(
-          escapeHtml(project.name)+"<br><small>Verified project-site point</small>",
+          escapeHtml(project.name)+"<br><small>"+escapeHtml(statusMeta.label)+" · verified project-site point</small>",
           {direction:"top",offset:[0,-8],className:"project-marker-tooltip"}
         );
         marker.on("click",()=>openProjectProfile(project.id,point));
@@ -4410,12 +4433,12 @@ async function ensureLeaflet(){
         const areaLayer=L.geoJSON(districtRecord.feature,{
           interactive:true,
           style:{
-            color:"#176b53",weight:2.2,opacity:.9,dashArray:"5 5",
-            fillColor:"#48a889",fillOpacity:.105
+            color:statusMeta.color,weight:2.4,opacity:.95,dashArray:"5 5",
+            fillColor:statusMeta.color,fillOpacity:.13
           }
         });
         areaLayer.bindTooltip(
-          escapeHtml(project.name)+"<br><small>"+escapeHtml(districtName)+
+          escapeHtml(project.name)+"<br><small>"+escapeHtml(statusMeta.label)+" · "+escapeHtml(districtName)+
           " · administrative coverage only; exact site not verified</small>",
           {sticky:true,className:"project-marker-tooltip"}
         );
@@ -4432,8 +4455,14 @@ async function ensureLeaflet(){
     });
     const countNode=el("projectMarkerCount");
     if(countNode){
+      const statusSummary=Object.entries(statusCounts)
+        .filter(([key])=>key!=="unknown")
+        .map(([key,count])=>count+" "+key)
+        .join(" · ");
       countNode.textContent=exactPinCount+" verified site pin(s) · "+areaCount+
         " district coverage area(s) · "+unresolvedCount+" unresolved project(s)"+
+        (statusSummary?" · Status records: "+statusSummary:"")+
+        (statusCounts.unknown?" · "+statusCounts.unknown+" status unverified":"")+
         (unmatchedCount?" · "+unmatchedCount+" area match(es) unavailable":"");
     }
   }
