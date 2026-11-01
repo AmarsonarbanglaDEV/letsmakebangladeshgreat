@@ -595,7 +595,7 @@ body.is-3d .rp-banner.show{display:flex}
 
   var ml = null, m3 = null, is3D = false, m3Base = "", pinMarker = null, pinPopup = null,
       hoverPopup = null, cache = {}, lastLeaflet = null, fallbackTried = false, errShown = false;
-  var introSkip = false, focus = null, bbCache = new Map(), areasPromise = null;
+  var introSkip = false, focus = null, bbCache = new Map(), areasPromise = null, syncLock = false, m3Loaded = false;
 
   function esc(s) {
     return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
@@ -856,7 +856,7 @@ body.is-3d .rp-banner.show{display:flex}
   /* ---------- ADP project pins (3D) ---------- */
   var PROJ = { groups: null, byKey: {}, fc: null, rows: 0, located: 0, matches: null };
   var LEVEL_COLOR = { union: "#1595a3", upazila: "#2878c7", district: "#778994", division: "#9a7b4f" };
-  var PROJ_LAYERS = ["proj-cluster", "proj-cluster-n", "proj-pin", "proj-pin-n"];
+  var PROJ_LAYERS = ["proj-cluster", "proj-cluster-n", "proj-pin"];
   var PIN_FONT = ["Noto Sans Bold"];
 
   function toLngLat(pt) {
@@ -866,11 +866,32 @@ body.is-3d .rp-banner.show{display:flex}
     return isFinite(la) && isFinite(ln) ? [ln, la] : null;
   }
   function levelLabel(l) { return { union: "Union", upazila: "Upazila", district: "District", division: "Division" }[l] || "Area"; }
+  function hashSeed(s) { var h = 2166136261; for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+  function rng(seed) {
+    return function () {
+      seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+      var t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+  /* Deterministic spot inside the matched area, so each project gets its own pin. */
+  function scatterPoint(m, rowId, c) {
+    var f = m.record && m.record.feature;
+    if (!f || !f.geometry) return c;
+    var bb = bbFor(f), r = rng(hashSeed(String(rowId) + "|" + m.level + "|" + (m.record.id != null ? m.record.id : m.name)));
+    for (var i = 0; i < 80; i++) {
+      var x = bb[0][0] + r() * (bb[1][0] - bb[0][0]), y = bb[0][1] + r() * (bb[1][1] - bb[0][1]);
+      if (inGeom(x, y, f.geometry)) return [x, y];
+    }
+    return c;
+  }
   function buildProjectGroups() {
     var P = window.AtlasProjects;
     if (!P || !P.rows || !P.matches) return false;
-    var map = {}, list = [], located = 0;
+    var map = {}, list = [], located = 0, feats = [], byId = {};
     P.rows.forEach(function (row) {
+      byId[row.id] = row;
       var ms = P.matches.get(row.id) || [], any = false;
       ms.forEach(function (m) {
         var c = toLngLat(m.point);
@@ -879,15 +900,16 @@ body.is-3d .rp-banner.show{display:flex}
         var g = map[key];
         if (!g) { g = map[key] = { key: key, level: m.level, name: m.name, parent: m.parentDistrict || "", lng: c[0], lat: c[1], rows: [] }; list.push(g); }
         if (g.rows.indexOf(row) < 0) g.rows.push(row);
+        var pos = scatterPoint(m, row.id, c);
+        feats.push({ type: "Feature", geometry: { type: "Point", coordinates: pos },
+          properties: { id: String(row.id), key: key, level: m.level, name: m.name, n: 1, sk: -pos[1] } });
         any = true;
       });
       if (any) located++;
     });
-    PROJ.groups = list; PROJ.byKey = map; PROJ.rows = P.rows.length; PROJ.located = located; PROJ.matches = P.matches;
-    PROJ.fc = { type: "FeatureCollection", features: list.map(function (g) {
-      return { type: "Feature", geometry: { type: "Point", coordinates: [g.lng, g.lat] },
-        properties: { key: g.key, level: g.level, name: g.name, n: g.rows.length, sk: -g.lat } };
-    }) };
+    PROJ.groups = list; PROJ.byKey = map; PROJ.rowById = byId; PROJ.rows = P.rows.length; PROJ.located = located; PROJ.matches = P.matches;
+    PROJ.pinCount = feats.length;
+    PROJ.fc = { type: "FeatureCollection", features: feats };
     return true;
   }
   function wantProjects() {
@@ -907,6 +929,7 @@ body.is-3d .rp-banner.show{display:flex}
     x.fillStyle = color; x.fill();
     x.shadowColor = "transparent"; x.lineWidth = 4; x.strokeStyle = "#ffffff"; x.stroke();
     x.beginPath(); x.arc(36, 34, 19, 0, Math.PI * 2); x.fillStyle = "#ffffff"; x.fill();
+    x.beginPath(); x.arc(36, 34, 9.5, 0, Math.PI * 2); x.fillStyle = color; x.fill();
     return x.getImageData(0, 0, w, h);
   }
   function registerPinImages() {
@@ -926,7 +949,7 @@ body.is-3d .rp-banner.show{display:flex}
     try {
       registerPinImages();
       if (m3.getSource("proj")) { m3.getSource("proj").setData(PROJ.fc); }
-      else m3.addSource("proj", { type: "geojson", data: PROJ.fc, cluster: true, clusterRadius: 42, clusterMaxZoom: 10,
+      else m3.addSource("proj", { type: "geojson", data: PROJ.fc, cluster: true, clusterRadius: 38, clusterMaxZoom: 11,
         clusterProperties: { total: ["+", ["get", "n"]] } });
       var vis = wantProjects() ? "visible" : "none";
       if (!m3.getLayer("proj-cluster")) m3.addLayer({ id: "proj-cluster", type: "circle", source: "proj", filter: ["has", "point_count"],
@@ -937,12 +960,8 @@ body.is-3d .rp-banner.show{display:flex}
         layout: { visibility: vis, "text-field": ["to-string", ["get", "total"]], "text-font": PIN_FONT, "text-size": 12, "text-allow-overlap": true, "text-ignore-placement": true },
         paint: { "text-color": "#ffffff" } });
       if (!m3.getLayer("proj-pin")) m3.addLayer({ id: "proj-pin", type: "symbol", source: "proj", filter: ["!", ["has", "point_count"]],
-        layout: { visibility: vis, "icon-image": ["concat", "pin-", ["get", "level"]], "icon-anchor": "bottom", "icon-allow-overlap": true,
+        layout: { visibility: vis, "icon-image": ["concat", "pin-", ["get", "level"]], "icon-anchor": "bottom", "icon-size": ["interpolate", ["linear"], ["zoom"], 5, 0.55, 11, 0.8, 14, 1], "icon-allow-overlap": true,
           "icon-ignore-placement": true, "symbol-sort-key": ["get", "sk"] } });
-      if (!m3.getLayer("proj-pin-n")) m3.addLayer({ id: "proj-pin-n", type: "symbol", source: "proj", filter: ["!", ["has", "point_count"]],
-        layout: { visibility: vis, "text-field": ["to-string", ["get", "n"]], "text-font": PIN_FONT, "text-size": 11, "text-offset": [0, -2.8],
-          "text-allow-overlap": true, "text-ignore-placement": true, "symbol-sort-key": ["get", "sk"] },
-        paint: { "text-color": "#173f2e" } });
       raiseTop();
     } catch (e) { console.warn("3D project pins unavailable", e); }
   }
@@ -959,8 +978,8 @@ body.is-3d .rp-banner.show{display:flex}
     var btn = $("adpRosterToggle"), t = $("proj3dTitle"), s = $("proj3dSub"), b = $("proj3dBtn");
     if (PROJ.groups) {
       var on = wantProjects();
-      t.textContent = PROJ.rows.toLocaleString("en-US") + " ADP projects · " + PROJ.groups.length.toLocaleString("en-US") + " map locations";
-      s.textContent = on ? "Tap a pin for the project overview. Pins mark matched areas, not exact sites." : "Project pins are hidden.";
+      t.textContent = PROJ.rows.toLocaleString("en-US") + " ADP projects · " + PROJ.pinCount.toLocaleString("en-US") + " pins";
+      s.textContent = on ? "Each project has its own pin, placed inside the area it matched — not at an exact site. Tap one for its overview." : "Project pins are hidden.";
       b.textContent = on ? "Hide pins" : "Show pins"; b.disabled = false;
     } else {
       var loading = !!(btn && btn.disabled);
@@ -978,8 +997,8 @@ body.is-3d .rp-banner.show{display:flex}
       return;
     }
     if (pinPopup) pinPopup.remove();
-    var g = PROJ.byKey[p.key];
-    if (g) AtlasProject.open(g);
+    var g = PROJ.byKey[p.key], row = PROJ.rowById && PROJ.rowById[p.id];
+    if (g) AtlasProject.open(g, row);
   }
   function wireProjects() {
     var hud = document.createElement("div");
@@ -996,9 +1015,11 @@ body.is-3d .rp-banner.show{display:flex}
     var tb = $("adpRosterToggle");
     if (tb && window.MutationObserver) new MutationObserver(syncProjectVisibility).observe(tb, { attributes: true, attributeFilter: ["class", "disabled", "aria-pressed"] });
     window.addEventListener("atlas-projects", function () {
-      buildProjectGroups();
-      if (m3) addProjectLayers();
-      syncProjectVisibility();
+      setTimeout(function () {
+        buildProjectGroups();
+        if (m3) addProjectLayers();
+        syncProjectVisibility();
+      }, 0);
     });
     if (window.AtlasProjects) buildProjectGroups();
     updateHud();
@@ -1086,19 +1107,47 @@ body.is-3d .rp-banner.show{display:flex}
     focus = null;
     if (m3 && m3.getSource("focus")) m3.getSource("focus").setData(focusFC());
   }
+  function ensureProjects() {
+    var b = $("adpRosterToggle");
+    if (!b || b.disabled) return;
+    if (!PROJ.groups || !b.classList.contains("is-on")) b.click();
+  }
+  function whenMapReady() {
+    return new Promise(function (res) {
+      if (m3Loaded) { res(); return; }
+      var done = false;
+      function fin() { if (!done) { done = true; res(); } }
+      m3.once("load", fin);
+      setTimeout(fin, 8000);
+    });
+  }
   async function focusArea(o) {
-    introSkip = true;
+    introSkip = true; syncLock = true;
+    setTimeout(function () { syncLock = false; }, 9000);
+    ensureProjects();
     var ok = is3D ? true : await enter3D();
-    if (!ok || !m3) { introSkip = false; return false; }
+    if (!ok || !m3) { introSkip = false; syncLock = false; return false; }
     var A;
-    try { A = await getAreas(); } catch (e) { introSkip = false; return false; }
+    try { A = await getAreas(); } catch (e) { introSkip = false; syncLock = false; return false; }
     var d = A.districts.find(function (x) { return norm(x.name) === norm(o.district); });
-    if (!d) { introSkip = false; return false; }
+    if (!d) { introSkip = false; syncLock = false; return false; }
     var u = o.upazila ? A.upazilas.find(function (x) { return norm(x.name) === norm(o.upazila) && norm(x.district) === norm(d.name); }) : null;
     focus = { district: d, upazila: u || null };
     if (m3.getSource("focus")) m3.getSource("focus").setData(focusFC()); else addFocusLayers();
-    m3.resize();
-    m3.fitBounds(bboxOf(d.feature.geometry), { padding: { top: 100, bottom: 70, left: 70, right: 90 }, pitch: 55, bearing: -10, duration: 2200, maxZoom: 11.5, essential: true });
+    await whenMapReady();
+    await new Promise(function (r) { setTimeout(r, 80); });   // never move the camera inside a render callback
+    var b = bboxOf(d.feature.geometry);
+    var cam = { padding: { top: 90, bottom: 50, left: 50, right: 80 }, pitch: 55, bearing: -10, duration: 2400, maxZoom: 12.5, essential: true };
+    var go = function () { try { m3.resize(); m3.fitBounds(b, cam); } catch (e) { console.warn("3D zoom failed", e); } };
+    go();
+    m3.once("moveend", function () {
+      setTimeout(function () {
+        try {
+          var cz = m3.cameraForBounds(b, { padding: cam.padding, maxZoom: cam.maxZoom });
+          if (cz && m3.getZoom() < cz.zoom - 0.7) go();
+        } catch (e) { /* ignore */ }
+      }, 350);
+    });
     setTimeout(function () { introSkip = false; }, 4500);
     status("Report mode · " + (u ? u.name + " Upazila, " : "") + d.name + " District. Click the map to drop a pin, then choose Report data.");
     return true;
@@ -1164,8 +1213,9 @@ body.is-3d .rp-banner.show{display:flex}
       var f = e.features && e.features[0];
       if (!f) return;
       m3.getCanvas().style.cursor = "pointer";
-      var n = f.properties.n;
-      hoverPopup.setOffset([0, -52]).setLngLat(f.geometry.coordinates).setText(f.properties.name + " " + levelLabel(f.properties.level) + " · " + n + (n == 1 ? " project" : " projects")).addTo(m3);
+      var rw = PROJ.rowById && PROJ.rowById[f.properties.id], tt = rw ? String(rw.title || rw.projectCode) : f.properties.name;
+      if (tt.length > 70) tt = tt.slice(0, 67) + "…";
+      hoverPopup.setOffset([0, -40]).setLngLat(f.geometry.coordinates).setText(tt + " · " + f.properties.name + " " + levelLabel(f.properties.level)).addTo(m3);
     });
     m3.on("mouseleave", "proj-pin", function () { m3.getCanvas().style.cursor = "crosshair"; hoverPopup.remove(); });
     m3.on("mouseenter", "proj-cluster", function () { m3.getCanvas().style.cursor = "pointer"; });
@@ -1182,7 +1232,7 @@ body.is-3d .rp-banner.show{display:flex}
         status("Some 3D map tiles could not load. Check your connection.", true);
       }
     });
-    m3.once("load", function () { if (!introSkip) m3.easeTo({ pitch: TILT, bearing: BEARING, duration: 1100 }); });
+    m3.once("load", function () { m3Loaded = true; if (!introSkip) m3.easeTo({ pitch: TILT, bearing: BEARING, duration: 1100 }); });
   }
 
   async function enter3D() {
@@ -1233,7 +1283,7 @@ body.is-3d .rp-banner.show{display:flex}
 
   /* Searches / district picks move the (hidden) Leaflet map; follow them in 3D. */
   function syncFromLeaflet() {
-    if (!is3D || !m3 || !window.atlasMap) return;
+    if (!is3D || !m3 || !window.atlasMap || syncLock) return;
     var d = window.atlasMap, c = d.getCenter(), z = d.getZoom();
     if (lastLeaflet && Math.abs(lastLeaflet.lat - c.lat) < 1e-6 && Math.abs(lastLeaflet.lng - c.lng) < 1e-6 && lastLeaflet.z === z) return;
     lastLeaflet = { lat: c.lat, lng: c.lng, z: z };
@@ -1433,7 +1483,7 @@ body.is-3d .rp-banner.show{display:flex}
         '<div class="prj-stat"><small>PDF page</small><strong>' + esc(r.page) + '/88</strong></div>' +
         '<div class="prj-stat"><small>Map-name matches</small><strong>' + ms.length + '</strong></div></div>' +
         '<section class="prj-sec"><h3>Location summary</h3><div class="prj-chips">' + chips + '</div>' + rowsInfo +
-        '<p class="prj-note">Pin shown at: ' + esc(g.name) + ' ' + esc(levelLabel(g.level).toLowerCase()) + ' (' + coords + '). Not a surveyed construction site.</p></section>' +
+        '<p class="prj-note">This project\u2019s pin sits at an arbitrary spot inside ' + esc(g.name) + ' ' + esc(levelLabel(g.level).toLowerCase()) + ' — the ADP roster gives the area, not a surveyed construction site.</p></section>' +
         '<section class="prj-sec"><h3>Lifecycle status</h3><p class="prj-note">The ADP allocation list gives no completed / ongoing / cancelled status for each project. Status stays unverified until confirmed by an official project, IMED or agency record.</p></section>' +
         '<div class="prj-actions"><a class="pin3d-btn primary" target="_blank" rel="noopener" href="/api/adp-roster#page=' + esc(r.page) + '">Open official ADP page</a>' +
         '<a class="pin3d-btn" target="_blank" rel="noopener" href="https://www.google.com/search?tbm=nws&q=' + q + '">Search news</a>' +
@@ -1441,10 +1491,10 @@ body.is-3d .rp-banner.show{display:flex}
         '<button type="button" class="pin3d-btn" data-act="report">Report data here</button></div>';
       body.scrollTop = 0;
     }
-    function open(g) {
+    function open(g, row) {
       if (!layer) build();
       opener = document.activeElement;
-      group = g; current = g.rows.length === 1 ? g.rows[0] : null;
+      group = g; current = row || (g.rows.length === 1 ? g.rows[0] : null);
       render();
       layer.hidden = false; layer.setAttribute("aria-hidden", "false");
       layer.querySelector("#prjClose").focus();
@@ -1462,6 +1512,7 @@ body.is-3d .rp-banner.show{display:flex}
     isOn: function () { return is3D; },
     areas: getAreas,
     focusArea: focusArea,
+    ensureProjects: ensureProjects,
     clearFocus: clearFocus
   };
 
@@ -1601,6 +1652,7 @@ body.is-3d .rp-banner.show{display:flex}
   function openPicker() {
     pickerOpener = document.activeElement;
     if (!start.hidden) closeStart();
+    if (window.Atlas3D && window.Atlas3D.ensureProjects) window.Atlas3D.ensureProjects();
     picker.hidden = false; picker.setAttribute("aria-hidden", "false");
     $("rpS1").className = "active"; $("rpS2").className = "";
     if (!areas) loadAreas(); else { $("rpDistrict").focus(); }
