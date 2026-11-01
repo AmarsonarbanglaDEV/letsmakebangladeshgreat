@@ -4878,6 +4878,11 @@ async function ensureLeaflet(){
         spiderfyOnMaxZoom:true,
         showCoverageOnHover:false,
         zoomToBoundsOnClick:true,
+        animate:false,
+        chunkedLoading:true,
+        chunkInterval:180,
+        chunkDelay:24,
+        removeOutsideVisibleBounds:true,
         iconCreateFunction:cluster=>L.divIcon({
           className:"adp-cluster-icon",
           html:"<span>"+cluster.getChildCount()+"</span>",
@@ -4892,21 +4897,29 @@ async function ensureLeaflet(){
   function renderAdpRosterDots(rows,pages,placeIndex,levelResults){
     if(adpRosterLayer&&map.hasLayer(adpRosterLayer))map.removeLayer(adpRosterLayer);
     adpRosterLayer=createAdpRosterLayer();
-    let locatedRows=0,mentionedRows=0,markerCount=0,ambiguousRows=0;
-    let districtDots=0,upazilaDots=0,unionDots=0;
+    adpProjectRows=rows;
+    adpProjectMatches.clear();
+    let locatedRows=0,mentionedRows=0,ambiguousRows=0;
+    let districtDots=0,upazilaDots=0,unionDots=0,divisionDots=0;
+    const markers=[];
     rows.forEach(project=>{
       const result=matchAdpProjectLocations(
         project.title+" "+(project.locationText||""),
         placeIndex
       );
+      adpProjectMatches.set(project.id,result.matches);
       if(result.mentioned)mentionedRows++;
       if(result.ambiguous.length)ambiguousRows++;
       if(!result.matches.length)return;
       locatedRows++;
       result.matches.forEach(match=>{
         const point=match.point;
-        const levelLabel=match.level==="union"?"Union":(match.level==="upazila"?"Upazila":"District");
-        const levelColor=match.level==="union"?"#1595a3":(match.level==="upazila"?"#2878c7":"#778994");
+        const levelLabel=match.level==="union"?"Union":
+          (match.level==="upazila"?"Upazila":
+          (match.level==="division"?"Division":"District"));
+        const levelColor=match.level==="union"?"#1595a3":
+          (match.level==="upazila"?"#2878c7":
+          (match.level==="division"?"#638b62":"#778994"));
         const icon=L.divIcon({
           className:"adp-project-dot-shell",
           html:'<span class="adp-project-dot adp-project-dot-'+match.level+'" style="--adp-dot-color:'+levelColor+'" aria-hidden="true"></span>',
@@ -4919,26 +4932,23 @@ async function ensureLeaflet(){
           pane:"projectMarkerPane",
           icon,
           keyboard:true,
-          title:project.title+" · matched map name: "+match.name+" ("+levelLabel+")"
+          title:project.title+" · "+match.name+" · "+levelLabel+" area"
         });
-        marker.bindPopup(
-          '<div class="adp-project-popup">'+
-            '<strong>'+escapeHtml(project.title)+'</strong>'+
-            '<div>Project code: '+escapeHtml(project.projectCode)+'</div>'+
-            '<div>ADP allocation: '+(project.allocationLakh===null?"Not extracted":project.allocationLakh.toLocaleString("en-BD",{maximumFractionDigits:2}))+' lakh taka</div>'+
-            '<div><b>Map-name match:</b> '+escapeHtml(match.name)+' ('+escapeHtml(levelLabel)+')</div>'+
-            (hierarchy?'<div><b>Administrative path:</b> '+escapeHtml(hierarchy)+'</div>':"")+
-            '<small>This dot identifies the matched administrative area, not a surveyed construction-site coordinate. The ADP roster does not provide project lifecycle status.</small>'+
-            '<a href="'+ADP_ROSTER_SOURCE_URL+'#page='+project.page+'" target="_blank" rel="noopener">Open official ADP PDF · page '+project.page+'</a>'+
-          '</div>'
+        marker.bindTooltip(
+          escapeHtml(project.title)+"<br><small>"+escapeHtml(match.name)+
+          " · "+escapeHtml(levelLabel)+" area match · click for project profile</small>",
+          {direction:"top",offset:[0,-7],className:"project-marker-tooltip"}
         );
-        marker.addTo(adpRosterLayer);
-        markerCount++;
+        marker.on("click",()=>renderAdpProjectProfilePopup(project,result.matches,true,marker.getElement()));
+        markers.push(marker);
         if(match.level==="union")unionDots++;
         else if(match.level==="upazila")upazilaDots++;
+        else if(match.level==="division")divisionDots++;
         else districtDots++;
       });
     });
+    if(typeof adpRosterLayer.addLayers==="function")adpRosterLayer.addLayers(markers);
+    else markers.forEach(marker=>marker.addTo(adpRosterLayer));
     adpRosterLayer.addTo(map);
     adpRosterLoaded=true;
     const toggle=el("adpRosterToggle");
@@ -4963,17 +4973,19 @@ async function ensureLeaflet(){
     const unmatched=mentionedRows-locatedRows;
     const failedLevels=(levelResults||[]).filter(item=>!item.ok).map(item=>item.level);
     if(status){
-      status.textContent=rows.length.toLocaleString("en-BD")+" project entries parsed across "+
-        pages+" PDF pages · "+locatedRows.toLocaleString("en-BD")+" projects matched to map names · "+
-        markerCount.toLocaleString("en-BD")+" dots ("+districtDots+" districts, "+upazilaDots+
-        " upazilas, "+unionDots+" unions) · "+noMapName.toLocaleString("en-BD")+
-        " have no matching map name in the title · "+unmatched.toLocaleString("en-BD")+
-        " name matches unresolved · "+ambiguousRows.toLocaleString("en-BD")+" ambiguous";
-      if(failedLevels.length)status.textContent+=" · unavailable map layers: "+failedLevels.join(", ");
+      status.textContent=rows.length.toLocaleString("en-BD")+" project profiles loaded across "+
+        pages+" PDF pages · "+locatedRows.toLocaleString("en-BD")+" matched projects · "+
+        markers.length.toLocaleString("en-BD")+" clustered dots ("+divisionDots+" divisions, "+
+        districtDots+" districts, "+upazilaDots+" upazilas, "+unionDots+" unions) · "+
+        noMapName.toLocaleString("en-BD")+" without map-name clues · "+
+        unmatched.toLocaleString("en-BD")+" unresolved · "+ambiguousRows.toLocaleString("en-BD")+" ambiguous";
+      if(failedLevels.length)status.textContent+=" · unavailable layers: "+failedLevels.join(", ");
+      if(rows.length!==ADP_EXPECTED_PROJECTS)status.textContent+=" · expected 1,173; parser count needs review";
     }
+    renderAdpDirectory();
     return {
-      rows:rows.length,locatedRows,markerCount,unmatched,ambiguousRows,
-      districtDots,upazilaDots,unionDots,pages,
+      rows:rows.length,locatedRows,markerCount:markers.length,unmatched,ambiguousRows,
+      districtDots,upazilaDots,unionDots,divisionDots,pages,
       loadedMapLevels:(levelResults||[]).filter(item=>item.ok).map(item=>item.level)
     };
   }
@@ -4985,7 +4997,7 @@ async function ensureLeaflet(){
     try{
       await ensureAdpLibraries();
       const parsed=await parseAdpRosterPdf();
-      if(status)status.textContent="Matching project place names to district, upazila and union map names…";
+      if(status)status.textContent="Matching project names against the map's division, district, upazila and union labels…";
       const levelResults=await Promise.all(["division","upazila","union"].map(async level=>{
         try{
           const built=await loadLevel(level);
@@ -4999,11 +5011,17 @@ async function ensureLeaflet(){
       const summary=renderAdpRosterDots(parsed.rows,parsed.pages,placeIndex,levelResults);
       if(status){
         const countNote=summary.rows===ADP_EXPECTED_PROJECTS?
-          "Official roster total verified: 1,173.":
-          "PDF reports 1,173 projects; parser found "+summary.rows+". Review needed.";
-        status.textContent+= " "+countNote+" · map-name index: "+
+          "PDF total verified: 1,173.":
+          "PDF reports 1,173 entries; parser found "+summary.rows+". Count needs review.";
+        status.textContent+= " "+countNote+" · boundary names loaded: "+
           summary.loadedMapLevels.join(", ")+".";
-
+      }
+      const hashParams=new URLSearchParams(window.location.hash.replace(/^#/,""));
+      const sharedCode=hashParams.get("adp"),sharedPage=Number(hashParams.get("page"));
+      if(sharedCode){
+        const shared=parsed.rows.find(item=>item.projectCode===sharedCode&&
+          (!sharedPage||item.page===sharedPage));
+        if(shared)renderAdpProjectProfilePopup(shared,adpProjectMatches.get(shared.id)||[],true);
       }
       return summary;
     }catch(error){
