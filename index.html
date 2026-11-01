@@ -3140,6 +3140,7 @@ async function ensureLeaflet(){
   const colors=["#c9e2c8","#c4dfe3","#e9d3b7","#d8d1ec","#e4ccda","#c6d9ef","#e9dfb1","#cde2cf"];
   let map=null;
   const cache={};
+  const adpBoundaryNameCache=Object.create(null);
   const searchCache=new Map();
   let language="en",activeLevel="district",currentLayer=null,countryClipData=null,countryOutline=null;
   let fallbackDivisionLayer=null,clipFrameScheduled=0,clipThrottleTimer=0,clipLastUpdated=0;
@@ -4611,11 +4612,32 @@ async function ensureLeaflet(){
     return boundsForFeature.isValid()?boundsForFeature.getCenter():null;
   }
 
+  async function loadAdpBoundaryNames(level){
+    if(cache[level]?.records)return {
+      level,ok:true,count:cache[level].records.length,source:cache[level].sourceLabel
+    };
+    if(adpBoundaryNameCache[level]?.records)return {
+      level,ok:true,count:adpBoundaryNameCache[level].records.length,
+      source:adpBoundaryNameCache[level].sourceLabel
+    };
+    try{
+      // Build only lightweight name/geometry records. Do not construct hidden
+      // Leaflet feature layers for thousands of upazila and union polygons.
+      const data=await fetchLayer(level);
+      const records=recordsForGeoJSON(data,level);
+      if(!records.length)throw new Error("No named map areas returned.");
+      adpBoundaryNameCache[level]={records,sourceLabel:data.sourceLabel||"Official boundary-name service"};
+      return {level,ok:true,count:records.length,source:adpBoundaryNameCache[level].sourceLabel};
+    }catch(error){
+      return {level,ok:false,error:error.message};
+    }
+  }
+
   function buildAdpLocationIndex(){
     const levels=["division","district","upazila","union"];
     const index=[];
     levels.forEach(level=>{
-      const layer=cache[level];
+      const layer=cache[level]||adpBoundaryNameCache[level];
       if(!layer||!Array.isArray(layer.records))return;
       layer.records.forEach(record=>{
         if(!record||!record.name||!record.feature||!record.feature.geometry)return;
@@ -5011,15 +5033,12 @@ async function ensureLeaflet(){
       await ensureAdpLibraries();
       const parsed=await parseAdpRosterPdf();
       if(status)status.textContent="Matching project names against the map's division, district, upazila and union labels…";
-      const levelResults=await Promise.all(["division","upazila","union"].map(async level=>{
-        try{
-          const built=await loadLevel(level);
-          return {level,ok:true,count:built.records.length,source:built.sourceLabel};
-        }catch(error){
-          console.warn("Could not load "+level+" boundary names for ADP matching:",error);
-          return {level,ok:false,error:error.message};
-        }
-      }));
+      const levelResults=await Promise.all(["division","upazila","union"].map(level=>
+        loadAdpBoundaryNames(level)
+      ));
+      levelResults.filter(item=>!item.ok).forEach(item=>
+        console.warn("Could not load "+item.level+" boundary names for ADP matching:",item.error)
+      );
       const placeIndex=buildAdpLocationIndex();
       const summary=renderAdpRosterDots(parsed.rows,parsed.pages,placeIndex,levelResults);
       if(status){
