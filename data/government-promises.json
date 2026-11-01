@@ -32,7 +32,13 @@
       "A government announcement or project listing is not evidence that an outcome has been delivered."
     ],
     "sectorRate": "Sector figures are descriptive averages of commitments with a valid evidence-backed progress calculation. They are not a government score or a ranking of political parties.",
-    "comparisonWarning": "Comparisons across administrations require compatible definitions, comparable targets and disclosed differences in source coverage, scope and reporting periods."
+    "comparisonWarning": "Comparisons across administrations require compatible definitions, comparable targets and disclosed differences in source coverage, scope and reporting periods.",
+    "evidenceAssessmentStates": {
+      "implementation_evidence_found": "At least one reviewed source documents implementation evidence.",
+      "reviewed_no_evidence_found": "A documented search of specified sources found no implementation evidence; this is not proof that implementation never occurred.",
+      "not_publicly_disclosed": "The reviewed source set does not publicly disclose implementation information.",
+      "not_assessed": "No sufficient source review has been completed."
+    }
   },
   "statusDefinitions": [
     {
