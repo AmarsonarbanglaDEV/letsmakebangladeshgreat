@@ -3750,7 +3750,7 @@ async function ensureLeaflet(){
     if(!activeProjectSpotId)return false;
     const projectId=activeProjectSpotId;
     if(!pointMatchesProjectDistrict(projectId,point)){
-      setStatus("That point is outside the project's source-listed district area, or its district boundary could not be matched. Choose a point inside the highlighted project district.",true);
+      setStatus("That point is outside the project&#39;s source-listed district area, or its district boundary could not be matched. Choose a point inside the highlighted project district.",true);
       return true;
     }
     activeProjectSpotId=null;
@@ -4464,7 +4464,7 @@ async function ensureLeaflet(){
     stopProjectTimeLapsePlayback();
     const project=atlasData.projects?.projects?.find(item=>item.id===projectId);
     if(!project||project.mapDisplay?.areaConflict){
-      setStatus("This project's reported area needs clarification before a map time-lapse can be attached.",true);
+      setStatus("This project&#39;s reported area needs clarification before a map time-lapse can be attached.",true);
       return;
     }
     activeProjectSpotId=projectId;
@@ -5671,9 +5671,9 @@ async function ensureLeaflet(){
       html+='<div class="adp-profile-grid"><div class="adp-profile-stat"><small>FY2026–27 ADP allocation</small><strong>৳ '+escapeHtml(allocation)+'</strong><em>Bangladesh taka · lakh</em></div>'+
         '<div class="adp-profile-stat"><small>Equivalent allocation</small><strong>৳ '+escapeHtml(allocationCrore)+'</strong><em>1 crore = 100 lakh</em></div></div>';
       html+='<section class="adp-profile-section"><h3>What this figure represents</h3><div class="adp-profile-row"><span>Financial measure</span><strong>Annual ADP allocation</strong></div><div class="adp-profile-row"><span>Fiscal year</span><strong>2026–27</strong></div><div class="adp-profile-row"><span>Source unit</span><strong>Lakh taka</strong></div></section>';
-      html+='<div class="adp-profile-note">An ADP allocation is not the project's total approved cost, money released, actual expenditure, contractor payment or proof of physical progress. These figures are not published in this row of the ADP roster.</div>';
+      html+='<div class="adp-profile-note">An ADP allocation is not the project&#39;s total approved cost, money released, actual expenditure, contractor payment or proof of physical progress. These figures are not published in this row of the ADP roster.</div>';
     }else if(activeProjectProfileTab==="news"){
-      html+='<section class="adp-profile-section"><h3>News and media search</h3><div class="adp-profile-summary">Search results are discovered live for this project's title. Check the publisher, date, place and whether the article is about this exact project before treating it as evidence.</div>'+
+      html+='<section class="adp-profile-section"><h3>News and media search</h3><div class="adp-profile-summary">Search results are discovered live for this project&#39;s title. Check the publisher, date, place and whether the article is about this exact project before treating it as evidence.</div>'+
         '<div class="adp-profile-actions">'+adpProfileLink("YouTube videos",adpProfileSearchUrl("youtube",project))+adpProfileLink("Google News",adpProfileSearchUrl("news",project))+adpProfileLink("BSS",adpProfileSearchUrl("bss",project))+adpProfileLink("The Daily Star",adpProfileSearchUrl("dailystar",project))+adpProfileLink("The Business Standard",adpProfileSearchUrl("tbs",project))+adpProfileLink("Prothom Alo",adpProfileSearchUrl("prothomalo",project))+'</div>'+
         '<div id="adpNewsResults" class="adp-news-empty">Loading recent news matches…</div></section>';
       loadAdpProjectNews(project);
@@ -5882,7 +5882,7 @@ async function ensureLeaflet(){
         }
         const projectHasDistrict=(project.administrativeAreas||[]).some(area=>area.type==="district");
         if(projectHasDistrict&&!pointMatchesProjectDistrict(projectId,point)){
-          setStatus("The reported coordinate does not fall inside the project's listed district boundary. It is not being opened as a project site.",true);
+          setStatus("The reported coordinate does not fall inside the project&#39;s listed district boundary. It is not being opened as a project site.",true);
           return;
         }
         activePanel="projects";
