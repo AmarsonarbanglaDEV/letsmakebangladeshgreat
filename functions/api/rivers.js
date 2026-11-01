@@ -99,31 +99,94 @@ export async function onRequestGet(context) {
   }
 
   try {
-    const raw = await queryOverpass(buildQuery(box, zoom));
+    let raw;
+    let riverSource = "© OpenStreetMap contributors";
+    let fallbackReason = null;
+    try {
+      raw = await queryOverpass(buildQuery(box, zoom));
+    } catch (overpassError) {
+      // Keep the country from going blank if public Overpass mirrors are busy.
+      // This ArcGIS layer is a lower-detail World Mapping Initiative fallback.
+      fallbackReason = overpassError.message;
+      const params = new URLSearchParams({
+        where: "1=1",
+        geometry: [box.west, box.south, box.east, box.north].join(","),
+        geometryType: "esriGeometryEnvelope",
+        inSR: "4326",
+        outSR: "4326",
+        outFields: "OBJECTID,nam,nam_descri,f_code_des,hyc_descri",
+        returnGeometry: "true",
+        f: "geojson"
+      });
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 14000);
+      try {
+        const response = await fetch(
+          "https://services.arcgis.com/zmBQLV64TsFvEpV0/ArcGIS/rest/services/BIWTA_Topo/FeatureServer/7/query?" + params.toString(),
+          { headers: { Accept: "application/geo+json, application/json" }, signal: controller.signal }
+        );
+        if (!response.ok) throw new Error("Backup river layer returned HTTP " + response.status);
+        const backup = await response.json();
+        if (!Array.isArray(backup.features)) {
+          throw new Error(backup.error?.message || "Backup river layer did not return features.");
+        }
+        raw = {
+          elements: backup.features.map(feature => ({
+            type: "Feature",
+            id: feature.id || feature.properties?.OBJECTID,
+            geometry: feature.geometry,
+            properties: feature.properties || {}
+          }))
+        };
+        riverSource = "World Mapping Initiative · BIWTA_Topo ArcGIS fallback";
+      } finally {
+        clearTimeout(timer);
+      }
+    }
     const seen = new Set();
     const rivers = [];
     for (const element of raw.elements) {
-      if (element.type !== "way" || !Array.isArray(element.geometry) || element.geometry.length < 2) continue;
-      const tags = element.tags || {};
-      const points = element.geometry
-        .filter(point => Number.isFinite(point.lat) && Number.isFinite(point.lon))
-        .map(point => [point.lon, point.lat]);
-      if (points.length < 2) continue;
-      const key = "way/" + element.id;
-      if (seen.has(key)) continue;
-      seen.add(key);
-      rivers.push({
-        type: "Feature",
-        id: key,
-        properties: {
-          name: tags["name:en"] || tags.name || tags["name:bn"] || "Unnamed waterway",
-          name_bn: tags["name:bn"] || "",
-          waterway: tags.waterway || "river",
-          wikidata: tags.wikidata || "",
-          wikipedia: tags.wikipedia || ""
-        },
-        geometry: { type: "LineString", coordinates: points }
-      });
+      let feature;
+      if (element.type === "Feature") {
+        const properties = element.properties || {};
+        const name = properties.nam || properties.name || properties.nam_descri || "Unnamed river";
+        const geometry = element.geometry;
+        if (!geometry || !["LineString","MultiLineString"].includes(geometry.type)) continue;
+        feature = {
+          type: "Feature",
+          id: "arcgis/" + element.id,
+          properties: {
+            name: String(name).slice(0,220),
+            name_bn: "",
+            waterway: "river",
+            source: riverSource
+          },
+          geometry
+        };
+      } else {
+        if (element.type !== "way" || !Array.isArray(element.geometry) || element.geometry.length < 2) continue;
+        const tags = element.tags || {};
+        const points = element.geometry
+          .filter(point => Number.isFinite(point.lat) && Number.isFinite(point.lon))
+          .map(point => [point.lon, point.lat]);
+        if (points.length < 2) continue;
+        feature = {
+          type: "Feature",
+          id: "way/" + element.id,
+          properties: {
+            name: tags["name:en"] || tags.name || tags["name:bn"] || "Unnamed waterway",
+            name_bn: tags["name:bn"] || "",
+            waterway: tags.waterway || "river",
+            wikidata: tags.wikidata || "",
+            wikipedia: tags.wikipedia || "",
+            source: riverSource
+          },
+          geometry: { type: "LineString", coordinates: points }
+        };
+      }
+      if (seen.has(feature.id)) continue;
+      seen.add(feature.id);
+      rivers.push(feature);
       if (rivers.length >= MAX_RIVERS) break;
     }
     return json({
@@ -131,8 +194,9 @@ export async function onRequestGet(context) {
       features: rivers,
       count: rivers.length,
       capped: raw.elements.length >= MAX_RIVERS,
-      source: "© OpenStreetMap contributors",
-      license: "Open Database License (ODbL)",
+      source: riverSource,
+      license: riverSource === "© OpenStreetMap contributors" ? "Open Database License (ODbL)" : "See source service attribution",
+      fallbackReason,
       timestamp: raw.osm3s?.timestamp_osm_base || null,
       bbox: [box.south, box.west, box.north, box.east]
     });
