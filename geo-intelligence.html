@@ -97,19 +97,56 @@ async function lookup(latlng){
  const params=new URLSearchParams(location.search);params.set("lat",selected.lat.toFixed(6));params.set("lon",selected.lng.toFixed(6));history.replaceState(null,"",location.pathname+"?"+params.toString());
 }
 map.on("click",e=>lookup(e.latlng));
-async function loadBoundaries(){
- if(boundaryLayer){map.removeLayer(boundaryLayer);boundaryLayer=null;}
- const levels=["division","district","upazila","union"];
- try{
-  const responses=await Promise.all(levels.map(level=>fetch("/api/map?level="+level+"&limit=500")));
-  const collections=await Promise.all(responses.map(async r=>{if(!r.ok)throw new Error("Boundary API unavailable");return r.json();}));
-  const features=collections.flatMap((c,i)=>(c.features||[]).map(f=>({...f,properties:{...(f.properties||{}),_level:levels[i]}})));
-  boundaryLayer=L.geoJSON({type:"FeatureCollection",features},{style:f=>({color:f.properties._level==="division"?"#b8ff45":f.properties._level==="district"?"#e7f3db":"#b5d0c1",weight:f.properties._level==="division"?2:1,opacity:.65,fillOpacity:0,dashArray:f.properties._level==="union"?"2 4":null})});
-  boundaryLayer.addTo(map);
-  if(!features.length)throw new Error("No boundary features returned");
- }catch(err){alert("Administrative boundary layer could not be loaded: "+err.message);}
+let boundaryRequest=0;
+const boundaryCache=new Map();
+function boundaryLevelsForZoom(){
+ const z=map.getZoom();
+ if(z<8)return ["division","district"];
+ if(z<11)return ["district","upazila"];
+ if(z<14)return ["upazila","union"];
+ return ["union","ward"];
 }
-$("boundaries").onclick=async()=>{boundariesOn=!boundariesOn;$("boundaries").classList.toggle("active",boundariesOn);if(boundariesOn)await loadBoundaries();else if(boundaryLayer){map.removeLayer(boundaryLayer);boundaryLayer=null;}};
+async function fetchBoundaryLevel(level,bbox){
+ const key=level+":"+bbox.map(v=>v.toFixed(2)).join(",");
+ if(boundaryCache.has(key))return boundaryCache.get(key);
+ const features=[];let offset=0,hasMore=true;
+ while(hasMore&&offset<18000){
+  const q=new URLSearchParams({level,limit:"800",offset:String(offset),bbox:bbox.join(",")});
+  const response=await fetch("/api/map?"+q.toString());
+  const data=await response.json();
+  if(!response.ok)throw new Error(data.error||"Boundary service unavailable for "+level);
+  features.push(...(data.features||[]));
+  hasMore=!!data.hasMore;
+  const next=Number(data.nextOffset);
+  if(!Number.isSafeInteger(next)||next<=offset)break;
+  offset=next;
+ }
+ boundaryCache.set(key,features);
+ if(boundaryCache.size>12)boundaryCache.delete(boundaryCache.keys().next().value);
+ return features;
+}
+async function loadBoundaries(){
+ const requestId=++boundaryRequest;
+ if(boundaryLayer){map.removeLayer(boundaryLayer);boundaryLayer=null;}
+ const b=map.getBounds(),bbox=[
+  Math.max(88,b.getWest()),Math.max(20.5,b.getSouth()),
+  Math.min(92.8,b.getEast()),Math.min(26.8,b.getNorth())
+ ];
+ if(bbox[0]>=bbox[2]||bbox[1]>=bbox[3])return;
+ const levels=boundaryLevelsForZoom();
+ try{
+  const collections=await Promise.all(levels.map(level=>fetchBoundaryLevel(level,bbox)));
+  if(requestId!==boundaryRequest||!boundariesOn)return;
+  const features=collections.flatMap((items,i)=>items.map(f=>({...f,properties:{...(f.properties||{}),_level:levels[i]}})));
+  if(!features.length)throw new Error("No boundary features returned for this view.");
+  boundaryLayer=L.geoJSON({type:"FeatureCollection",features},{style:f=>({color:f.properties._level==="division"?"#b8ff45":f.properties._level==="district"?"#e7f3db":f.properties._level==="upazila"?"#b5d0c1":"#d2e6d8",weight:f.properties._level==="division"?2:f.properties._level==="district"?1.5:1,opacity:.68,fillOpacity:0,dashArray:["union","ward"].includes(f.properties._level)?"2 4":null})});
+  boundaryLayer.addTo(map);
+ }catch(err){if(requestId===boundaryRequest)console.warn("Boundary overlay:",err.message);}
+}
+let boundaryRefreshTimer;
+function scheduleBoundaryRefresh(){if(!boundariesOn)return;clearTimeout(boundaryRefreshTimer);boundaryRefreshTimer=setTimeout(loadBoundaries,350);}
+map.on("moveend zoomend",scheduleBoundaryRefresh);
+$("boundaries").onclick=async()=>{boundariesOn=!boundariesOn;$("boundaries").classList.toggle("active",boundariesOn);if(boundariesOn)await loadBoundaries();else{boundaryRequest++;if(boundaryLayer){map.removeLayer(boundaryLayer);boundaryLayer=null;}}};
 $("locate").onclick=()=>{if(!navigator.geolocation){alert("Location access is not available in this browser.");return;}navigator.geolocation.getCurrentPosition(p=>{const ll=[p.coords.latitude,p.coords.longitude];map.setView(ll,16);lookup(L.latLng(ll[0],ll[1]));},e=>alert("Could not get your location: "+e.message),{enableHighAccuracy:false,timeout:10000});};
 function openModal(id){$(id).classList.add("open");}
 function closeModals(){document.querySelectorAll(".modal-wrap").forEach(x=>x.classList.remove("open"));}
