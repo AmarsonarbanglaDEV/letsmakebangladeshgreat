@@ -108,7 +108,7 @@ async function fetchGeoBoundariesFallback(adm) {
   return geojson;
 }
 
-async function fetchArcGisPage(config, offset, requestedLimit, bboxText) {
+async function fetchArcGisPage(config, offset, requestedLimit, bboxText, pointText) {
   const metadataUrl = config.url + "?f=pjson";
   const metadataResponse = await fetchWithTimeout(metadataUrl, {
     headers: { Accept: "application/json" },
@@ -139,6 +139,17 @@ async function fetchArcGisPage(config, offset, requestedLimit, bboxText) {
     }
     params.set("geometry", values.join(","));
     params.set("geometryType", "esriGeometryEnvelope");
+    params.set("inSR", "4326");
+    params.set("spatialRel", "esriSpatialRelIntersects");
+  }
+  if (pointText) {
+    const point = pointText.split(",").map(Number);
+    if (point.length !== 2 || point.some(value => !Number.isFinite(value)) ||
+        point[0] < 88 || point[0] > 92.8 || point[1] < 20.5 || point[1] > 26.8) {
+      throw new Error("Invalid Bangladesh map point.");
+    }
+    params.set("geometry", point.join(","));
+    params.set("geometryType", "esriGeometryPoint");
     params.set("inSR", "4326");
     params.set("spatialRel", "esriSpatialRelIntersects");
   }
@@ -191,7 +202,10 @@ export async function onRequestGet(context) {
   }
 
   try {
-    const page = await fetchArcGisPage(config, offsetValue, limitValue, requestUrl.searchParams.get("bbox"));
+    const bbox = requestUrl.searchParams.get("bbox");
+  const point = requestUrl.searchParams.get("point");
+  if (bbox && point) return jsonResponse({ error: "Use either bbox or point, not both." }, 400);
+  const page = await fetchArcGisPage(config, offsetValue, limitValue, bbox, point);
     return jsonResponse(page);
   } catch (primaryError) {
     // Use the open gbOpen boundary only for national / division / district
