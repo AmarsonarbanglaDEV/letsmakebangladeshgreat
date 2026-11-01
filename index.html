@@ -2727,6 +2727,9 @@
     .project-profile-gallery .atlas-project-type-image svg{display:block;width:100%;max-height:280px}
     .project-profile-gallery figcaption{padding:8px 2px 0;color:#778579;font-size:8px}
     .project-profile-muted{margin:8px 0;color:#839087;font-size:8px;line-height:1.6}
+    .project-profile-map-actions{display:flex;flex-wrap:wrap;gap:7px}
+    .project-profile-map-actions .atlas-location-chip{cursor:pointer;font-size:8px}
+
     .project-profile-footer{padding:9px 17px;border-top:1px solid #e1e8e0;background:#f1f5ef;color:#758377;font-size:8px;line-height:1.45}
     body.project-profile-open{overflow:hidden}
     @keyframes projectProfileFade{from{opacity:0}to{opacity:1}}
@@ -4190,7 +4193,7 @@ async function ensureLeaflet(){
       '</div>';
     }
     if(!state){
-      const hasOfficialPoint=Number.isFinite(Number(project.latitude))&&Number.isFinite(Number(project.longitude));
+      const hasOfficialPoint=project.latitude!==null&&project.latitude!==undefined&&project.latitude!==""&&project.longitude!==null&&project.longitude!==undefined&&project.longitude!==""&&Number.isFinite(Number(project.latitude))&&Number.isFinite(Number(project.longitude))&&bounds.contains(L.latLng(Number(project.latitude),Number(project.longitude)));
       return '<div class="atlas-project-timelapse" data-project-timelapse="'+escapeHtml(id)+'">'+
         '<div class="atlas-project-timelapse-head"><strong>Location time-lapse</strong><span>Esri imagery archive</span></div>'+
         (hasOfficialPoint?
@@ -4673,6 +4676,10 @@ async function ensureLeaflet(){
     let rows=profileRow("Official location",project.officialLocation)+profileRow("Latitude",project.latitude)+profileRow("Longitude",project.longitude)+profileRow("Full project address",project.fullAddress);
     areas.forEach(area=>rows+=profileRow(area.type,area.name+(area.precision?" · "+area.precision:"")));
     let html=profilePanel("Source-listed project location",rows||profileEmpty("No usable location details were supplied."));
+    const districts=areas.filter(area=>area.type==="district"&&area.name);
+    if(districts.length&&!project.mapDisplay?.areaConflict){
+      html+=profilePanel("Inspect listed district on the map",'<div class="project-profile-map-actions">'+districts.map(area=>'<button type="button" class="atlas-location-chip" data-district="'+escapeHtml(area.name)+'">View '+escapeHtml(area.name)+' ↗</button>').join("")+'</div>',"District-level reference only; not an exact project site.");
+    }
     if(project.mapDisplay?.areaConflict)html+=profileEmpty("Source contains conflicting administrative-area labels. It is not placed as a project site until resolved.");
     if(project.mapDisplay?.exactCoordinatesAvailable===false)html+='<p class="project-profile-disclaimer">Exact project coordinates are not available. The map can show an administrative area only, not an exact work site.</p>';
     html+=profilePanel("Location imagery and map inspection",projectTimeLapseMarkup(project),"Map imagery selection is not an official site coordinate unless a source provides it.");
