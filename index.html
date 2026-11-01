@@ -4681,10 +4681,11 @@ async function ensureLeaflet(){
         if(bounds.contains(center))districtLookup.set(district.name,center);
       }
     });
-    let locatedRows=0,markerCount=0;
+    let locatedRows=0,mentionedRows=0,markerCount=0,boundaryUnmatchedRows=0;
     rows.forEach(project=>{
       const districtNames=getAdpDistrictMatches(project.title);
-      if(districtNames.length)locatedRows++;
+      if(districtNames.length)mentionedRows++;
+      let rowPlaced=false;
       districtNames.forEach(districtName=>{
         const point=districtLookup.get(districtName);
         if(!point)return;
@@ -4712,7 +4713,10 @@ async function ensureLeaflet(){
         );
         marker.addTo(adpRosterLayer);
         markerCount++;
+        rowPlaced=true;
       });
+      if(rowPlaced)locatedRows++;
+      else if(districtNames.length)boundaryUnmatchedRows++;
     });
     adpRosterLayer.addTo(map);
     adpRosterLoaded=true;
@@ -4735,11 +4739,12 @@ async function ensureLeaflet(){
     }
     const status=el("adpRosterStatus");
     if(status){
-      const unmatched=rows.length-locatedRows;
+      const noDistrict=rows.length-mentionedRows;
       status.textContent=rows.length.toLocaleString("en-BD")+" project entries parsed across "+
         pages+" PDF pages · "+markerCount.toLocaleString("en-BD")+" district locator dots for "+
-        locatedRows.toLocaleString("en-BD")+" projects · "+unmatched.toLocaleString("en-BD")+
-        " without a district name in the title · status not verified";
+        locatedRows.toLocaleString("en-BD")+" projects · "+noDistrict.toLocaleString("en-BD")+
+        " without a district name · "+boundaryUnmatchedRows.toLocaleString("en-BD")+
+        " with district names but no boundary match · status not verified";
     }
     return {rows:rows.length,locatedRows,markerCount,unmatched:rows.length-locatedRows,pages};
   }
