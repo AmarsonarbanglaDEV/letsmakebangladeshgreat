@@ -4516,14 +4516,126 @@ async function ensureLeaflet(){
       .replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g," ").trim();
   }
 
-  function getAdpDistrictMatches(title){
-    const haystack=" "+normalisePlaceText(title)+" ";
-    return ADP_DISTRICTS.filter(district=>district.aliases.some(alias=>{
-      const needle=" "+normalisePlaceText(alias)+" ";
-      return needle.length>2&&haystack.includes(needle);
-    })).map(district=>district.name);
+  const ADP_PLACE_NAME_ALIASES={
+    "maheshkhali":["moheshkhali","moheshkhali"],
+    "chattogram":["chittagong"],
+    "cumilla":["comilla"],
+    "jashore":["jessore"],
+    "chapai nawabganj":["chapainawabganj","chapai nawabgonj"],
+    "cox s bazar":["cox bazar","coxs bazar"],
+    "moulvibazar":["maulvibazar"],
+    "jhenaidah":["jhenaida"],
+    "barishal":["barisal"],
+    "bogura":["bogra"],
+    "lakshmipur":["laxmipur"]
+  };
+  const ADP_STOP_PLACE_NAMES=new Set([
+    "sadar","north","south","east","west","central","city","town","urban",
+    "rural","district","division","upazila","union","ward","bangladesh",
+    "national","special","economic","zone","project","scheme","programme",
+    "program","office","station","road","area","region","headquarters",
+    "different","various","all","other","and","the","of","at","in","for"
+  ]);
+
+  function adpNameVariants(name){
+    const normalized=normalisePlaceText(name);
+    if(!normalized||normalized.length<4||ADP_STOP_PLACE_NAMES.has(normalized))return [];
+    const variants=[normalized,...(ADP_PLACE_NAME_ALIASES[normalized]||[])];
+    return [...new Set(variants.filter(value=>value.length>=4&&!ADP_STOP_PLACE_NAMES.has(value)))];
   }
 
+  function titleContainsPlace(titleNorm,placeNorm){
+    return (" "+titleNorm+" ").includes(" "+placeNorm+" ");
+  }
+
+  function buildAdpLocationIndex(){
+    const levels=["district","upazila","union"];
+    const index=[];
+    levels.forEach(level=>{
+      const layer=cache[level];
+      if(!layer||!Array.isArray(layer.records))return;
+      layer.records.forEach(record=>{
+        if(!record||!record.name||!record.feature||!record.feature.geometry)return;
+        const variants=adpNameVariants(record.name);
+        if(!variants.length)return;
+        const geometryLayer=L.geoJSON(record.feature);
+        const featureBounds=geometryLayer.getBounds();
+        if(!featureBounds.isValid())return;
+        const center=featureBounds.getCenter();
+        if(!bounds.contains(center))return;
+        index.push({
+          level:level,
+          record:record,
+          name:record.name,
+          variants:variants,
+          normalizedName:normalisePlaceText(record.name),
+          point:center,
+          parentDistrict:record.district||"",
+          parentUpazila:record.upazila||""
+        });
+      });
+    });
+    return index;
+  }
+
+  function matchAdpProjectLocations(title,index){
+    const titleNorm=normalisePlaceText(title);
+    if(!titleNorm)return {matches:[],ambiguous:[],mentioned:false};
+    const candidates=[];
+    index.forEach(item=>{
+      const matchedVariant=item.variants.find(variant=>titleContainsPlace(titleNorm,variant));
+      if(matchedVariant)candidates.push({...item,matchedVariant});
+    });
+
+    // If a repeated union/upazila name occurs in several districts, require
+    // the project title to identify its parent area as well.
+    const ambiguous=[];
+    const disambiguated=candidates.filter(candidate=>{
+      const siblings=candidates.filter(other=>
+        other.level===candidate.level&&
+        other.normalizedName===candidate.normalizedName&&
+        other.record.id!==candidate.record.id
+      );
+      if(!siblings.length)return true;
+      const parent=candidate.level==="union"?
+        (candidate.parentUpazila||candidate.parentDistrict):
+        candidate.parentDistrict;
+      if(parent&&titleContainsPlace(titleNorm,normalisePlaceText(parent)))return true;
+      ambiguous.push({
+        name:candidate.name,
+        level:candidate.level,
+        parent:parent||"not supplied by boundary layer"
+      });
+      return false;
+    });
+
+    // Keep the most specific named map-area within the same administrative
+    // hierarchy. E.g. a named union suppresses its parent upazila and district.
+    const selected=disambiguated.filter(candidate=>{
+      const hasMoreSpecific=disambiguated.some(other=>{
+        if(other.level==="union"&&candidate.level!=="union"){
+          return normalisePlaceText(other.parentUpazila)===candidate.normalizedName||
+            normalisePlaceText(other.parentDistrict)===candidate.normalizedName;
+        }
+        if(other.level==="upazila"&&candidate.level==="district"){
+          return normalisePlaceText(other.parentDistrict)===candidate.normalizedName;
+        }
+        return false;
+      });
+      return !hasMoreSpecific;
+    });
+
+    const unique=new Map();
+    selected.forEach(item=>{
+      const key=item.level+"|"+item.record.id;
+      if(!unique.has(key))unique.set(key,item);
+    });
+    return {
+      matches:[...unique.values()],
+      ambiguous:ambiguous,
+      mentioned:candidates.length>0
+    };
+  }
   function makeAdpPdfLines(textItems){
     const sorted=(textItems||[])
       .filter(item=>item&&typeof item.str==="string"&&item.str.trim())
