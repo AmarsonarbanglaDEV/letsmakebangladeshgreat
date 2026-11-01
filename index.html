@@ -402,6 +402,9 @@
     .project-status-key i{display:inline-block;width:9px;height:9px;border:1px solid rgba(20,35,25,.18);border-radius:50%;background:var(--status-color);box-shadow:0 0 0 1px #fff}
     .atlas-project-pin-shell{background:transparent;border:0}
     .atlas-project-pin{display:block;width:17px;height:17px;border:3px solid #fff;border-radius:50%;background:var(--project-status-color,#87918b);box-shadow:0 2px 8px rgba(30,40,34,.4),0 0 0 2px var(--project-status-color,#87918b);transition:transform .14s ease}
+    .atlas-project-locator-shell{background:transparent;border:0}
+    .atlas-project-locator-dot{display:block;width:13px;height:13px;border:2px dashed #fff;border-radius:50%;background:var(--project-status-color,#87918b);box-shadow:0 2px 7px rgba(25,35,28,.45),0 0 0 2px var(--project-status-color,#87918b);transition:transform .14s ease}
+    .leaflet-marker-icon:hover .atlas-project-locator-dot,.leaflet-marker-icon:focus .atlas-project-locator-dot{transform:scale(1.35)}
     .leaflet-marker-icon:hover .atlas-project-pin,.leaflet-marker-icon:focus .atlas-project-pin{transform:scale(1.28)}
     .project-marker-tooltip{border:1px solid #dbe4ec;border-radius:8px;background:#fff;color:#214059;box-shadow:0 4px 14px rgba(0,0,0,.16);font-size:9px;line-height:1.5}
     .project-marker-tooltip small{color:#718397}
@@ -2956,6 +2959,7 @@
       <span class="project-status-key"><i style="--status-color:#8158bd"></i>Planned</span>
       <span class="project-status-key"><i style="--status-color:#169ca8"></i>Future</span>
       <span class="project-status-key"><i style="--status-color:#87918b"></i>Unverified</span>
+      <small>Dashed dots = approximate district locators, not exact construction sites.</small>
       <small id="projectMarkerCount">Loading project locations…</small>
     </div>
     <div class="map-attribution">Satellite imagery © Esri, Maxar &amp; imagery contributors · Search © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a></div>
@@ -4388,8 +4392,8 @@ async function ensureLeaflet(){
     if(!map||!atlasData.projects||!cache.district||!cache.district.layer)return;
     if(!projectMarkersLayer)projectMarkersLayer=L.layerGroup().addTo(map);
     projectMarkersLayer.clearLayers();
-    let exactPinCount=0,areaCount=0,unresolvedCount=0,unmatchedCount=0;
-    const statusCounts={};
+    let exactPinCount=0,areaCount=0,districtLocatorCount=0,unresolvedCount=0,unmatchedCount=0;
+    const statusCounts={},districtDotOffsets=Object.create(null);
     (atlasData.projects.projects||[]).forEach(project=>{
       const statusMeta=projectStatusMeta(project);
       statusCounts[statusMeta.key]=(statusCounts[statusMeta.key]||0)+1;
@@ -4462,6 +4466,34 @@ async function ensureLeaflet(){
         });
         areaLayer.addTo(projectMarkersLayer);
         areaCount++;
+
+        // A district-level locator makes the project visible without pretending
+        // the district bounding-box centre is the actual construction site.
+        const districtPoint=areaLayer.getBounds().getCenter();
+        if(bounds.contains(districtPoint)){
+          const stackIndex=districtDotOffsets[normalise(districtName)]||0;
+          districtDotOffsets[normalise(districtName)]=stackIndex+1;
+          const offsets=[[0,0],[9,-7],[-9,-7],[9,7],[-9,7],[0,-13],[0,13],[15,0],[-15,0]];
+          const offset=offsets[stackIndex%offsets.length];
+          const locatorIcon=L.divIcon({
+            className:"atlas-project-locator-shell",
+            html:'<span class="atlas-project-locator-dot" style="--project-status-color:'+statusMeta.color+'" aria-hidden="true"></span>',
+            iconSize:[17,17],
+            iconAnchor:[8-offset[0],8-offset[1]]
+          });
+          const locator=L.marker(districtPoint,{
+            pane:"projectMarkerPane",icon:locatorIcon,keyboard:true,
+            title:project.name+" · "+statusMeta.label+" · approximate "+districtName+" district locator"
+          });
+          locator.bindTooltip(
+            escapeHtml(project.name)+"<br><small>"+escapeHtml(statusMeta.label)+" · "+
+            escapeHtml(districtName)+" district locator · not the exact project site</small>",
+            {direction:"top",offset:[0,-7],className:"project-marker-tooltip"}
+          );
+          locator.on("click",()=>openProjectProfile(project.id,districtPoint));
+          locator.addTo(projectMarkersLayer);
+          districtLocatorCount++;
+        }
         projectHasArea=true;
       });
       if(!projectHasArea)unresolvedCount++;
@@ -4472,8 +4504,9 @@ async function ensureLeaflet(){
         .filter(([key])=>key!=="unknown")
         .map(([key,count])=>count+" "+key)
         .join(" · ");
-      countNode.textContent=exactPinCount+" verified site pin(s) · "+areaCount+
-        " district coverage area(s) · "+unresolvedCount+" unresolved project(s)"+
+      countNode.textContent=exactPinCount+" verified site pin(s) · "+districtLocatorCount+
+        " approximate district dot(s) · "+areaCount+" coverage area(s) · "+
+        unresolvedCount+" unresolved project(s)"+
         (statusSummary?" · Status records: "+statusSummary:"")+
         (statusCounts.unknown?" · "+statusCounts.unknown+" status unverified":"")+
         (unmatchedCount?" · "+unmatchedCount+" area match(es) unavailable":"");
