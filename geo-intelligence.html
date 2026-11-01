@@ -44,7 +44,7 @@
   <div class="field"><label for="cFiles">Images or documents (up to 3 files, 5 MB each)</label><input id="cFiles" name="attachments" type="file" multiple accept="image/jpeg,image/png,image/webp,application/pdf"><div class="help">Files are stored privately when secure attachment storage is configured. Do not upload identity documents or confidential records.</div></div>
   <div class="grid2"><div class="field"><label for="cName">Name (optional)</label><input id="cName" name="name" maxlength="100" autocomplete="name"></div><div class="field"><label for="cContact">Email or phone (optional)</label><input id="cContact" name="contact" maxlength="160" autocomplete="email"></div></div>
   <div class="field hidden" aria-hidden="true"><label for="website">Leave blank</label><input id="website" name="website" tabindex="-1" autocomplete="off"></div>
-  <label class="help"><input type="checkbox" id="consent" required> I understand this is a platform report, not an official government filing, and consent to the information being stored for review.</label>
+  <label class="help"><input type="checkbox" id="consent" name="consent" value="on" required> I understand this is a platform report, not an official government filing, and consent to the information being stored for review.</label>
   <div id="formNotice" class="notice hidden" role="status"></div><button class="submit" id="submitComplaint" type="submit">Submit report</button>
  </form></section>
 </div>
