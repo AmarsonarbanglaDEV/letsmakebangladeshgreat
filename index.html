@@ -7307,7 +7307,8 @@ async function ensureLeaflet(){
       return '<div class="promise-evidence-item"><strong>'+escapeHtml(item.title||"Untitled source")+'</strong>'+
         '<small>'+escapeHtml(item.issuer||"Issuer not stated")+' · '+escapeHtml(promiseDate(item.publicationDate))+
         ' · '+escapeHtml(item.evidenceType||"Document")+' · '+escapeHtml(status)+
-        (item.pageOrSection?" · "+escapeHtml(item.pageOrSection):"")+'</small>'+
+        (item.pageOrSection?" · "+escapeHtml(item.pageOrSection):"")+
+        (item.lastCheckedAt?" · Last checked "+escapeHtml(promiseDate(item.lastCheckedAt)):"")+'</small>'+
         (url?'<a href="'+escapeHtml(url)+'" target="_blank" rel="noopener">Open original source ↗</a>':'')+
         '</div>';
     }).join("")+'</div>';
@@ -7367,6 +7368,12 @@ async function ensureLeaflet(){
       }).join("")+'</div></section>';
     }
     if(record.officialResponse)html+='<section class="promise-section"><h3>Official response</h3><p class="side-intro">'+escapeHtml(record.officialResponse)+'</p></section>';
+    if(record.independentAssessments?.length){
+      html+='<section class="promise-section"><h3>Independent assessments</h3><div class="promise-evidence-list">'+record.independentAssessments.map(item=>{
+        const url=promiseSafeUrl(item.url);
+        return '<div class="promise-evidence-item"><strong>'+escapeHtml(item.title||item.issuer||"Independent assessment")+'</strong><small>'+escapeHtml(item.issuer||"Publisher not stated")+' · '+escapeHtml(promiseDate(item.date))+' · '+escapeHtml(item.assessmentType||"Assessment")+'</small><p class="side-intro">'+escapeHtml(item.conclusion||item.summary||"")+'</p>'+(url?'<a href="'+escapeHtml(url)+'" target="_blank" rel="noopener">Read assessment ↗</a>':"")+'</div>';
+      }).join("")+'</div></section>';
+    }
     html+='<section class="promise-section"><div class="promise-section-head"><div><span class="promise-section-kicker">VIEW EVIDENCE</span><h3>Supporting documents &amp; source records</h3></div></div>'+promiseEvidenceList(evidenceIds)+'</section>';
     if(record.updateHistory?.length){
       html+='<section class="promise-section"><h3>Update history</h3><div class="promise-timeline">'+record.updateHistory.slice().sort((a,b)=>String(a.date||"").localeCompare(String(b.date||""))).map(item=>
