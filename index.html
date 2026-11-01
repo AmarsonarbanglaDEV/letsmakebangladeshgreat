@@ -3362,6 +3362,7 @@ async function ensureLeaflet(){
     activeProjectSpotId=null;
     projectSpotPoints[projectId]={lat:point.lat,lng:point.lng};
     setPoint(point,"Visitor-selected imagery point for "+projectId);
+    if(isProjectProfileOpen())closeProjectProfilePopup(false);
     if(isDataPopupOpen())closeAtlasDataPopup(false);
     else if(!document.body.classList.contains("sidebar-collapsed"))toggleRecordsPanel();
     window.setTimeout(()=>loadProjectTimeLapse(projectId,point),320);
@@ -4002,7 +4003,8 @@ async function ensureLeaflet(){
       el("outlineToggle").classList.remove("active");
       state.metadataText="Showing archive release "+(item.releaseDateLabel||"version")+".";
     }
-    const root=el("sideContent").querySelector('[data-project-timelapse="'+CSS.escape(projectId)+'"]');
+    const root=[el("projectProfileContent"),el("sideContent")].filter(Boolean)
+      .map(node=>node.querySelector('[data-project-timelapse="'+CSS.escape(projectId)+'"]')).find(Boolean);
     if(root){
       const slider=root.querySelector("[data-project-time-slider]");
       const date=root.querySelector("[data-project-time-date]");
@@ -4020,11 +4022,13 @@ async function ensureLeaflet(){
         const provider=meta&&meta.provider?meta.provider:"Provider not supplied";
         const resolution=meta&&meta.resolution?meta.resolution+" m/pixel":"Resolution not supplied";
         state.metadataText="Image capture: "+capture+" · "+provider+" · "+resolution+" · archive release "+(item.releaseDateLabel||"unknown")+".";
-        const target=el("sideContent").querySelector('[data-project-timelapse="'+CSS.escape(projectId)+'"] [data-project-time-meta]');
+        const target=[el("projectProfileContent"),el("sideContent")].filter(Boolean)
+          .map(node=>node.querySelector('[data-project-timelapse="'+CSS.escape(projectId)+'"] [data-project-time-meta]')).find(Boolean);
         if(target)target.textContent=state.metadataText;
       }).catch(()=>{
         state.metadataText="Capture metadata unavailable · archive release "+(item.releaseDateLabel||"unknown")+".";
-        const target=el("sideContent").querySelector('[data-project-timelapse="'+CSS.escape(projectId)+'"] [data-project-time-meta]');
+        const target=[el("projectProfileContent"),el("sideContent")].filter(Boolean)
+          .map(node=>node.querySelector('[data-project-timelapse="'+CSS.escape(projectId)+'"] [data-project-time-meta]')).find(Boolean);
         if(target)target.textContent=state.metadataText;
       });
     }
@@ -4032,8 +4036,7 @@ async function ensureLeaflet(){
   async function loadProjectTimeLapse(projectId,point){
     stopProjectTimeLapsePlayback();
     projectTimeLapseStates[projectId]={point:{lat:point.lat,lng:point.lng},loading:true,items:[],index:0,metadataText:"Checking imagery archive…"};
-    renderSidePanel("projects");
-    openAtlasDataPopup();
+    renderProjectProfilePopup(projectId,"location",true);
     try{
       const historyZoom=Math.max(map.getZoom(),12);
       if(map.getZoom()<historyZoom)map.setView(point,historyZoom);
@@ -4048,7 +4051,7 @@ async function ensureLeaflet(){
         index:Math.max(0,sorted.length-1),
         metadataText:sorted.length?"Loading image capture metadata…":"No local imagery archive versions were returned."
       };
-      renderSidePanel("projects");
+      renderProjectProfilePopup(projectId,"location",false);
       if(sorted.length)applyProjectTimeLapseVersion(projectId,sorted.length-1,true);
     }catch(error){
       console.error("Project profile imagery history failed:",error);
@@ -4056,7 +4059,7 @@ async function ensureLeaflet(){
         point:{lat:point.lat,lng:point.lng},loading:false,items:[],index:0,
         metadataText:"Historical imagery could not be loaded: "+error.message
       };
-      renderSidePanel("projects");
+      renderProjectProfilePopup(projectId,"location",false);
     }
   }
   function startChoosingProjectSpot(projectId){
@@ -4068,7 +4071,8 @@ async function ensureLeaflet(){
     }
     activeProjectSpotId=projectId;
     activePanel="projects";
-    renderSidePanel("projects");
+    if(isProjectProfileOpen())closeProjectProfilePopup(false);
+    if(isDataPopupOpen())closeAtlasDataPopup(false);
     const districtNames=(project.administrativeAreas||[])
       .filter(area=>area.type==="district").map(area=>normalise(area.name));
     const districtRecords=(cache.district?.records||[]).filter(record=>districtNames.includes(normalise(record.name)));
@@ -4085,7 +4089,7 @@ async function ensureLeaflet(){
     else if(!document.body.classList.contains("sidebar-collapsed"))toggleRecordsPanel();
     window.setTimeout(()=>map.invalidateSize({pan:false}),320);
   }
-  function openProjectProfile(projectId,focusPoint){
+  function openProjectProfile(projectId,focusPoint,trigger){
     const project=atlasData.projects?.projects?.find(item=>item.id===projectId);
     if(!project)return;
     stopProjectTimeLapsePlayback();
@@ -4096,19 +4100,8 @@ async function ensureLeaflet(){
       el("outlineToggle").classList.remove("active");
     }
     selectedProjectId=projectId;
-    renderSidePanel("projects");
-    openAtlasDataPopup();
-    if(focusPoint&&bounds.contains(focusPoint)){
-      map.setView(focusPoint,Math.max(map.getZoom(),9));
-    }
-    window.setTimeout(()=>{
-      const card=el("sideContent").querySelector('[data-project-card="'+CSS.escape(projectId)+'"]');
-      if(card){
-        card.classList.add("is-project-selected");
-        card.scrollIntoView({behavior:"smooth",block:"start"});
-        window.setTimeout(()=>card.classList.remove("is-project-selected"),2400);
-      }
-    },380);
+    renderProjectProfilePopup(projectId,"overview",true,trigger);
+    if(focusPoint&&bounds.contains(focusPoint))map.setView(focusPoint,Math.max(map.getZoom(),9));
   }
 
   function syncProjectMarkers(){
@@ -4634,8 +4627,7 @@ async function ensureLeaflet(){
     if(key==="procurement")return renderProcurementPanel();
     return "";
   }
-  function attachAtlasPanelDelegates(){
-    const panel=el("sideContent");
+  function attachAtlasPanelDelegates(panel=el("sideContent")){
     panel.addEventListener("input",event=>{
       const target=event.target;
       if(target.matches("[data-project-filter]")){
@@ -4665,6 +4657,16 @@ async function ensureLeaflet(){
       applyProjectTimeLapseVersion(projectId,Number(slider.value),true);
     });
     panel.addEventListener("click",async event=>{
+      const profileButton=event.target.closest("[data-view-project-profile]");
+      if(profileButton){
+        openProjectProfile(profileButton.getAttribute("data-view-project-profile"),null,profileButton);
+        return;
+      }
+      const projectCard=event.target.closest(".atlas-project-card[data-project-card]");
+      if(projectCard&&!event.target.closest("a,button,input,select,textarea")){
+        openProjectProfile(projectCard.getAttribute("data-project-card"),null,projectCard);
+        return;
+      }
       const retryData=event.target.closest("[data-retry-atlas-data]");
       if(retryData){retryData.disabled=true;retryData.textContent="Retrying…";await loadAtlasData(true);return;}
       const openSpot=event.target.closest("[data-open-project-spot]");
@@ -4963,6 +4965,7 @@ async function ensureLeaflet(){
   // The public service does not permit client-side autocomplete; keep requests <= 1/second.
   renderSidePanel("overview");
   attachAtlasPanelDelegates();
+  attachAtlasPanelDelegates(el("projectProfileContent"));
   loadAtlasData(); 
 })();
 </script>
