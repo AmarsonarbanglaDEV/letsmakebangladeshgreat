@@ -91,33 +91,49 @@ function simplifyElement(element) {
   };
 }
 
-async function fetchOverpass(query, requestUrl) {
-  const endpoint = "https://overpass-api.de/api/interpreter?data=" +
-    encodeURIComponent(query);
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 25000);
-  try {
-    const response = await fetch(endpoint, {
-      method: "GET",
-      headers: {
-        "Accept": "application/json",
-        "User-Agent": "BangladeshAtlas/1.0 (+https://github.com/AmarsonarbanglaDEV/letsmakebangladeshgreat)",
-        "Referer": requestUrl.origin + "/"
-      },
-      cf: { cacheTtl: 1800, cacheEverything: true },
-      signal: controller.signal
-    });
-    if (!response.ok) throw new Error("OpenStreetMap query service returned HTTP " + response.status);
-    const body = await response.json();
-    if (!Array.isArray(body.elements)) {
-      throw new Error(body.remark || "OpenStreetMap returned an unexpected landmark response.");
+async function fetchOverpass(query) {
+  // POST keeps the query out of the URL, and independent endpoints provide
+  // resilience when one public Overpass instance is busy or rate-limited.
+  const endpoints = [
+    "https://overpass.kumi.systems/api/interpreter",
+    "https://overpass-api.de/api/interpreter",
+    "https://overpass.nchc.org.tw/api/interpreter"
+  ];
+  let lastError = null;
+  for (const endpoint of endpoints) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 14000);
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+        },
+        body: new URLSearchParams({ data: query }).toString(),
+        signal: controller.signal
+      });
+      if (!response.ok) {
+        throw new Error("OpenStreetMap service returned HTTP " + response.status);
+      }
+      const body = await response.json();
+      if (!Array.isArray(body.elements)) {
+        throw new Error(body.remark || "OpenStreetMap returned an unexpected landmark response.");
+      }
+      if (body.remark && /runtime error|timed out|out of memory/i.test(body.remark)) {
+        throw new Error(body.remark);
+      }
+      return body;
+    } catch (error) {
+      lastError = error && error.name === "AbortError"
+        ? new Error("A landmark data server timed out.")
+        : error;
+    } finally {
+      clearTimeout(timeout);
     }
-    return body;
-  } finally {
-    clearTimeout(timeout);
   }
+  throw lastError || new Error("All landmark data servers are temporarily unavailable.");
 }
-
 export async function onRequestGet(context) {
   const request = context.request;
   const url = new URL(request.url);
