@@ -130,15 +130,16 @@
       "url": "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-imed/2026/9/51732c2a-8082-469a-b02b-499e6aaa00b6.pdf",
       "publicationDate": "2026-10-14",
       "coverage": "FY2026-27; 88 pages; 1,173 project entries; allocation total 19,474,064.07 lakh taka.",
-      "importStatus": "The map runtime parses the official 88-page PDF through /api/adp-roster. It extracts project code, English title, ADP allocation and page number; district dots appear only where the title explicitly names a district. A static JSON export and verified exact sites are not yet present.",
+      "importStatus": "The map runtime parses the official 88-page PDF through /api/adp-roster. It extracts project code, English title, Bangla location text, ADP allocation and page number; it matches names to the map's division, district, upazila and union boundary names. A static JSON export and verified exact sites are not present.",
       "useFor": [
         "project code",
-        "project description",
+        "English project description",
+        "Bangla location clues",
         "ADP allocation",
         "PDF page number",
-        "district-name clues where explicit"
+        "division/district/upazila/union map-name matching"
       ],
-      "limitations": "The roster is not an exact-location dataset and does not contain a per-project lifecycle status field; projects without a district name in the English title remain unlocated. District dots are broad administrative area references, not surveyed sites."
+      "limitations": "The roster is not an exact-location dataset and does not contain a per-project lifecycle status field. Matched dots show administrative areas only; ambiguous repeated place names and rows with no map-name clue remain unlocated."
     },
     {
       "id": "imed-report-archive",
