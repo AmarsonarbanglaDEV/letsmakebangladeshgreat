@@ -3425,7 +3425,39 @@
 @keyframes atlasBootPulse{50%{opacity:.35;transform:scale(.88)}}@media(max-width:520px){.atlas-boot-screen{padding:14px}.atlas-boot-card{padding:21px 17px;border-radius:19px}.atlas-boot-brand{margin-bottom:27px}.atlas-boot-tasks{grid-template-columns:1fr;gap:6px}.atlas-boot-task{padding:8px 9px}.atlas-boot-foot{margin-top:14px}}
 @media(prefers-reduced-motion:reduce){.atlas-boot-screen,.atlas-boot-progress-track i{transition:none}.atlas-boot-task.is-loading .atlas-boot-task-mark{animation:none}}
 
-  </style>
+  
+  .map-top-controls{top:96px;right:18px;display:block;max-width:none;z-index:760}
+  .map-type-picker{width:248px;padding:9px;border:1px solid rgba(255,255,255,.9);border-radius:14px;background:rgba(250,252,249,.97);box-shadow:0 8px 26px rgba(10,30,21,.18);color:#294332}
+  .map-type-heading{display:block;margin:0 2px 7px;color:#63766a;font-size:8px;font-weight:950;letter-spacing:.14em}
+  .map-type-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+  .map-type-choice{min-width:0;display:grid;gap:5px;padding:4px;border:1px solid transparent;border-radius:10px;background:transparent;color:#53685b;text-align:center;font-size:9px;font-weight:850}
+  .map-type-choice:hover{background:#edf4ec}
+  .map-type-choice.active{border-color:#176344;background:#e7f2e8;color:#14583d;box-shadow:inset 0 0 0 1px rgba(23,99,68,.08)}
+  .map-type-thumb{height:47px;display:block;position:relative;overflow:hidden;border:1px solid rgba(24,52,35,.13);border-radius:7px;background-color:#dfe8dc}
+  .map-type-thumb-illustrated{background:linear-gradient(135deg,#c5dfc0 0 31%,#e6e2bd 31% 54%,#bbd9c6 54% 100%);background-image:linear-gradient(22deg,transparent 45%,rgba(255,255,255,.9) 46% 52%,transparent 53%),linear-gradient(135deg,#c5dfc0,#e7e3c5 48%,#b8d7c3)}
+  .map-type-thumb-street{background-color:#e9e8d9;background-image:linear-gradient(25deg,transparent 43%,#fff 44% 48%,#d3c7a8 49% 51%,#fff 52% 56%,transparent 57%),linear-gradient(90deg,transparent 0 36%,rgba(255,255,255,.95) 37% 42%,transparent 43% 69%,rgba(255,255,255,.95) 70% 74%,transparent 75%),linear-gradient(145deg,#e1ead7,#c8dec5)}
+  .map-type-thumb-satellite{background-color:#829b76;background-image:radial-gradient(ellipse at 20% 28%,#b3b58a 0 13%,transparent 14%),radial-gradient(ellipse at 72% 70%,#506f52 0 23%,transparent 24%),linear-gradient(135deg,#9b9b6d,#4a7157 48%,#b1a37a)}
+  .map-type-thumb:after{content:"";position:absolute;inset:0;border:1px solid rgba(255,255,255,.35);border-radius:6px;pointer-events:none}
+  .map-control.layer-control{font-size:17px;line-height:1;color:#244b38}
+  .map-control.layer-control[aria-expanded="true"]{background:#e6f0e5;color:#14583d}
+  .project-map-legend{left:84px;right:auto;bottom:15px;max-width:min(465px,calc(100% - 112px));display:grid;gap:7px 10px}
+  .project-legend-row,.project-location-legend{display:flex;flex-wrap:wrap;align-items:center;gap:7px 11px}
+  .project-map-legend .project-location-key{display:inline-flex;align-items:center;gap:5px;white-space:nowrap;color:#536b5c;font-size:8px;font-weight:800}
+  .project-map-legend .project-location-key i{display:inline-block;width:10px;height:10px;flex:none;border:2px solid #fff;border-radius:50%;background:#87918b;box-shadow:0 0 0 1px #63756a}
+  .project-map-legend .location-key-exact{background:#238b57!important;box-shadow:0 0 0 2px #238b57!important}
+  .project-map-legend .location-key-area{background:#fff!important;border:2px dashed #63756a!important;box-shadow:none!important}
+  .project-map-legend .location-key-division{border-radius:2px!important;background:#778994!important;transform:rotate(45deg)}
+  .project-map-legend .location-key-district{background:#778994!important;border-style:dashed!important}
+  .project-map-legend .location-key-upazila{background:#2878c7!important;border-radius:50%!important}
+  .project-map-legend .location-key-union{background:#1595a3!important;border-radius:2px!important}
+  .adp-project-dot-division{border-radius:2px;transform:rotate(45deg)}
+  .adp-project-dot-district{border-style:dashed;border-radius:50%}
+  .adp-project-dot-upazila{border-style:solid;border-radius:50%}
+  .adp-project-dot-union{border-radius:2px}
+  @media(max-width:900px){.map-top-controls{top:77px;right:9px;max-width:none}.map-type-picker{width:226px;padding:7px}.map-type-thumb{height:39px}.map-levels{max-width:calc(100% - 245px)}.map-controls{right:9px}.project-map-legend{left:9px;right:auto;bottom:calc(44dvh + 18px);max-width:min(430px,calc(100% - 18px))}}
+  @media(max-width:560px){.map-top-controls{top:75px;right:8px}.map-type-picker{width:205px;padding:6px}.map-type-heading{font-size:7px;margin-bottom:5px}.map-type-options{gap:3px}.map-type-choice{padding:3px;font-size:8px}.map-type-thumb{height:34px}.map-levels{top:77px;max-width:calc(100% - 220px)}.map-controls{top:auto;bottom:calc(44dvh + 18px);right:8px;transform:none}.project-map-legend{left:8px;right:auto;bottom:calc(44dvh + 18px);max-width:calc(100% - 64px);padding:7px 8px}.project-map-legend strong{font-size:8px}.project-map-legend .project-status-key,.project-map-legend .project-location-key{font-size:7px}.project-map-legend small{display:block;font-size:7px;line-height:1.35}.map-control.layer-control{font-size:15px}}
+
+</style>
 </head>
 <body>
 <div class="atlas-boot-screen" id="atlasBootScreen" role="dialog" aria-modal="true" aria-labelledby="atlasBootTitle" aria-describedby="atlasBootMessage">
@@ -3594,11 +3626,17 @@
     </div>
 
     <div class="map-top-controls">
-      <button class="map-pill" id="satelliteToggle" type="button">◈ Satellite</button>
-      <button class="map-pill active" id="outlineToggle" type="button">✿ Illustrated</button>
-      <button class="map-pill" id="mapLayersToggle" type="button" aria-expanded="true" aria-controls="mapLayersPanel">☷ Map layers</button>
+      <div class="map-type-picker" role="group" aria-label="Map type">
+        <span class="map-type-heading">MAP TYPE</span>
+        <div class="map-type-options">
+          <button class="map-type-choice active" id="outlineToggle" type="button" data-map-type="illustrated" aria-pressed="true"><span class="map-type-thumb map-type-thumb-illustrated" aria-hidden="true"></span><b>Illustrated</b></button>
+          <button class="map-type-choice" id="streetToggle" type="button" data-map-type="street" aria-pressed="false"><span class="map-type-thumb map-type-thumb-street" aria-hidden="true"></span><b>Street</b></button>
+          <button class="map-type-choice" id="satelliteToggle" type="button" data-map-type="satellite" aria-pressed="false"><span class="map-type-thumb map-type-thumb-satellite" aria-hidden="true"></span><b>Satellite</b></button>
+        </div>
+      </div>
     </div>
     <div class="map-controls" aria-label="Map controls">
+      <button class="map-control layer-control" id="mapLayersToggle" type="button" aria-expanded="true" aria-label="Open map layers" aria-controls="mapLayersPanel" title="Map layers">▤</button>
       <button class="map-control" id="zoomIn" type="button" aria-label="Zoom in">+</button>
       <button class="map-control" id="zoomOut" type="button" aria-label="Zoom out">−</button>
       <button class="map-control fit" id="fitBangladesh" type="button" aria-label="Show all Bangladesh" title="Show all Bangladesh">⌂</button>
@@ -3704,15 +3742,19 @@
       </div>
     </aside>
     <div class="project-map-legend" id="projectMarkerLegend" aria-live="polite">
-      <strong>Project status</strong>
-      <span class="project-status-key"><i style="--status-color:#238b57"></i>Completed</span>
-      <span class="project-status-key"><i style="--status-color:#2878c7"></i>Ongoing</span>
-      <span class="project-status-key"><i style="--status-color:#d18a19"></i>Suspended / delayed</span>
-      <span class="project-status-key"><i style="--status-color:#d14d4d"></i>Cancelled</span>
-      <span class="project-status-key"><i style="--status-color:#8158bd"></i>Planned</span>
-      <span class="project-status-key"><i style="--status-color:#169ca8"></i>Future</span>
-      <span class="project-status-key"><i style="--status-color:#87918b"></i>Unverified</span>
-      <small>Map-name matches: grey = division/district, blue = upazila, teal square = union. These identify administrative areas, not exact construction sites.</small>
+      <strong>PROJECT MARKS · STATUS &amp; LOCATION</strong>
+      <div class="project-legend-row">
+        <span class="project-status-key"><i style="--status-color:#238b57"></i>Completed</span><span class="project-status-key"><i style="--status-color:#2878c7"></i>Ongoing</span><span class="project-status-key"><i style="--status-color:#d18a19"></i>Suspended / delayed</span><span class="project-status-key"><i style="--status-color:#d14d4d"></i>Cancelled</span><span class="project-status-key"><i style="--status-color:#8158bd"></i>Planned</span><span class="project-status-key"><i style="--status-color:#169ca8"></i>Future</span><span class="project-status-key"><i style="--status-color:#87918b"></i>Unverified</span>
+      </div>
+      <div class="project-location-legend">
+        <span class="project-location-key"><i class="location-key-exact"></i>Exact site</span>
+        <span class="project-location-key"><i class="location-key-area"></i>District locator · approximate</span>
+        <span class="project-location-key"><i class="location-key-division"></i>Division match</span>
+        <span class="project-location-key"><i class="location-key-district"></i>District match</span>
+        <span class="project-location-key"><i class="location-key-upazila"></i>Upazila match</span>
+        <span class="project-location-key"><i class="location-key-union"></i>Union match</span>
+      </div>
+      <small>Solid project pins are used only when a source provides an exact site coordinate. Dashed project locators show district association only. ADP shapes show the smallest administrative place name matched in the project text; they are not confirmed construction-site coordinates.</small>
       <button id="adpRosterToggle" class="adp-roster-toggle" type="button" aria-pressed="false">Load FY2026–27 ADP dots</button>
       <button id="adpDirectoryToggle" class="adp-directory-toggle" type="button">Browse all 1,173 projects</button>
       <small id="adpRosterStatus">Waiting for official ADP roster import…</small>
@@ -3736,7 +3778,7 @@
       <div class="adp-directory-meta" id="adpDirectoryMeta">Importing the 88-page source…</div>
       <div class="adp-directory-results" id="adpDirectoryResults"></div>
     </aside>
-    <div class="map-attribution">Satellite imagery © Esri, Maxar &amp; imagery contributors · Search © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a></div>
+    <div class="map-attribution">Street map © Esri, HERE, Garmin &amp; contributors · Satellite imagery © Esri, Maxar &amp; imagery contributors · Search © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a></div>
   </section>
 </main>
 
@@ -3834,7 +3876,7 @@ window.AtlasBoot=(function(){
   let fallbackDivisionLayer=null,clipFrameScheduled=0,clipThrottleTimer=0,clipLastUpdated=0;
   let countryClipSupported=null;
   let searchInputTimer=0;
-  let satellite=null,historicalLayer=null,outlineMode=true,lastPoint=null,pointMarker=null;
+  let satellite=null,streetLayer=null,historicalLayer=null,outlineMode=true,mapTypeMode="illustrated",lastPoint=null,pointMarker=null;
   let projectMarkersLayer=null,selectedProjectId=null;
   let projectMarkersBuiltFor=null,projectMarkersBuiltDistrictLayer=null;
   let adpRosterLayer=null,adpRosterLoadPromise=null,adpRosterLoaded=false;
@@ -4452,14 +4494,14 @@ window.AtlasBoot=(function(){
     const countryBounds=countryOutline.getBounds();
     if(!countryBounds.isValid())throw new Error("The national boundary has invalid map bounds.");
     map.fitBounds(countryBounds.pad(.11),{padding:[25,25],animate:false});
-    if(!outlineMode){updateCountryClip();scheduleCountryClip(true);}
+    if(mapTypeMode==="satellite"){updateCountryClip();scheduleCountryClip(true);}
   }
   async function loadCountryBoundary(){
     setStatus("Loading Bangladesh outline from the boundary service…");
     try{
       const data=await fetchArcGISLayer(levelInfo.country.url);
       installBangladeshMask(data);
-      if(!outlineMode&&satellite&&!map.hasLayer(satellite)){satellite.addTo(map);updateCountryClip();scheduleCountryClip(true);}
+      if(mapTypeMode==="satellite"&&satellite&&!map.hasLayer(satellite)){satellite.addTo(map);updateCountryClip();scheduleCountryClip(true);}
       setStatus(data.fallbackReason
         ?"Bangladesh outline loaded · geoBoundaries backup source"
         :"Bangladesh national outline loaded · BBS ADM0");
@@ -4468,9 +4510,9 @@ window.AtlasBoot=(function(){
       console.error("Bangladesh national outline failed:",error);
       if(satellite&&map.hasLayer(satellite))map.removeLayer(satellite);
       if(countryOutline&&map.hasLayer(countryOutline))map.removeLayer(countryOutline);
-      outlineMode=true;
-      el("satelliteToggle").classList.remove("active");
-      el("outlineToggle").classList.add("active");
+      outlineMode=true;mapTypeMode="illustrated";
+      if(streetLayer&&map.hasLayer(streetLayer))map.removeLayer(streetLayer);
+      syncMapTypeButtons();
       try{
         // Hisaab-style screen-space clipping can use the eight division polygons
         // as the country footprint while retaining their shared borders visibly.
@@ -4482,11 +4524,9 @@ window.AtlasBoot=(function(){
         const divisionBounds=fallbackDivisionLayer.getBounds();
         if(!divisionBounds.isValid())throw new Error("Division outline bounds are invalid.");
         map.fitBounds(divisionBounds.pad(.11),{padding:[25,25],animate:false});
-        outlineMode=true;
-        el("satelliteToggle").disabled=false;
-        el("satelliteToggle").classList.remove("active");
-        el("outlineToggle").classList.add("active");
-        el("satelliteToggle").title="Optional satellite imagery. Illustrated map is the lightweight default.";
+        outlineMode=true;mapTypeMode="illustrated";
+        el("satelliteToggle").disabled=false;syncMapTypeButtons();
+        el("satelliteToggle").title="Satellite imagery from Esri / Maxar. Illustrated map is the lightweight default.";
         setStatus("National boundary service unavailable. Showing the eight division outlines as a verified fallback. "+error.message,true);
         return true;
       }catch(divisionError){
@@ -4527,37 +4567,42 @@ window.AtlasBoot=(function(){
   map.on("move",()=>{if(!outlineMode&&satellite&&map.hasLayer(satellite))scheduleCountryClip(false);});
   map.on("moveend zoomend resize viewreset",()=>{if(!outlineMode&&satellite&&map.hasLayer(satellite))scheduleCountryClip(true);});
 
+  streetLayer=L.tileLayer(
+    "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
+    {minZoom:6,maxZoom:19,maxNativeZoom:19,bounds:bounds,updateWhenIdle:true,keepBuffer:1,attribution:"Street map © Esri, HERE, Garmin, FAO, NOAA, USGS and the GIS User Community"}
+  );
   satellite=L.tileLayer(
     "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
     {maxZoom:19,bounds:bounds,attribution:"Sources: Esri, Maxar, Earthstar Geographics, and the GIS User Community"}
   );
-  // Satellite imagery is added only after the country mask has been installed.
-  const boundaryFallback=()=>{
-    outlineMode=true;
+  // Three basemaps share the same administrative and project overlays.
+  function syncMapTypeButtons(){
+    document.querySelectorAll("[data-map-type]").forEach(button=>{
+      const selected=button.getAttribute("data-map-type")===mapTypeMode;
+      button.classList.toggle("active",selected);
+      button.setAttribute("aria-pressed",String(selected));
+    });
+  }
+  function setMapType(mode,announce=true){
+    if(!["illustrated","street","satellite"].includes(mode))return false;
+    if(mode==="satellite"&&!countryClipData){setStatus("Satellite imagery is unavailable until a Bangladesh boundary is loaded.",true);return false;}
+    mapTypeMode=mode;outlineMode=mode==="illustrated";
+    if(streetLayer&&map.hasLayer(streetLayer))map.removeLayer(streetLayer);
     if(satellite&&map.hasLayer(satellite))map.removeLayer(satellite);
     if(historicalLayer&&map.hasLayer(historicalLayer))map.removeLayer(historicalLayer);
-    map.getContainer().style.clipPath="";
-    map.getContainer().style.webkitClipPath="";
-    styleCurrentLayer();
-    el("outlineToggle").classList.add("active");
-    el("satelliteToggle").classList.remove("active");
-  };
-  el("satelliteToggle").addEventListener("click",()=>{
-    if(!countryClipData){
-      setStatus("Satellite imagery is disabled until a Bangladesh boundary is available.",true);
-      return;
+    map.getContainer().style.clipPath="";map.getContainer().style.webkitClipPath="";
+    if(mode==="street"&&streetLayer)streetLayer.addTo(map);
+    if(mode==="satellite"&&satellite){satellite.addTo(map);updateCountryClip();scheduleCountryClip(true);}
+    styleCurrentLayer();syncMapTypeButtons();
+    if(announce){
+      const message=mode==="satellite"?"Satellite imagery enabled · Esri / Maxar imagery with administrative overlays.":mode==="street"?"Real street map enabled · Esri World Street Map with administrative overlays.":"Illustrated map enabled · lightweight district artwork and project marks.";
+      setStatus(message);window.setTimeout(()=>{if(statusEl.textContent===message)setStatus("");},3200);
     }
-    outlineMode=false;
-    if(historicalLayer&&map.hasLayer(historicalLayer))map.removeLayer(historicalLayer);
-    if(!map.hasLayer(satellite))satellite.addTo(map);
-    styleCurrentLayer();
-    updateCountryClip();
-    scheduleCountryClip(true);
-    el("satelliteToggle").classList.add("active");
-    el("outlineToggle").classList.remove("active");
-    setStatus("Satellite imagery enabled · select Illustrated for the lightweight map");
-    window.setTimeout(()=>setStatus(""),2500);
-  });
+    return true;
+  }
+  const boundaryFallback=()=>setMapType("illustrated",false);
+  document.querySelectorAll("[data-map-type]").forEach(button=>button.addEventListener("click",()=>setMapType(button.getAttribute("data-map-type"))));
+  syncMapTypeButtons();
   el("riverToggle").addEventListener("click",toggleRivers);
   el("landmarkToggle").addEventListener("click",toggleLandmarks);
   el("promiseMapToggle").addEventListener("click",togglePromiseMap);
@@ -4566,11 +4611,6 @@ window.AtlasBoot=(function(){
   });
   map.on("moveend zoomend",()=>{scheduleLandmarkLoad(1200);scheduleRiverLoad(1400);if(pollutionSiteLayerKey)schedulePollutionSiteLoad(pollutionSiteLayerKey,1500);});
 
-  el("outlineToggle").addEventListener("click",()=>{
-    boundaryFallback();
-    setStatus("Illustrated map · lightweight pastel boundaries and project dots");
-    window.setTimeout(()=>setStatus(""),2500);
-  });
   el("zoomIn").addEventListener("click",()=>map.zoomIn());
   el("zoomOut").addEventListener("click",()=>map.zoomOut());
   el("fitBangladesh").addEventListener("click",()=>map.fitBounds(bounds,{padding:[30,30]}));
@@ -5335,7 +5375,7 @@ window.AtlasBoot=(function(){
   function setPoint(latlng,label){
     lastPoint=latlng;
     if(historicalLayer&&map.hasLayer(historicalLayer))map.removeLayer(historicalLayer);
-    if(!outlineMode&&satellite&&!map.hasLayer(satellite))satellite.addTo(map);
+    if(mapTypeMode==="satellite"&&satellite&&!map.hasLayer(satellite)){satellite.addTo(map);updateCountryClip();scheduleCountryClip(true);}
     if(pointMarker&&map.hasLayer(pointMarker))map.removeLayer(pointMarker);
     const selectedIcon=L.divIcon({
       className:"map-selected-locus-shell",
@@ -6128,10 +6168,8 @@ window.AtlasBoot=(function(){
     if(!project)return;
     stopProjectTimeLapsePlayback();
     if(historicalLayer&&map.hasLayer(historicalLayer))map.removeLayer(historicalLayer);
-    if(!outlineMode&&satellite&&!map.hasLayer(satellite)){
-      satellite.addTo(map);
-      el("satelliteToggle").classList.add("active");
-      el("outlineToggle").classList.remove("active");
+    if(mapTypeMode==="satellite"&&satellite&&!map.hasLayer(satellite)){
+      satellite.addTo(map);updateCountryClip();scheduleCountryClip(true);syncMapTypeButtons();
     }
     selectedProjectId=projectId;
     renderProjectProfilePopup(projectId,"overview",true,trigger);
@@ -6592,7 +6630,7 @@ window.AtlasBoot=(function(){
         if(showOnMap){
           const levelColor=match.level==="union"?"#1595a3":
             (match.level==="upazila"?"#2878c7":
-            (match.level==="division"?"#638b62":"#778994"));
+            "#778994");
           const icon=L.divIcon({
             className:"adp-project-dot-shell",
             html:'<span class="adp-project-dot adp-project-dot-'+match.level+'" style="--adp-dot-color:'+levelColor+'" aria-hidden="true"></span>',
@@ -6601,11 +6639,11 @@ window.AtlasBoot=(function(){
           });
           const marker=L.marker(match.point,{
             pane:"projectMarkerPane",icon,keyboard:true,
-            title:project.title+" · "+match.name+" · "+levelLabel+" area"
+            title:project.title+" · "+match.name+" · "+levelLabel+" area match, not exact site"
           });
           marker.bindTooltip(
             escapeHtml(project.title)+"<br><small>"+escapeHtml(match.name)+
-            " · "+escapeHtml(levelLabel)+" area match · click for project profile</small>",
+            " · "+escapeHtml(levelLabel)+" area match · approximate administrative location, not an exact site · click for profile</small>",
             {direction:"top",offset:[0,-7],className:"project-marker-tooltip"}
           );
           marker.on("click",()=>renderAdpProjectProfilePopup(project,result.matches,true,marker.getElement()));
