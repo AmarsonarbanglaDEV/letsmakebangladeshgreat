@@ -3405,9 +3405,51 @@
   .sidebar,.atlas-rail,.map-levels,.map-top-controls,.map-controls,.map-status,.project-map-legend,#mapLayersPanel,.atlas-welcome{
     -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
   }
+
+.atlas-boot-screen{position:fixed;inset:0;z-index:30000;display:grid;place-items:center;padding:22px;background:radial-gradient(ellipse at 18% 12%,rgba(217,237,142,.13),transparent 36%),radial-gradient(ellipse at 88% 84%,rgba(58,140,100,.22),transparent 42%),#0b2118;color:#f5f8ee;opacity:1;visibility:visible;transition:opacity .38s ease,visibility .38s ease}
+.atlas-boot-screen[hidden]{display:none}.atlas-boot-screen.is-exiting{opacity:0;visibility:hidden;pointer-events:none}
+.atlas-boot-card{width:min(100%,540px);padding:clamp(22px,4vw,38px);border:1px solid rgba(220,239,208,.15);border-radius:24px;background:linear-gradient(150deg,rgba(24,58,42,.97),rgba(12,39,28,.98));box-shadow:0 26px 90px rgba(0,0,0,.34)}
+.atlas-boot-brand{display:flex;align-items:center;gap:11px;margin-bottom:35px}.atlas-boot-symbol{width:39px;height:39px;display:grid;place-items:center;border-radius:12px;background:#d9ed8e;color:#163c2b;font-size:21px;font-weight:950}
+.atlas-boot-brand-name{font-size:10px;font-weight:950;letter-spacing:.12em;color:#f4f8ec}.atlas-boot-brand-name small{display:block;margin-top:4px;color:#a7bfaa;font-size:7px;font-weight:750;letter-spacing:.19em}
+.atlas-boot-kicker{color:#c5df86;font-size:8px;font-weight:950;letter-spacing:.2em;text-transform:uppercase}.atlas-boot-card h1{margin:9px 0 8px;color:#fbfff5;font-size:clamp(25px,5vw,34px);letter-spacing:-.055em;line-height:1.1}
+.atlas-boot-message{min-height:39px;margin:0 0 25px;color:#b8cbbb;font-size:11px;line-height:1.65}.atlas-boot-progress-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:9px}
+.atlas-boot-progress-head span{color:#b5c9b8;font-size:8px;font-weight:900;letter-spacing:.16em}.atlas-boot-progress-head strong{color:#e5f1ce;font-size:13px;font-variant-numeric:tabular-nums}
+.atlas-boot-progress-track{height:9px;overflow:hidden;border:1px solid rgba(235,247,220,.12);border-radius:99px;background:rgba(0,0,0,.25)}.atlas-boot-progress-track i{display:block;width:0;height:100%;border-radius:99px;background:linear-gradient(90deg,#7fbd78,#d9ed8e);box-shadow:0 0 16px rgba(217,237,142,.3);transition:width .28s ease}
+.atlas-boot-progress-meta{display:flex;justify-content:space-between;gap:12px;margin:9px 0 19px;color:#91aa96;font-size:8px}.atlas-boot-tasks{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0;padding:0;list-style:none}
+.atlas-boot-task{min-width:0;display:flex;align-items:center;gap:9px;padding:9px 10px;border:1px solid rgba(229,242,221,.09);border-radius:10px;background:rgba(255,255,255,.035)}
+.atlas-boot-task-mark{width:19px;height:19px;flex:none;display:grid;place-items:center;border-radius:50%;background:rgba(255,255,255,.08);color:#9cb3a0;font-size:10px}.atlas-boot-task-copy{min-width:0;display:grid;gap:2px}
+.atlas-boot-task-copy b{overflow:hidden;color:#e7f0e4;font-size:9px;font-weight:800;text-overflow:ellipsis;white-space:nowrap}.atlas-boot-task-copy small{color:#91a997;font-size:7px;text-transform:uppercase;letter-spacing:.09em}
+.atlas-boot-task.is-ready .atlas-boot-task-mark{background:rgba(130,190,116,.17);color:#c7eb9b}.atlas-boot-task.is-failed .atlas-boot-task-mark{background:rgba(216,132,94,.16);color:#ffc19e}.atlas-boot-task.is-loading .atlas-boot-task-mark{color:#d9ed8e;animation:atlasBootPulse 1s ease-in-out infinite}.atlas-boot-task.is-skipped{opacity:.58}
+.atlas-boot-foot{display:block;margin-top:18px;color:#8ca392;font-size:8px;line-height:1.6}.atlas-boot-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:18px}.atlas-boot-actions[hidden]{display:none}
+.atlas-boot-actions button{min-height:38px;padding:0 14px;border:1px solid rgba(217,237,142,.3);border-radius:10px;background:#d9ed8e;color:#183d2c;font-size:9px;font-weight:900}.atlas-boot-actions .atlas-boot-retry{background:transparent;color:#e4efdc;border-color:rgba(229,242,221,.2)}
+@keyframes atlasBootPulse{50%{opacity:.35;transform:scale(.88)}}@media(max-width:520px){.atlas-boot-screen{padding:14px}.atlas-boot-card{padding:21px 17px;border-radius:19px}.atlas-boot-brand{margin-bottom:27px}.atlas-boot-tasks{grid-template-columns:1fr;gap:6px}.atlas-boot-task{padding:8px 9px}.atlas-boot-foot{margin-top:14px}}
+@media(prefers-reduced-motion:reduce){.atlas-boot-screen,.atlas-boot-progress-track i{transition:none}.atlas-boot-task.is-loading .atlas-boot-task-mark{animation:none}}
+
   </style>
 </head>
 <body>
+<div class="atlas-boot-screen" id="atlasBootScreen" role="dialog" aria-modal="true" aria-labelledby="atlasBootTitle" aria-describedby="atlasBootMessage">
+  <section class="atlas-boot-card">
+    <div class="atlas-boot-brand"><span class="atlas-boot-symbol" aria-hidden="true">৳</span><span class="atlas-boot-brand-name">BANGLADESH ATLAS<small>PUBLIC MONEY · PUBLIC KNOWLEDGE</small></span></div>
+    <div class="atlas-boot-kicker">STARTUP · DATA CHECK</div>
+    <h1 id="atlasBootTitle">Preparing Bangladesh Atlas</h1>
+    <p class="atlas-boot-message" id="atlasBootMessage">Loading the map engine and source-linked public datasets.</p>
+    <div class="atlas-boot-progress-head"><span>CORE DATA READINESS</span><strong id="atlasBootPercent">0%</strong></div>
+    <div class="atlas-boot-progress-track" id="atlasBootProgress" role="progressbar" aria-label="Core startup resources loaded" aria-valuemin="0" aria-valuemax="7" aria-valuenow="0"><i id="atlasBootProgressBar"></i></div>
+    <div class="atlas-boot-progress-meta"><span id="atlasBootCount">0 of 7 resources loaded</span><span id="atlasBootState">INITIALIZING</span></div>
+    <ul class="atlas-boot-tasks" id="atlasBootTasks" aria-live="polite">
+      <li class="atlas-boot-task" data-boot-task="map-library"><span class="atlas-boot-task-mark">·</span><span class="atlas-boot-task-copy"><b>Map engine</b><small>Waiting</small></span></li>
+      <li class="atlas-boot-task" data-boot-task="country"><span class="atlas-boot-task-mark">·</span><span class="atlas-boot-task-copy"><b>Bangladesh outline</b><small>Waiting</small></span></li>
+      <li class="atlas-boot-task" data-boot-task="district"><span class="atlas-boot-task-mark">·</span><span class="atlas-boot-task-copy"><b>District boundaries</b><small>Waiting</small></span></li>
+      <li class="atlas-boot-task" data-boot-task="budget"><span class="atlas-boot-task-mark">·</span><span class="atlas-boot-task-copy"><b>Budget data</b><small>Waiting</small></span></li>
+      <li class="atlas-boot-task" data-boot-task="projects"><span class="atlas-boot-task-mark">·</span><span class="atlas-boot-task-copy"><b>Project register</b><small>Waiting</small></span></li>
+      <li class="atlas-boot-task" data-boot-task="contracts"><span class="atlas-boot-task-mark">·</span><span class="atlas-boot-task-copy"><b>Contract awards</b><small>Waiting</small></span></li>
+      <li class="atlas-boot-task" data-boot-task="districts"><span class="atlas-boot-task-mark">·</span><span class="atlas-boot-task-copy"><b>District profiles</b><small>Waiting</small></span></li>
+    </ul>
+    <div class="atlas-boot-actions" id="atlasBootActions" hidden><button type="button" id="atlasBootContinue">Open map with available data</button><button class="atlas-boot-retry" type="button" id="atlasBootRetry">Reload and retry</button></div>
+    <small class="atlas-boot-foot" id="atlasBootFoot">Optional ADP project dots, rivers, landmarks, promise records and environmental overlays load only when requested.</small>
+  </section>
+</div>
 <header class="topbar">
   <div class="brand-area">
     <button class="icon-btn sidebar-menu-toggle" id="sidebarToggle" type="button"
@@ -3726,17 +3768,39 @@ async function ensureLeaflet(){
   catch(error){await loadLeafletScript("https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js");}
   if(!window.L)throw new Error("Leaflet did not initialise");
 }
+
+window.AtlasBoot=(function(){
+  const ids=["map-library","country","district","budget","projects","contracts","districts"];
+  const states=Object.fromEntries(ids.map(id=>[id,{status:"waiting",detail:"Waiting"}]));
+  const screen=document.getElementById("atlasBootScreen"),progress=document.getElementById("atlasBootProgress"),bar=document.getElementById("atlasBootProgressBar"),percent=document.getElementById("atlasBootPercent"),count=document.getElementById("atlasBootCount"),stateLabel=document.getElementById("atlasBootState"),message=document.getElementById("atlasBootMessage"),foot=document.getElementById("atlasBootFoot"),actions=document.getElementById("atlasBootActions");
+  let dismissed=false;
+  function render(){
+    const ready=ids.filter(id=>states[id].status==="ready").length,failed=ids.filter(id=>states[id].status==="failed").length,settled=ids.filter(id=>["ready","failed","skipped"].includes(states[id].status)).length,value=Math.round(ready/ids.length*100);
+    if(bar)bar.style.width=value+"%";if(percent)percent.textContent=value+"%";if(progress)progress.setAttribute("aria-valuenow",String(ready));
+    if(count)count.textContent=ready+" of "+ids.length+" core resources loaded"+(failed?" · "+failed+" unavailable":"");
+    if(stateLabel)stateLabel.textContent=settled===ids.length?(failed?"PARTIAL LOAD":"READY"):"LOADING";
+    ids.forEach(id=>{const row=screen?.querySelector('[data-boot-task="'+id+'"]');if(!row)return;const current=states[id];row.className="atlas-boot-task is-"+current.status;const mark=row.querySelector(".atlas-boot-task-mark"),detail=row.querySelector("small");if(mark)mark.textContent=current.status==="ready"?"✓":current.status==="failed"?"!":current.status==="loading"?"◌":current.status==="skipped"?"–":"·";if(detail)detail.textContent=current.detail||current.status;});
+    if(settled===ids.length&&!dismissed){
+      if(failed){if(message)message.textContent="Some startup resources could not be loaded. You can still open the map with the data that is available.";if(foot)foot.textContent="Failed sources are identified above. Use Reload and retry after checking your connection.";if(actions)actions.hidden=false;}
+      else{if(message)message.textContent="All core resources are ready. Opening the map…";if(foot)foot.textContent="The map is ready. Optional layers remain available on demand.";if(screen){screen.classList.add("is-exiting");window.setTimeout(()=>{if(!dismissed)screen.hidden=true;},430);}}
+    }else if(failed===0&&settled<ids.length&&message){const current=ids.find(id=>states[id].status==="loading");message.textContent=current?states[current].detail:"Loading the map and source-linked public datasets.";}
+  }
+  function begin(id,detail){if(!states[id]||states[id].status==="ready")return;states[id]={status:"loading",detail:detail||"Loading"};render();}
+  function ready(id,detail){if(!states[id])return;states[id]={status:"ready",detail:detail||"Loaded"};render();}
+  function fail(id,detail){if(!states[id])return;states[id]={status:"failed",detail:detail||"Unavailable"};render();}
+  function fatal(id,detail){fail(id,detail);ids.forEach(key=>{if(states[key].status==="waiting"||states[key].status==="loading")states[key]={status:"skipped",detail:"Skipped · map engine unavailable"};});render();if(actions)actions.hidden=false;}
+  function dismiss(){dismissed=true;if(screen){screen.classList.add("is-exiting");window.setTimeout(()=>{screen.hidden=true;},430);}}
+  document.getElementById("atlasBootContinue")?.addEventListener("click",dismiss);document.getElementById("atlasBootRetry")?.addEventListener("click",()=>window.location.reload());
+  render();return {begin,ready,fail,fatal,dismiss};
+})();
+
 </script>
 <script>
 (async function(){
   "use strict";
-  try{await ensureLeaflet();}
-  catch(error){
-    console.error("Map library unavailable",error);
-    document.getElementById("mapStatus").textContent="The interactive map library could not load. Check your connection and reload.";
-    document.getElementById("mapStatus").classList.add("error");
-    return;
-  }
+  window.AtlasBoot?.begin("map-library","Loading the interactive map engine");
+  try{await ensureLeaflet();window.AtlasBoot?.ready("map-library","Map engine loaded");}
+  catch(error){console.error("Map library unavailable",error);window.AtlasBoot?.fatal("map-library","Map engine unavailable");document.getElementById("mapStatus").textContent="The interactive map library could not load. Check your connection and reload.";document.getElementById("mapStatus").classList.add("error");return;}
 
   const bounds=L.latLngBounds([[19.75,87.45],[27.45,93.25]]);
   const levelInfo={
@@ -4248,10 +4312,12 @@ async function ensureLeaflet(){
         }
       }
       window.setTimeout(()=>{if(statusEl.textContent.includes("areas ·"))setStatus("");},6000);
+      return true;
     }catch(error){
       console.error("Administrative layer failed:",level,error);
       setStatus("Could not load "+levelInfo[level].label.toLowerCase()+" boundaries: "+error.message,true);
       renderDirectorySearch(el("mapSearch").value);
+      return false;
     }
   }
 
@@ -5658,6 +5724,7 @@ async function ensureLeaflet(){
     return data;
   }
   async function loadOneAtlasData(key,url){
+    window.AtlasBoot?.begin(key,"Loading "+key+" data file");
     atlasDataState[key]={status:"loading",error:""};
     updateAtlasDataHealth();
     let lastError=null;
@@ -5679,6 +5746,7 @@ async function ensureLeaflet(){
         const data=validateAtlasDataset(key,await response.json());
         atlasData[key]=data;
         atlasDataState[key]={status:"loaded",error:""};
+        window.AtlasBoot?.ready(key,key==="projects"?"Project register loaded":key+" dataset loaded");
         updateAtlasDataHealth();
         return data;
       }catch(error){
@@ -5692,6 +5760,7 @@ async function ensureLeaflet(){
     }
     atlasData[key]=null;
     atlasDataState[key]={status:"error",error:lastError?.message||"Unknown data loading error"};
+    window.AtlasBoot?.fail(key,key+" data unavailable");
     console.error("Atlas dataset failed:",key,lastError);
     updateAtlasDataHealth();
     return null;
@@ -8525,18 +8594,17 @@ async function ensureLeaflet(){
   });
 
   async function start(){
-    el("map").style.background="#dcefeb";
-    setStatus("Preparing Bangladesh map…");
-    await loadCountryBoundary();
-    setStatus("Loading district boundaries…");
-    await switchLevel("district");
-    // Optional map overlays load only after the visitor enables them.
-    if(activeLevel==="district"&&currentLayer){
-      setStatus("Bangladesh outline and district layer loaded · switch to divisions, upazilas or unions.");
-    }
+    el("map").style.background="#dcefeb";setStatus("Preparing Bangladesh map…");
+    window.AtlasBoot?.begin("country","Loading Bangladesh's national boundary");
+    const countryReady=await loadCountryBoundary();
+    if(countryReady)window.AtlasBoot?.ready("country","Bangladesh outline loaded");else window.AtlasBoot?.fail("country","National outline unavailable");
+    setStatus("Loading district boundaries…");window.AtlasBoot?.begin("district","Loading district boundaries and names");
+    const districtReady=await switchLevel("district");
+    if(districtReady)window.AtlasBoot?.ready("district","District boundaries loaded");else window.AtlasBoot?.fail("district","District boundary data unavailable");
+    if(activeLevel==="district"&&currentLayer)setStatus("Bangladesh outline and district layer loaded · switch to divisions, upazilas or unions.");
   }
   start().catch(error=>{
-    console.error("Map startup failed:",error);
+    console.error("Map startup failed:",error);window.AtlasBoot?.fail("district","Map startup failed");
     setStatus("Map startup failed: "+(error&&error.message?error.message:String(error)),true);
   });
 
