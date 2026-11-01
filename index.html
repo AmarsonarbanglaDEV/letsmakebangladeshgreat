@@ -2753,7 +2753,9 @@ async function ensureLeaflet(){
   const cache={};
   const searchCache=new Map();
   let language="en",activeLevel="district",currentLayer=null,countryClipData=null,countryOutline=null;
-  let fallbackDivisionLayer=null,clipFrameScheduled=0;
+  let fallbackDivisionLayer=null,clipFrameScheduled=0,clipThrottleTimer=0,clipLastUpdated=0;
+  let countryClipSupported=null;
+  let searchInputTimer=0;
   let satellite=null,historicalLayer=null,outlineMode=false,lastPoint=null,pointMarker=null;
   let projectMarkersLayer=null,selectedProjectId=null;
   let waybackCore=null,lastSearchAt=0;
@@ -2876,7 +2878,7 @@ async function ensureLeaflet(){
       try{
         response=await fetchWithTimeout(endpoint,{
           method:"GET",headers:{Accept:"application/geo+json, application/json"},
-          credentials:"same-origin",cache:"no-store"
+          credentials:"same-origin",cache:"default"
         },32000,"Map-data endpoint");
       }catch(error){
         throw new Error("The site's map-data endpoint could not be reached. Make sure the Cloudflare Pages Functions deployment is active. "+error.message);
@@ -2963,25 +2965,29 @@ async function ensureLeaflet(){
             if(activeProjectSpotId&&handleProjectSpotMapClick(event.latlng))return;
             selectAdministrativeArea(r,true);
           });
-          path.on("mouseover",()=>path.setStyle({color:"#d9ed8e",weight:3.2,fillOpacity:.12}));
-          path.on("mouseout",()=>styleCurrentLayer());
+          path.on("mouseover",()=>{
+            const base=basePathStyle(path);
+            path.setStyle({color:"#d9ed8e",weight:Math.max(3.2,base.weight),fillOpacity:.12});
+          });
+          path.on("mouseout",()=>path.setStyle(basePathStyle(path)));
         }
       }
     });
     return {data:data,records:records,layer:layer,sourceLabel:data.sourceLabel||"Official ArcGIS boundary service"};
   }
+  function basePathStyle(path){
+    const r=path&&path._atlasRecord;
+    const selected=!!(selectedArea&&r&&selectedArea.id===r.id);
+    return {
+      color:selected?"#d9ed8e":(activeLevel==="division"?"#e9f5db":"#f8f8e8"),
+      weight:selected?3.7:(activeLevel==="division"?3.1:(activeLevel==="district"?1.7:1.15)),
+      fillColor:selected?"#d9ed8e":(r?r.color:"#dce8d7"),
+      fillOpacity:selected?.14:.018
+    };
+  }
   function styleCurrentLayer(){
     if(!currentLayer)return;
-    currentLayer.eachLayer(path=>{
-      const r=path._atlasRecord;
-      const selected=selectedArea&&r&&selectedArea.id===r.id;
-      path.setStyle({
-        color:selected?"#d9ed8e":(activeLevel==="division"?"#e9f5db":"#f8f8e8"),
-        weight:selected?3.7:(activeLevel==="division"?3.1:(activeLevel==="district"?1.7:1.15)),
-        fillColor:selected?"#d9ed8e":(r?r.color:"#dce8d7"),
-        fillOpacity:selected?.14:.018
-      });
-    });
+    currentLayer.eachLayer(path=>path.setStyle(basePathStyle(path)));
   }
   let selectedArea=null;
   function setSelectedAreaCard(record){
@@ -3128,19 +3134,38 @@ async function ensureLeaflet(){
   function updateCountryClip(){
     if(!countryClipData||!map)return;
     const clip=countryScreenPath(countryClipData);
-    if(!window.CSS||!CSS.supports("clip-path",clip)){
-      throw new Error("This browser does not support the country-boundary map clip.");
+    // Test CSS path support once with a tiny representative path instead of repeatedly
+    // parsing the full country coastline during camera updates.
+    if(countryClipSupported===null){
+      countryClipSupported=!!(window.CSS&&CSS.supports(
+        "clip-path",'path(evenodd, "M0 0L1 0L1 1Z")'
+      ));
     }
+    if(!countryClipSupported)throw new Error("This browser does not support the country-boundary map clip.");
     const node=map.getContainer();
     node.style.clipPath=clip;
     node.style.webkitClipPath=clip;
     node.dataset.countryClip="active";
   }
 
-  function scheduleCountryClip(){
-    if(!countryClipData||clipFrameScheduled)return;
+  function scheduleCountryClip(force=false){
+    if(!countryClipData||!map)return;
+    const elapsed=performance.now()-clipLastUpdated;
+    const wait=force?0:Math.max(0,65-elapsed);
+    if(wait>0){
+      if(!clipThrottleTimer){
+        clipThrottleTimer=window.setTimeout(()=>{
+          clipThrottleTimer=0;
+          scheduleCountryClip(true);
+        },wait);
+      }
+      return;
+    }
+    if(clipThrottleTimer){window.clearTimeout(clipThrottleTimer);clipThrottleTimer=0;}
+    if(clipFrameScheduled)return;
     clipFrameScheduled=window.requestAnimationFrame(()=>{
       clipFrameScheduled=0;
+      clipLastUpdated=performance.now();
       try{updateCountryClip();}
       catch(error){
         console.error("Country silhouette update failed:",error);
@@ -3234,8 +3259,8 @@ async function ensureLeaflet(){
   const countryRenderer=L.svg({pane:"countryPane"});
   const adminRenderer=L.canvas({pane:"boundaryPane",padding:0.5});
   map.getContainer().style.background="#081923";
-  map.getContainer().style.willChange="clip-path";
-  map.on("move zoom resize viewreset",scheduleCountryClip);
+  map.on("move",()=>scheduleCountryClip(false));
+  map.on("moveend zoomend resize viewreset",()=>scheduleCountryClip(true));
 
   satellite=L.tileLayer(
     "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
@@ -3277,9 +3302,13 @@ async function ensureLeaflet(){
   }
   function refreshAreaLabels(){
     if(!currentLayer)return;
+    const featureCount=currentLayer.getLayers().length;
+    // Permanent label DOM nodes are useful for 8 divisions and 64 districts,
+    // but become expensive on hundreds/thousands of upazila/union/ward polygons.
+    // Detailed levels keep their lightweight hover/tap tooltips only.
+    if(featureCount>80)return;
     const zoom=map.getZoom();
-    const show=activeLevel==="division" ? zoom>=6 :
-      (activeLevel==="district" ? zoom>=8 : zoom>=10);
+    const show=activeLevel==="division"?zoom>=6:(activeLevel==="district"&&zoom>=8);
     currentLayer.eachLayer(path=>{
       if(!path.getTooltip())return;
       if(show)path.openTooltip();
@@ -3450,8 +3479,12 @@ async function ensureLeaflet(){
   });
   searchInput.addEventListener("input",()=>{
     const q=searchInput.value.trim();
+    if(searchInputTimer)window.clearTimeout(searchInputTimer);
     if(!q){closeSearchResults();return;}
-    renderDirectorySearch(q);
+    searchInputTimer=window.setTimeout(()=>{
+      searchInputTimer=0;
+      renderDirectorySearch(q);
+    },90);
   });
 
   async function getWaybackCore(){
@@ -3636,7 +3669,7 @@ async function ensureLeaflet(){
       try{
         const target=new URL(url,window.location.href).toString();
         const response=await fetch(target,{
-          method:"GET",cache:"no-store",credentials:"same-origin",
+          method:"GET",cache:"default",credentials:"same-origin",
           headers:{Accept:"application/json"},
           signal:controller.signal
         });
