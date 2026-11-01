@@ -3127,7 +3127,7 @@
       <button class="map-pill" id="satelliteToggle" type="button">◈ Satellite</button>
       <button class="map-pill active" id="outlineToggle" type="button">✿ Illustrated</button>
       <button class="map-pill river-pill active" id="riverToggle" type="button" aria-pressed="true">〰 Rivers</button>
-      <button class="map-pill" id="landmarkToggle" type="button" aria-pressed="false">★ Landmarks</button>
+      <button class="map-pill active" id="landmarkToggle" type="button" aria-pressed="true">★ Landmarks</button>
     </div>
     <div class="map-controls" aria-label="Map controls">
       <button class="map-control" id="zoomIn" type="button" aria-label="Zoom in">+</button>
@@ -3136,7 +3136,7 @@
     </div>
     <div class="map-status" id="mapStatus" role="status" aria-live="polite">Loading Bangladesh outline and satellite map…</div>
 
-    <div class="landmark-panel" id="landmarkPanel" hidden aria-live="polite">
+    <div class="landmark-panel" id="landmarkPanel" aria-live="polite">
       <div class="landmark-panel-head"><strong>Landmarks in this map area</strong><span class="landmark-count" id="landmarkCount">OFF</span></div>
       <div class="landmark-filters" role="group" aria-label="Filter mapped landmarks">
         <button class="landmark-filter active" type="button" data-landmark-filter="all">All</button>
@@ -3163,6 +3163,7 @@
       <small id="adpRosterStatus">Waiting for official ADP roster import…</small>
       <small id="projectMarkerCount">Loading project locations…</small>
       <small class="river-status" id="riverStatus">Preparing Bangladesh's rivers…</small>
+      <small>River inventory reference: <a href="https://nodi.bwdb.gov.bd/RiverInfo" target="_blank" rel="noopener">BWDB River Information Management System</a>. Map lines are sourced separately and may not show every official river.</small>
     </div>
     <aside class="adp-directory-panel" id="adpDirectoryPanel" hidden aria-label="FY2026–27 ADP project directory">
       <header class="adp-directory-head">
@@ -3976,7 +3977,6 @@ async function ensureLeaflet(){
     window.setTimeout(()=>setStatus(""),2500);
   });
   el("riverToggle").addEventListener("click",toggleRivers);
-  map.on("moveend zoomend",()=>scheduleRiverLoad(1400));
   el("landmarkToggle").addEventListener("click",toggleLandmarks);
   document.querySelectorAll("[data-landmark-filter]").forEach(button=>{
     button.addEventListener("click",()=>setLandmarkFilter(button.getAttribute("data-landmark-filter")));
@@ -4009,7 +4009,10 @@ async function ensureLeaflet(){
   const MAJOR_RIVER_NAMES=new Set([
     "padma","jamuna","meghna","brahmaputra","teesta","tista","karnaphuli",
     "surma","kushiyara","buriganga","dhaleshwari","ganges","lohajang",
-    "arial khan","gorai","madhumati","rupsha","pashur","passur","feni river"
+    "arial khan","gorai","madhumati","rupsha","pashur","passur","feni river",
+    "পদ্মা","যমুনা","মেঘনা","ব্রহ্মপুত্র","তিস্তা","কর্ণফুলী","সুরমা",
+    "কুশিয়ারা","বুড়িগঙ্গা","ধলেশ্বরী","গঙ্গা","লৌহজং","আড়িয়াল খাঁ",
+    "গড়াই","মধুমতি","রূপসা","পশুর","ফেনী"
   ]);
 
   function riverBoundsForViewport(){
@@ -4030,7 +4033,7 @@ async function ensureLeaflet(){
     const candidates=new Map();
     (features||[]).forEach(feature=>{
       const name=String(feature.properties?.name||"").trim();
-      const key=normalise(name);
+      const key=normalise(name)||name.trim().toLowerCase();
       if(!name||!MAJOR_RIVER_NAMES.has(key))return;
       const points=feature.geometry?.coordinates||[];
       if(points.length<2)return;
@@ -4103,7 +4106,7 @@ async function ensureLeaflet(){
     const status=el("riverStatus");
     if(status){
       const stamp=data.timestamp?" · OSM "+String(data.timestamp).replace("T"," ").replace("Z"," UTC"):"";
-      status.textContent=features.length.toLocaleString()+" mapped waterway lines shown"+(data.capped?" · zoom in for additional detail":"")+stamp+" · © OpenStreetMap contributors";
+      status.textContent=features.length.toLocaleString()+" mapped waterway lines shown"+(data.capped?" · zoom in for additional detail":"")+stamp+" · "+(data.source||"River map source");
     }
     const toggle=el("riverToggle");
     if(toggle)toggle.classList.toggle("active",riversEnabled);
@@ -4186,7 +4189,7 @@ async function ensureLeaflet(){
 
   // Live, viewport-based OpenStreetMap landmarks. The API is same-origin,
   // edge-cached and only queried while the visitor has the layer switched on.
-  let landmarksEnabled=false;
+  let landmarksEnabled=true;
   let landmarksLayer=null;
   let landmarkItems=[];
   let landmarkFilter="all";
@@ -7028,6 +7031,7 @@ async function ensureLeaflet(){
     setStatus("Loading district boundaries…");
     await switchLevel("district");
     scheduleRiverLoad(400);
+    scheduleLandmarkLoad(900);
     if(activeLevel==="district"&&currentLayer){
       setStatus("Bangladesh outline and district layer loaded · switch to divisions, upazilas or unions.");
     }
