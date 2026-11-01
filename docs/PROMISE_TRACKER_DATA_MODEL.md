@@ -91,3 +91,14 @@ The map must not invent a marker at the district centroid and call it the projec
 - Separate allocation, release, expenditure, physical output and public outcome.
 - Keep original wording, translations, reviewer notes and historical corrections.
 - No evidence found is not equivalent to not started or cancelled.
+
+## Evidence search coverage is separate from promise status
+
+A promise may include an `evidenceAssessment` object:
+
+- `status: "implementation_evidence_found"`: at least one reviewed source documents implementation evidence.
+- `status: "reviewed_no_evidence_found"`: a documented search of named sources found no implementation evidence. This is not proof that implementation never occurred.
+- `status: "not_publicly_disclosed"`: the reviewed source set does not publicly disclose implementation information.
+- `status: "not_assessed"`: no sufficient source review has been completed.
+
+Include `reviewedSources[]` and `reviewedAt`. These values do not automatically set the promise status. In particular, lack of public disclosure must not be changed to `not_started` without a defensible review and stated evidence scope.
