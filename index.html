@@ -3172,6 +3172,8 @@
     }
 
 
+    .promise-register-tools{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px}
+    .promise-result-count{color:#87948b;font-size:8px}
     .promise-pager{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:9px;color:#77867b;font-size:8px}
     .promise-pager .promise-action:disabled{opacity:.4;cursor:not-allowed}
     .promise-pending-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
@@ -7180,7 +7182,7 @@ async function ensureLeaflet(){
   let promiseDatasetState="waiting";
   let promiseDatasetError="";
   let promiseDatasetLoad=null;
-  let promiseFilters={q:"",status:"all",sector:"all",government:"all",page:0,compareA:"",compareB:""};
+  let promiseFilters={q:"",status:"all",sector:"all",government:"all",followedOnly:false,page:0,compareA:"",compareB:""};
   let activePromiseId=null;
   let promiseMapLayer=null;
   let promiseFocusLayer=null;
@@ -7201,6 +7203,13 @@ async function ensureLeaflet(){
         promiseDataset=data;
         promiseDatasetState="loaded";
         promiseDatasetError="";
+        const sharedPromise=new URLSearchParams(window.location.hash.replace(/^#/,"")).get("promise");
+        if(sharedPromise&&data.promises.some(item=>item.id===sharedPromise)){
+          activePromiseId=sharedPromise;
+          activePanel="promises";
+          renderSidePanel("promises");
+          openAtlasDataPopup(sidebarToggle);
+        }
         if(promiseMapEnabled)drawPromiseMapMarkers();
         if(activePanel==="promises")renderSidePanel("promises");
         return data;
@@ -7314,6 +7323,7 @@ async function ensureLeaflet(){
     html+='<h2>'+escapeHtml(record.title||"Untitled promise")+'</h2>';
     html+='<p class="side-intro">'+escapeHtml(record.sector||"Unclassified sector")+' · '+escapeHtml(govt?.name||"Government period not identified")+'</p>';
     html+='<div class="promise-dashboard-actions"><button class="promise-action '+(follow?"primary":"")+'" type="button" data-promise-follow="'+escapeHtml(record.id)+'" aria-pressed="'+String(follow)+'">'+(follow?"★ Following":"☆ Follow promise")+'</button>';
+    html+='<button class="promise-action" type="button" data-promise-share="'+escapeHtml(record.id)+'">↗ Share record link</button>';
     if((record.geography||[]).length)html+='<button class="promise-action" type="button" data-promise-map="'+escapeHtml(record.id)+'">⌖ View geographic coverage</button>';
     html+='</div>';
     if(progress){
@@ -7375,6 +7385,7 @@ async function ensureLeaflet(){
       if(promiseFilters.status!=="all"&&record.status!==promiseFilters.status)return false;
       if(promiseFilters.sector!=="all"&&record.sector!==promiseFilters.sector)return false;
       if(promiseFilters.government!=="all"&&record.governmentId!==promiseFilters.government)return false;
+      if(promiseFilters.followedOnly&&!promiseFollowedIds().includes(record.id))return false;
       const haystack=normalise([record.id,record.title,record.originalText,record.sector,
         record.responsibleMinistry,(record.geography||[]).map(x=>x.name).join(" ")].join(" "));
       if(promiseFilters.q&&!haystack.includes(normalise(promiseFilters.q)))return false;
@@ -7523,6 +7534,7 @@ async function ensureLeaflet(){
     html+='<select class="promise-filter" data-promise-status aria-label="Filter by promise status"><option value="all">All statuses</option>'+Object.entries(PROMISE_STATUS_META).map(([key,val])=>'<option value="'+key+'"'+(promiseFilters.status===key?" selected":"")+'>'+escapeHtml(val.label)+'</option>').join("")+'</select>';
     html+='<select class="promise-filter" data-promise-sector aria-label="Filter by sector"><option value="all">All sectors</option>'+sectors.map(sector=>'<option value="'+escapeHtml(sector)+'"'+(promiseFilters.sector===sector?" selected":"")+'>'+escapeHtml(sector)+'</option>').join("")+'</select>';
     html+='<select class="promise-filter" data-promise-government aria-label="Filter by government period"><option value="all">All administrations</option>'+governments.map(govt=>'<option value="'+escapeHtml(govt.id)+'"'+(promiseFilters.government===govt.id?" selected":"")+'>'+escapeHtml(govt.name)+'</option>').join("")+'</select></div>';
+    html+='<div class="promise-register-tools"><button type="button" class="promise-action '+(promiseFilters.followedOnly?"primary":"")+'" data-promise-follow-filter aria-pressed="'+String(promiseFilters.followedOnly)+'">★ Followed ('+promiseFollowedIds().length+')</button><span class="promise-result-count">'+activeRecords.length+' matching records</span></div>';
     html+='<div class="promise-list">';
     if(activeRecords.length){
       html+=pageRecords.map(promiseRecordCard).join("");
@@ -7596,6 +7608,17 @@ async function ensureLeaflet(){
     }
     return '<div id="promiseDashboardContent"><div id="promiseDashboardBody">'+renderPromiseDashboardBody()+'</div></div>';
   }
+
+  function sharePromiseRecord(id){
+    const url=new URL(window.location.href);
+    url.hash="promise="+encodeURIComponent(id);
+    const link=url.href;
+    if(navigator.clipboard?.writeText){
+      navigator.clipboard.writeText(link).then(()=>setStatus("Share link copied for "+id+"."))
+        .catch(()=>setStatus("Copy this promise link: "+link));
+    }else setStatus("Copy this promise link: "+link);
+  }
+
   function exportPromiseRegister(){
     const records=promiseFilteredRecords();
     const columns=["id","title","originalText","governmentId","announcedDate","sector","status","responsibleMinistry","responsibleDepartment","targetValue","targetUnit","targetDate","lastEvaluatedAt","geography","progressPercent","evidenceIds"];
@@ -7760,6 +7783,10 @@ async function ensureLeaflet(){
         }else setStatus("Select a district on the map to explore its promise records.");
         return;
       }
+      const promiseShare=event.target.closest("[data-promise-share]");
+      if(promiseShare){sharePromiseRecord(promiseShare.getAttribute("data-promise-share"));return;}
+      const promiseFollowFilter=event.target.closest("[data-promise-follow-filter]");
+      if(promiseFollowFilter){promiseFilters.followedOnly=!promiseFilters.followedOnly;promiseFilters.page=0;refreshPromiseDashboard();return;}
       const promiseExport=event.target.closest("[data-promise-export]");
       if(promiseExport){exportPromiseRegister();return;}
       const promiseRetry=event.target.closest("[data-promise-retry]");
