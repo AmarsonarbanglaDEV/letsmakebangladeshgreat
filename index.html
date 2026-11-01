@@ -2872,7 +2872,7 @@ async function ensureLeaflet(){
     let offset=0,pages=0,sourceLabel="Bangladesh map-data service",fallbackReason="";
     while(pages<100){
       const endpoint="/api/map?level="+encodeURIComponent(level)+
-        "&offset="+offset+"&limit=700";
+        "&offset="+offset+"&limit=900";
       let response,data;
       setStatus("Connecting to "+levelInfo[level].label.toLowerCase()+" boundary data…");
       try{
@@ -2940,6 +2940,9 @@ async function ensureLeaflet(){
     if(!records.length)throw new Error("The boundary layer loaded, but its name fields could not be matched.");
     const byFeature=new WeakMap();
     records.forEach(record=>byFeature.set(record.feature,record));
+    // Small layers can keep pre-bound labels; detailed layers bind one tooltip
+    // only while a person is interacting with a particular polygon.
+    const prebindTooltips=records.length<=200;
     const layer=L.geoJSON(data,{
       pane:"boundaryPane",renderer:adminRenderer,
       smoothFactor:level==="division"?3.0:
@@ -2956,9 +2959,9 @@ async function ensureLeaflet(){
         const r=byFeature.get(feature);
         if(!r)return;
         path._atlasRecord=r;
-        path.bindTooltip(escapeHtml(r.name+(r.bn?" / "+r.bn:"")),{
-          sticky:true,className:"area-label",direction:"auto"
-        });
+        const tooltipLabel=escapeHtml(r.name+(r.bn?" / "+r.bn:""));
+        const tooltipOptions={sticky:true,className:"area-label",direction:"auto"};
+        if(interactive&&prebindTooltips)path.bindTooltip(tooltipLabel,tooltipOptions);
         if(interactive){
           path.on("click",event=>{
             if(event.originalEvent)L.DomEvent.stopPropagation(event.originalEvent);
@@ -2966,10 +2969,22 @@ async function ensureLeaflet(){
             selectAdministrativeArea(r,true);
           });
           path.on("mouseover",()=>{
+            if(!path.getTooltip()){
+              path.bindTooltip(tooltipLabel,tooltipOptions);
+              path._atlasLazyTooltip=true;
+            }
+            path.openTooltip();
             const base=basePathStyle(path);
             path.setStyle({color:"#d9ed8e",weight:Math.max(3.2,base.weight),fillOpacity:.12});
           });
-          path.on("mouseout",()=>path.setStyle(basePathStyle(path)));
+          path.on("mouseout",()=>{
+            if(path._atlasLazyTooltip){
+              path.closeTooltip();
+              path.unbindTooltip();
+              path._atlasLazyTooltip=false;
+            }
+            path.setStyle(basePathStyle(path));
+          });
         }
       }
     });
