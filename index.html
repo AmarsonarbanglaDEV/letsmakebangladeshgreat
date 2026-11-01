@@ -7326,13 +7326,23 @@ async function ensureLeaflet(){
     html+='<section class="promise-section"><span class="promise-section-kicker">ORIGINAL COMMITMENT</span><div class="promise-detail-text">'+escapeHtml(record.originalText||"Original statement has not been transcribed yet.")+'</div>';
     if(record.englishTranslation)html+='<h4>English translation</h4><div class="promise-detail-text">'+escapeHtml(record.englishTranslation)+'</div>';
     if(record.banglaTranslation)html+='<h4>বাংলা অনুবাদ</h4><div class="promise-detail-text">'+escapeHtml(record.banglaTranslation)+'</div></section>';
+    const evidenceAssessmentLabels={
+      implementation_evidence_found:"Implementation evidence identified",
+      reviewed_no_evidence_found:"No implementation evidence found in reviewed sources",
+      not_publicly_disclosed:"Implementation information not publicly disclosed in reviewed sources",
+      not_assessed:"Evidence search not yet assessed"
+    };
+    const evidenceAssessment=record.evidenceAssessment?.status
+      ?evidenceAssessmentLabels[record.evidenceAssessment.status]||record.evidenceAssessment.status
+      :"Not stated";
     const fields=[
       ["Promise ID",record.id],["Government / administration",govt?.name||record.governmentId],
       ["Party / administration",govt?.party||"Not stated"],["Announced",promiseDate(record.announcedDate)],
       ["Responsible ministry",record.responsibleMinistry],["Responsible department",record.responsibleDepartment],
-      ["Original target",record.target?.description||record.target?.value+(record.target?.unit?" "+record.target.unit:"")],
+      ["Original target",record.target?.description||(record.target?.value!==undefined?record.target.value+(record.target?.unit?" "+record.target.unit:""):"Not stated")],
       ["Target deadline",promiseDate(record.target?.targetDate||record.targetDate)],
-      ["Last evaluation",promiseDate(record.lastEvaluatedAt)],["Geographic coverage",(record.geography||[]).map(a=>a.name+" ("+a.type+")").join(", ")||"Not specified"]
+      ["Evidence search result",evidenceAssessment],["Last evaluation",promiseDate(record.lastEvaluatedAt)],
+      ["Geographic coverage",(record.geography||[]).map(a=>a.name+" ("+a.type+")").join(", ")||"Not specified"]
     ];
     html+='<section class="promise-section"><div class="promise-section-head"><div><span class="promise-section-kicker">COMMITMENT RECORD</span><h3>Who, what and when</h3></div></div><div class="promise-detail-grid">';
     fields.forEach(([label,value])=>{html+='<div class="promise-detail-field"><small>'+escapeHtml(label)+'</small><strong>'+escapeHtml(value??"Not stated")+'</strong></div>';});
