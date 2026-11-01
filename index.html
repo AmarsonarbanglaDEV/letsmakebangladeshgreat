@@ -4687,6 +4687,8 @@ async function ensureLeaflet(){
     if(button){
       button.classList.toggle("active",riversEnabled);
       button.setAttribute("aria-pressed",String(riversEnabled));
+      const subtitle=button.querySelector("small");
+      if(subtitle)subtitle.textContent=riversEnabled?"Waterways":"Waterways · off";
     }
     [riverHaloLayer,riverLayer,riverLabelsLayer].forEach(layer=>{
       if(!layer)return;
@@ -5229,7 +5231,12 @@ async function ensureLeaflet(){
     landmarksEnabled=!landmarksEnabled;
     const button=el("landmarkToggle");
     const panel=el("landmarkPanel");
-    if(button)button.classList.toggle("active",landmarksEnabled);
+    if(button){
+      button.classList.toggle("active",landmarksEnabled);
+      button.setAttribute("aria-pressed",String(landmarksEnabled));
+      const subtitle=button.querySelector("small");
+      if(subtitle)subtitle.textContent=landmarksEnabled?"Mapped places":"Mapped places · off";
+    }
     if(panel)panel.hidden=!landmarksEnabled;
     if(!landmarksEnabled){
       clearTimeout(landmarkTimer);
@@ -5248,7 +5255,12 @@ async function ensureLeaflet(){
     }catch(error){
       landmarksEnabled=false;
       if(panel)panel.hidden=true;
-      if(button)button.classList.remove("active");
+      if(button){
+        button.classList.remove("active");
+        button.setAttribute("aria-pressed","false");
+        const subtitle=button.querySelector("small");
+        if(subtitle)subtitle.textContent="Mapped places · unavailable";
+      }
       setStatus("Landmark clustering could not load: "+(error.message||String(error)),true);
     }
   }
