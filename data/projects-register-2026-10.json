@@ -19,7 +19,39 @@
       "note": "The RTHD mega-project index shows a Line-6 report updated 12 October 2026. The metrics transcribed below are from the directly accessible February 2026 PDF; the October PDF is not yet extracted, so do not label those metrics current.",
       "listingSnapshotDate": "2026-10-12"
     },
-    "mapLocationPolicy": "Map project points only when a project document gives a usable site coordinate or route geometry. Otherwise show an administrative-area highlight and label the location precision; never place a false point at a district centre."
+    "mapLocationPolicy": "Map project points only when a project document gives a usable site coordinate or route geometry. Otherwise show an administrative-area highlight and label the location precision; never place a false point at a district centre.",
+    "historicalEvidence": {
+      "status": "incomplete_research_build",
+      "targetPeriod": "1971-2026",
+      "lastReviewed": "2026-11-01",
+      "sourceRegister": "data/research-source-register.json",
+      "keyFindings": [
+        "The first Annual Development Programme was prepared for FY1972-73; the Planning Commission was established on 31 January 1972.",
+        "ERD publishes foreign-assistance tables beginning FY1971-72, but those are aggregate financial series rather than a complete list of individual projects.",
+        "IMED institutional monitoring lineage begins with the Project Implementation Bureau in January 1975, PMD in 1977 and IMED in 1982.",
+        "BWDB's archive includes selected completed project lists and yearwise ADP allocation/expenditure records from FY1959-60 to FY1998-99; pre-1971 entries must be treated as East Pakistan-era records, not independent Bangladesh projects.",
+        "LGED maintains an official spatial infrastructure database and digitised nationwide upazila base maps from the early 1990s; this is geographic context, not proof that any specific project funded a feature."
+      ],
+      "knownSourceGaps": [
+        "The national project register does not yet contain all ADP/RADP project rows for FY1972-73 through FY2025-26.",
+        "The FY2026-27 ADP source contains 1,173 listed projects across 88 pages; those rows have not yet been imported into this pilot register.",
+        "Historic cancelled, terminated, shelved, proposed and future projects need separate official decisions and dated source evidence.",
+        "Newspaper, television, radio and online media archives are leads and corroborating evidence, not a complete or authoritative national project ledger.",
+        "Exact site coordinates and route geometries are missing for most historical projects; project names that mention a district are not enough to establish an exact pin."
+      ],
+      "currentADPSnapshot": {
+        "fiscalYear": "2026-27",
+        "source": "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-imed/2026/9/51732c2a-8082-469a-b02b-499e6aaa00b6.pdf",
+        "sourceDate": "2026-10-14",
+        "pages": 88,
+        "listedProjects": 1173,
+        "totalAllocationLakh": 19474064.07,
+        "importedRecords": 0,
+        "note": "Source roster identified but not imported row-by-row. Allocation is the ADP 2026-27 list total, not expenditure."
+      },
+      "mediaEvidencePolicy": "Attach article/video/audio/photo sources to an identified project only with publisher, publication date, source URL, claim summary and corroboration state. Media alone must not establish final project cancellation, completion, expenditure or exact coordinates."
+    },
+    "sourceRegister": "data/research-source-register.json"
   },
   "projects": [
     {
