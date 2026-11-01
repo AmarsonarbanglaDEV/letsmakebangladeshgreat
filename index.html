@@ -4286,6 +4286,302 @@ async function ensureLeaflet(){
     return html;
   }
 
+  const projectProfileSectionDefs=[
+    ["overview","Overview","◫"],["details","Project details","▤"],["administration","Administration","⌂"],
+    ["financial","Financial information","৳"],["progress","Implementation progress","◴"],["timeline","Timeline","↗"],
+    ["location","Location","⌖"],["procurement","Procurement & contracts","⇄"],["documents","Documents","▧"],
+    ["gallery","Gallery","▣"],["monitoring","Monitoring & evaluation","✓"],["impact","Impact & beneficiaries","◎"],
+    ["related","Related records","⛓"],["history","History & audit trail","◷"]
+  ];
+  let activeProjectProfileId=null;
+  let activeProjectProfileTab="overview";
+  let lastProjectProfileTrigger=null;
+
+  function profileValue(value){
+    if(value===null||value===undefined||value==="")return "";
+    if(typeof value==="string"||typeof value==="number"||typeof value==="boolean")return escapeHtml(value);
+    return "";
+  }
+  function profileRow(label,value){
+    const text=profileValue(value);
+    return text?'<div class="project-profile-row"><span>'+escapeHtml(label)+'</span><strong>'+text+'</strong></div>':"";
+  }
+  function profilePanel(title,body,note){
+    if(!body)return "";
+    return '<section class="project-profile-panel"><div class="project-profile-panel-head"><h3>'+escapeHtml(title)+'</h3>'+(note?'<p>'+escapeHtml(note)+'</p>':"")+'</div>'+body+'</section>';
+  }
+  function profileEmpty(message){
+    return '<div class="project-profile-empty"><span>i</span><div><strong>Not published in the linked source</strong><p>'+escapeHtml(message||"This information is not included in the project records currently imported.")+'</p></div></div>';
+  }
+  function profileList(items){
+    if(!Array.isArray(items)||!items.length)return "";
+    return '<ul class="project-profile-list">'+items.map(item=>'<li>'+escapeHtml(item)+'</li>').join("")+'</ul>';
+  }
+  function profileStat(label,value,note,icon){
+    if(value===null||value===undefined||value==="")return "";
+    return '<div class="project-profile-stat"><span class="project-profile-stat-icon">'+icon+'</span><small>'+escapeHtml(label)+'</small><strong>'+value+'</strong>'+(note?'<em>'+escapeHtml(note)+'</em>':"")+'</div>';
+  }
+  function profileCostLakh(project){
+    return project.approval?.latestRevisedTotalLakh??project.approvedProjectCostLakh??project.financials?.approvedCostLakh??null;
+  }
+  function profileKnownStatus(project){
+    if(project.status){
+      const label=String(project.status).replaceAll("_"," ");
+      return label.charAt(0).toUpperCase()+label.slice(1);
+    }
+    return project.kind==="mega"?"Progress report published":"Approved-list entry";
+  }
+  function profileBar(label,value,maxValue){
+    if(value===null||value===undefined)return "";
+    const percent=maxValue>0?Math.max(0,Math.min(100,Number(value)/maxValue*100)):0;
+    return '<div class="project-profile-bar-row"><div><span>'+escapeHtml(label)+'</span><strong>'+escapeHtml(atlasMoney(croreFromLakh(value)))+'</strong></div><div class="project-profile-bar"><i style="width:'+percent.toFixed(1)+'%"></i></div></div>';
+  }
+  function renderProjectProfileOverview(project){
+    const cost=profileCostLakh(project);
+    const physical=(project.progress||[]).filter(item=>item.metric==="physical");
+    const financial=(project.progress||[]).filter(item=>item.metric==="financial");
+    const place=project.officialLocation||(project.administrativeAreas||[]).map(a=>a.name).join(", ");
+    const dates=[project.implementationStart,project.plannedCompletion].filter(Boolean).join(" → ");
+    const description=project.outcomes?.intended||project.plannedOutputs?.[0]||project.alternateName||"The linked register provides a project title and source reference but no fuller public summary.";
+    let html='<div class="project-profile-hero"><div class="project-profile-hero-art">'+projectTypeImageHtml(project)+'<span>Illustrative visual · not a site photograph</span></div>';
+    html+='<div class="project-profile-hero-copy"><div class="project-profile-badges"><span class="project-profile-status">'+escapeHtml(profileKnownStatus(project))+'</span><span class="project-profile-id">'+escapeHtml(project.id)+'</span></div>';
+    html+='<h2>'+escapeHtml(project.name)+'</h2><p>'+escapeHtml(description)+'</p><div class="project-profile-hero-meta">'+(place?'<span>⌖ '+escapeHtml(place)+'</span>':"")+(project.implementingAgency?'<span>▤ '+escapeHtml(project.implementingAgency)+'</span>':"")+(dates?'<span>◷ '+escapeHtml(dates)+'</span>':"")+'</div></div></div>';
+    html+='<div class="project-profile-stat-grid">';
+    html+=profileStat("Project estimate",cost===null?null:atlasMoney(croreFromLakh(cost)),"Source unit: BDT lakh","৳");
+    html+=profileStat("Revised total",project.approval?.latestRevisedTotalLakh==null?null:atlasMoney(croreFromLakh(project.approval.latestRevisedTotalLakh)),"Shown only when published","↗");
+    html+=profileStat("Physical progress",physical.length?physical.map(x=>Number(x.percent).toLocaleString("en-IN")+"%").join(" · "):null,"Separate source-reported measures","◴");
+    html+=profileStat("Financial progress",financial.length?financial.map(x=>Number(x.percent).toLocaleString("en-IN")+"%").join(" · "):null,"Not physical completion","▥");
+    html+='</div>';
+    let rows=profileRow("Project ID",project.id)+profileRow("Project type",project.projectType)+profileRow("Sponsoring ministry",project.ministry)+profileRow("Implementing agency",project.implementingAgency)+profileRow("Official location",place)+profileRow("Implementation period",dates)+profileRow("Source snapshot",project.sourceUpdatedAt||project.lastChecked);
+    html+=profilePanel("Basic project information",rows);
+    html+=profilePanel("Planned outputs",profileList(project.plannedOutputs));
+    if(project.outcomes?.intended)html+=profilePanel("Intended outcome",'<p class="project-profile-copy">'+escapeHtml(project.outcomes.intended)+'</p>');
+    if(project.dataLimitations?.length)html+=profilePanel("Record coverage and limitations",profileList(project.dataLimitations));
+    html+='<p class="project-profile-disclaimer">Approved cost is not expenditure. Missing progress, release, payment or outcome fields are not interpreted as zero.</p>';
+    return html;
+  }
+  function renderProjectProfileDetails(project){
+    let rows=profileRow("Project name",project.name)+profileRow("Alternate name",project.alternateName)+profileRow("Original Bangla title",project.originalTitleBn)+profileRow("Project reference",project.id)+profileRow("Project category",project.projectType)+profileRow("Model / schematic type",project.modelLabel)+profileRow("Official location",project.officialLocation)+profileRow("Implementation start",project.implementationStart)+profileRow("Expected completion",project.plannedCompletion)+profileRow("Approval date",project.approvalDate);
+    let html=profilePanel("Project identity",rows);
+    html+=profilePanel("Objectives and planned scope",profileList(project.plannedOutputs));
+    if(project.outcomes?.intended)html+=profilePanel("Intended outcome",'<p class="project-profile-copy">'+escapeHtml(project.outcomes.intended)+'</p>');
+    if(project.outcomes?.measured)html+=profilePanel("Measured outcome",'<p class="project-profile-copy">'+escapeHtml(project.outcomes.measured)+'</p>');
+    if(project.outcomes?.independentlyVerifiedOutcome)html+=profilePanel("Independently verified outcome",'<p class="project-profile-copy">'+escapeHtml(project.outcomes.independentlyVerifiedOutcome)+'</p>');
+    if(project.dataLimitations?.length)html+=profilePanel("Source limitations",profileList(project.dataLimitations));
+    return html||profileEmpty();
+  }
+  function renderProjectProfileAdministration(project){
+    const pd=project.projectDirector;
+    let rows=profileRow("Sponsoring ministry",project.ministry)+profileRow("Implementing agency",project.implementingAgency)+profileRow("Executing agency",project.executingAgency)+profileRow("Responsible department",project.responsibleDepartment)+profileRow("Project manager",project.projectManager)+profileRow("Project director",pd?.name)+profileRow("Designation",pd?.designation)+profileRow("Development partners",Array.isArray(project.developmentPartners)?project.developmentPartners.join(", "):project.developmentPartners)+profileRow("Funding institutions",Array.isArray(project.fundingInstitutions)?project.fundingInstitutions.join(", "):project.fundingInstitutions)+profileRow("Official website",project.officialWebsite);
+    let html=profilePanel("Responsible organisations and leadership",rows);
+    if(pd?.source)html+=profilePanel("Project director source",'<a class="project-profile-source-link" href="'+escapeHtml(pd.source)+'" target="_blank" rel="noopener">'+escapeHtml(pd.sourceTitle||"Open source naming the project director")+' ↗</a><p class="project-profile-muted">'+escapeHtml(pd.note||"Name and role shown as stated in the cited source.")+'</p>');
+    return html||profileEmpty("The imported record does not include further named officials or contact details.");
+  }
+  function renderProjectProfileFinancial(project){
+    const f=project.financials||{},a=project.approval||{};
+    const original=a.originalTotalLakh??f.originalApprovedCostLakh??f.approvedCostLakh??project.approvedProjectCostLakh;
+    const revised=a.latestRevisedTotalLakh??f.revisedCostLakh;
+    const govt=a.latestGoBShareLakh??f.governmentContributionLakh;
+    const aid=a.latestProjectAidShareLakh??f.foreignLoanLakh??f.projectAidLakh;
+    const released=f.fundReleaseLakh??f.releaseLakh??null;
+    const spent=f.reportedCumulativeExpenditureLakh??f.reportedExpenditureLakh??project.reportedCumulativeExpenditureLakh??null;
+    const audited=f.auditedExpenditureLakh??null;
+    const lines=[["Original approved budget",original],["Latest revised budget",revised],["Government contribution",govt],["Project aid / external contribution",aid],["Total amount released",released],["Reported expenditure",spent],["Audited expenditure",audited],["Remaining budget",revised!=null&&spent!=null?revised-spent:null]];
+    let rows=lines.filter(([,v])=>v!==null&&v!==undefined).map(([label,value])=>'<tr><th>'+escapeHtml(label)+'</th><td>'+atlasMoney(croreFromLakh(value))+'</td></tr>').join("");
+    if(!rows)rows='<tr><td colspan="2">No financial line items were published in the imported record.</td></tr>';
+    let html=profilePanel("Financial summary · BDT crore",'<div class="project-profile-table-wrap"><table class="project-profile-table"><tbody>'+rows+'</tbody></table></div>');
+    if(original!=null||revised!=null||released!=null||spent!=null){
+      const max=Math.max(original||0,revised||0,released||0,spent||0);
+      let bars=profileBar("Original approved",original,max)+profileBar("Latest revised",revised,max)+profileBar("Released",released,max)+profileBar("Reported expenditure",spent,max);
+      html+=profilePanel("Budget, release and expenditure comparison",bars,"Missing series are omitted; only reported figures are compared.");
+    }
+    if(Array.isArray(project.annualFinance)&&project.annualFinance.length){
+      let annual='<div class="project-profile-table-wrap"><table class="project-profile-table"><thead><tr><th>Fiscal year</th><th>ADP allocation (BDT lakh)</th><th>Reported expenditure (BDT lakh)</th></tr></thead><tbody>';
+      project.annualFinance.forEach(row=>annual+='<tr><th>'+escapeHtml(row.fiscalYear)+'</th><td>'+fmtAtlasNumber(row.adpAllocation)+'</td><td>'+fmtAtlasNumber(row.reportedExpenditure)+'</td></tr>');
+      annual+='</tbody></table></div>';
+      html+=profilePanel("Annual allocation and reported expenditure",annual,project.annualFinanceUnit||"Source unit not stated");
+    }
+    if(f.note||project.cumulativeNote)html+=profilePanel("Financial notes",'<p class="project-profile-copy">'+escapeHtml(f.note||project.cumulativeNote)+'</p>');
+    html+='<p class="project-profile-disclaimer">Allocation, release, expenditure and audit are different accounting measures. Missing values are not zero.</p>';
+    return html;
+  }
+  function renderProjectProfileProgress(project){
+    const list=project.progress||[];
+    if(!list.length)return profileEmpty("The approved-project listing does not publish project-level physical or financial progress. Progress is unknown, not 0%.");
+    let html="";
+    list.forEach(item=>{
+      const percent=Math.max(0,Math.min(100,Number(item.percent)||0));
+      html+='<article class="project-profile-progress-card"><div class="project-profile-progress-top"><div><span class="project-profile-progress-kind">'+escapeHtml(item.metric==="financial"?"FINANCIAL PROGRESS":"PHYSICAL PROGRESS")+'</span><h4>'+escapeHtml(item.label||"Reported measure")+'</h4></div><strong>'+percent.toLocaleString("en-IN")+'%</strong></div><div class="project-profile-progress-track"><i style="width:'+percent+'%"></i></div><p>'+escapeHtml(item.scope||"Scope not further described in source.")+'</p><div class="project-profile-progress-meta">Reported '+escapeHtml(item.reportedAt||"date not supplied")+(item.source?' · <a href="'+escapeHtml(item.source)+'" target="_blank" rel="noopener">Open source ↗</a>':"")+'</div>'+(item.currentness?'<p class="project-profile-muted">'+escapeHtml(item.currentness)+'</p>':"")+'</article>';
+    });
+    return html;
+  }
+  function renderProjectProfileTimeline(project){
+    const events=[];
+    if(project.approvalDate)events.push(["Approval date",project.approvalDate,"Approval date in imported register"]);
+    if(project.implementationStart)events.push(["Implementation start",project.implementationStart,"Start date in imported register"]);
+    if(project.approval?.originalDuration)events.push(["Original schedule",project.approval.originalDuration,"Original approved duration"]);
+    if(project.approval?.secondRevisionDuration)events.push(["Second revised schedule",project.approval.secondRevisionDuration,"Revision stated in progress report"]);
+    if(project.approval?.thirdRevisionDuration)events.push(["Third revised schedule",project.approval.thirdRevisionDuration,"Revision stated in progress report"]);
+    if(project.plannedCompletion)events.push(["Expected completion",project.plannedCompletion,"Completion date in imported register"]);
+    if(project.approval?.sourceDate)events.push(["Progress snapshot",project.approval.sourceDate,"Date of quantified progress source"]);
+    if(project.sourceUpdatedAt)events.push(["Source updated",project.sourceUpdatedAt,"Source transcription / review date"]);
+    if(project.lastChecked)events.push(["Last checked",project.lastChecked,"Dataset review metadata"]);
+    if(!events.length)return profileEmpty("No dated milestones were supplied in the imported project record.");
+    let html='<ol class="project-profile-timeline">';
+    events.forEach(([title,date,detail])=>html+='<li><span class="project-profile-timeline-dot"></span><div><small>'+escapeHtml(date)+'</small><strong>'+escapeHtml(title)+'</strong><p>'+escapeHtml(detail)+'</p></div></li>');
+    return html+'</ol><p class="project-profile-muted">This is not a complete administrative event log.</p>';
+  }
+  function renderProjectProfileLocation(project){
+    const areas=project.administrativeAreas||[];
+    let rows=profileRow("Official location",project.officialLocation)+profileRow("Latitude",project.latitude)+profileRow("Longitude",project.longitude)+profileRow("Full project address",project.fullAddress);
+    areas.forEach(area=>rows+=profileRow(area.type,area.name+(area.precision?" · "+area.precision:"")));
+    let html=profilePanel("Source-listed project location",rows||profileEmpty("No usable location details were supplied."));
+    if(project.mapDisplay?.areaConflict)html+=profileEmpty("Source contains conflicting administrative-area labels. It is not placed as a project site until resolved.");
+    if(project.mapDisplay?.exactCoordinatesAvailable===false)html+='<p class="project-profile-disclaimer">Exact project coordinates are not available. The map can show an administrative area only, not an exact work site.</p>';
+    html+=profilePanel("Location imagery and map inspection",projectTimeLapseMarkup(project),"Map imagery selection is not an official site coordinate unless a source provides it.");
+    return html;
+  }
+  function renderProjectProfileProcurement(project){
+    const packages=[...(project.contractPackages||[]),...(project.projectContracts||[])];
+    if(!packages.length)return profileEmpty(project.contractStatusNote||"No contract or supplier has been linked using an exact project reference.");
+    let html="";
+    packages.forEach(item=>{
+      const value=item.contractValueBDT!=null?atlasMoney(croreFromBdt(item.contractValueBDT)):item.contractValueLabel||"Not published";
+      html+=profilePanel(item.packageTitle||"Contract package",profileRow("Tender reference",item.reference)+profileRow("Contract number",item.contractNumber)+profileRow("Supplier",item.supplierNameAsPublished)+profileRow("Procuring entity",item.procuringEntity)+profileRow("Procurement method",item.procurementMethod)+profileRow("Contract value",value)+profileRow("Award date",item.awardDate)+profileRow("Signing date",item.contractSigningDate)+profileRow("Proposed completion",item.proposedCompletionDate)+(item.source?'<a class="project-profile-source-link" href="'+escapeHtml(item.source)+'" target="_blank" rel="noopener">Open contract source ↗</a>':""));
+    });
+    return html;
+  }
+  function projectProfileSources(project){
+    const docs=[];
+    const add=(title,url,detail,type)=>{
+      if(!url||!/^https?:\/\//i.test(url)||docs.some(item=>item.url===url))return;
+      docs.push({title,url,detail:detail||"",type:type||"Original public source"});
+    };
+    add(project.sourceTitle||"Original project register",project.source,"Source date: "+(project.sourceUpdatedAt||project.lastChecked||"not supplied"),"Project register");
+    add(project.approval?.sourceTitle||"Approval / progress report",project.approval?.source,"Report date: "+(project.approval?.sourceDate||project.approval?.sourceUpdatedAt||"not supplied"),"Progress report");
+    add(project.projectDirector?.sourceTitle||"Project leadership source",project.projectDirector?.source,"Named role reference","Leadership source");
+    (project.progress||[]).forEach(item=>add("Progress source · "+(item.label||item.metric),item.source,"Reported: "+(item.reportedAt||"date not supplied"),"Progress source"));
+    (project.documents||[]).forEach(doc=>add(doc.title||doc.name,doc.url||doc.source,doc.issueDate||doc.description,doc.type||"Project document"));
+    return docs;
+  }
+  function renderProjectProfileDocuments(project){
+    const docs=projectProfileSources(project);
+    if(!docs.length)return profileEmpty("No downloadable document URL is included in this project record.");
+    let html='<div class="project-profile-doc-grid">';
+    docs.forEach(doc=>html+='<article class="project-profile-doc"><span class="project-profile-doc-icon">FILE</span><div><small>'+escapeHtml(doc.type)+'</small><strong>'+escapeHtml(doc.title)+'</strong><p>'+escapeHtml(doc.detail)+'</p><a href="'+escapeHtml(doc.url)+'" target="_blank" rel="noopener">Open / download ↗</a></div></article>');
+    return html+'</div><p class="project-profile-muted">Only source documents linked to this record are listed. Missing DPP, RDPP, tender, audit and completion files are not fabricated.</p>';
+  }
+  function renderProjectProfileGallery(project){
+    const images=Array.isArray(project.gallery)?project.gallery:[];
+    let html='<div class="project-profile-gallery"><figure>'+projectTypeImageHtml(project)+'<figcaption>Conceptual project illustration, not an official site photograph, drone image or as-built model.</figcaption></figure></div>';
+    if(!images.length)html+=profileEmpty("No official site photographs, before-and-after images, videos or drone footage are linked in this record.");
+    else images.forEach(item=>{if(item.url)html+='<p><a href="'+escapeHtml(item.url)+'" target="_blank" rel="noopener">'+escapeHtml(item.title||"Project media")+' ↗</a></p>';});
+    return html;
+  }
+  function renderProjectProfileMonitoring(project){
+    let html=project.progress?.length?renderProjectProfileProgress(project):profileEmpty("No project-specific progress or inspection record was included in the imported source.");
+    if(project.outcomes?.measured)html+=profilePanel("Measured outcomes",'<p class="project-profile-copy">'+escapeHtml(project.outcomes.measured)+'</p>');
+    if(project.outcomes?.independentlyVerifiedOutcome)html+=profilePanel("Independently verified outcome",'<p class="project-profile-copy">'+escapeHtml(project.outcomes.independentlyVerifiedOutcome)+'</p>');
+    if(project.dataLimitations?.length)html+=profilePanel("Known evidence gaps",profileList(project.dataLimitations));
+    if(project.financials?.auditedExpenditureLakh==null)html+=profileEmpty("No audited expenditure value or linked audit finding is present in this project dataset.");
+    return html;
+  }
+  function renderProjectProfileImpact(project){
+    let html="";
+    if(project.plannedOutputs?.length)html+=profilePanel("Planned infrastructure and services",profileList(project.plannedOutputs));
+    if(project.outcomes?.intended)html+=profilePanel("Intended outcome",'<p class="project-profile-copy">'+escapeHtml(project.outcomes.intended)+'</p>');
+    if(project.outcomes?.measured)html+=profilePanel("Measured impact",'<p class="project-profile-copy">'+escapeHtml(project.outcomes.measured)+'</p>');
+    const metrics=[["Direct beneficiaries",project.directBeneficiaries],["Indirect beneficiaries",project.indirectBeneficiaries],["Jobs created",project.jobsCreated],["Services improved",project.servicesImproved],["Environmental impact",project.environmentalImpact],["Sustainability plan",project.sustainabilityPlan]].filter(([,value])=>value!==null&&value!==undefined&&value!=="");
+    if(metrics.length)html+=profilePanel("Reported impact metrics",metrics.map(([label,value])=>profileRow(label,value)).join(""));
+    return html||profileEmpty("Beneficiary counts, jobs and measured economic, social or environmental impacts are not supplied in this record.");
+  }
+  function renderProjectProfileRelated(project){
+    const rows=profileRow("Ministry",project.ministry)+profileRow("Implementing agency",project.implementingAgency)+profileRow("Project reference",project.id);
+    let html=profilePanel("Related organisations",rows);
+    const related=project.relatedRecords||project.relatedProjects||[];
+    if(related.length)html+=profilePanel("Explicitly linked records",'<ul class="project-profile-list">'+related.map(item=>'<li>'+escapeHtml(item.title||item.name||item.id||"Related record")+(item.url?' · <a href="'+escapeHtml(item.url)+'" target="_blank" rel="noopener">Open ↗</a>':"")+'</li>').join("")+'</ul>');
+    const sources=projectProfileSources(project);
+    if(sources.length)html+=profilePanel("Related source records",sources.map(doc=>'<p><a class="project-profile-source-link" href="'+escapeHtml(doc.url)+'" target="_blank" rel="noopener">'+escapeHtml(doc.title)+' ↗</a></p>').join(""));
+    html+='<p class="project-profile-muted">Contracts are not linked merely because they share a district. A project or package reference is required.</p>';
+    return html;
+  }
+  function renderProjectProfileHistory(project){
+    let html=profilePanel("Record provenance",profileRow("Record ID",project.id)+profileRow("Source record status",project.sourceStatus)+profileRow("Source updated",project.sourceUpdatedAt)+profileRow("Last checked",project.lastChecked)+profileRow("Progress source date",project.approval?.sourceDate));
+    if(project.approval){
+      const revisions=profileRow("Original schedule",project.approval.originalDuration)+profileRow("Second revision",project.approval.secondRevisionDuration)+profileRow("Latest revision",project.approval.latestRevision)+profileRow("Latest revised schedule",project.approval.thirdRevisionDuration)+profileRow("Approval source date",project.approval.sourceDate);
+      html+=profilePanel("Approval and revision history",revisions);
+    }
+    if(project.dataLimitations?.length)html+=profilePanel("Known audit-trail gaps",profileList(project.dataLimitations));
+    html+=profileEmpty("Creation user, editor identity, individual status changes, verification sign-off and a complete document-change log are not included in this dataset.");
+    return html;
+  }
+  function renderProjectProfileSection(project,key){
+    const renderers={
+      overview:renderProjectProfileOverview,details:renderProjectProfileDetails,administration:renderProjectProfileAdministration,
+      financial:renderProjectProfileFinancial,progress:renderProjectProfileProgress,timeline:renderProjectProfileTimeline,
+      location:renderProjectProfileLocation,procurement:renderProjectProfileProcurement,documents:renderProjectProfileDocuments,
+      gallery:renderProjectProfileGallery,monitoring:renderProjectProfileMonitoring,impact:renderProjectProfileImpact,
+      related:renderProjectProfileRelated,history:renderProjectProfileHistory
+    };
+    return (renderers[key]||renderProjectProfileOverview)(project)||profileEmpty();
+  }
+  function renderProjectProfilePopup(projectId,tabKey="overview",open=true,trigger){
+    const project=atlasData.projects?.projects?.find(item=>item.id===projectId);
+    if(!project)return;
+    activeProjectProfileId=projectId;
+    activeProjectProfileTab=projectProfileSectionDefs.some(item=>item[0]===tabKey)?tabKey:"overview";
+    el("projectProfileTitle").textContent=project.name;
+    el("projectProfileSubtitle").textContent=project.id+" · "+profileKnownStatus(project)+(project.sourceUpdatedAt?" · source snapshot "+project.sourceUpdatedAt:"");
+    el("projectProfileTabs").innerHTML=projectProfileSectionDefs.map(([key,label,icon])=>'<button type="button" class="project-profile-tab'+(key===activeProjectProfileTab?' active':'')+'" data-project-profile-tab="'+key+'" aria-pressed="'+(key===activeProjectProfileTab?'true':'false')+'"><span>'+icon+'</span><b>'+escapeHtml(label)+'</b></button>').join("");
+    el("projectProfileContent").innerHTML=renderProjectProfileSection(project,activeProjectProfileTab);
+    el("projectProfileContent").scrollTop=0;
+    el("projectProfileFooter").textContent="Source snapshot "+(project.sourceUpdatedAt||project.lastChecked||"not supplied")+" · Evidence first · Unknown stays unknown · Not an audit certification.";
+    if(open)openProjectProfilePopup(trigger);
+  }
+  function isProjectProfileOpen(){
+    const layer=el("projectProfileLayer");
+    return !!layer&&!layer.hidden;
+  }
+  function openProjectProfilePopup(trigger){
+    if(trigger)lastProjectProfileTrigger=trigger;
+    if(isDataPopupOpen())closeAtlasDataPopup(false);
+    if(sidebarIsOpen())setSidebarOpen(false,sidebarToggle,false);
+    el("projectProfileLayer").hidden=false;
+    el("projectProfileLayer").setAttribute("aria-hidden","false");
+    document.body.classList.add("project-profile-open");
+    sidebar.setAttribute("aria-hidden","true");sidebar.inert=true;
+    mapArea.inert=true;if(topbarElement)topbarElement.inert=true;
+    window.requestAnimationFrame(()=>el("projectProfileClose").focus());
+  }
+  function closeProjectProfilePopup(restoreFocus=true){
+    const layer=el("projectProfileLayer");
+    if(!layer||layer.hidden)return;
+    layer.hidden=true;layer.setAttribute("aria-hidden","true");
+    document.body.classList.remove("project-profile-open");
+    const blockingPopup=isDataPopupOpen();
+    sidebar.inert=!sidebarIsOpen()||blockingPopup;
+    sidebar.setAttribute("aria-hidden",sidebarIsOpen()&&!blockingPopup?"false":"true");
+    mapArea.inert=blockingPopup;if(topbarElement)topbarElement.inert=blockingPopup;
+    if(restoreFocus){
+      const target=lastProjectProfileTrigger;
+      window.requestAnimationFrame(()=>{
+        if(target&&target.getClientRects().length&&typeof target.focus==="function")target.focus();
+        else sidebarToggle.focus();
+      });
+    }
+  }
+  function projectProfileSectionChange(key){
+    const project=atlasData.projects?.projects?.find(item=>item.id===activeProjectProfileId);
+    if(!project)return;
+    activeProjectProfileTab=key;
+    el("projectProfileTabs").querySelectorAll("[data-project-profile-tab]").forEach(button=>{
+      const selected=button.dataset.projectProfileTab===key;
+      button.classList.toggle("active",selected);button.setAttribute("aria-pressed",String(selected));
+    });
+    el("projectProfileContent").innerHTML=renderProjectProfileSection(project,key);
+    el("projectProfileContent").scrollTop=0;
+  }
+
   function renderProjectCard(project){
     const isMega=project.kind==="mega";
     const approvedLakh=project.approval?.latestRevisedTotalLakh??project.approvedProjectCostLakh??project.financials?.approvedCostLakh;
