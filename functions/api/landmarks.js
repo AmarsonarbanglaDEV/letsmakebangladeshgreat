@@ -95,9 +95,9 @@ async function fetchOverpass(query) {
   // POST keeps the query out of the URL, and independent endpoints provide
   // resilience when one public Overpass instance is busy or rate-limited.
   const endpoints = [
-    "https://overpass.kumi.systems/api/interpreter",
-    "https://overpass-api.de/api/interpreter",
-    "https://overpass.nchc.org.tw/api/interpreter"
+    "https://overpass.private.coffee/api/interpreter",
+    "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
+    "https://overpass-api.de/api/interpreter"
   ];
   let lastError = null;
   for (const endpoint of endpoints) {
