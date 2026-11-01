@@ -4757,6 +4757,7 @@ async function ensureLeaflet(){
     }
     if(project.dataLimitations?.length)html+=profilePanel("Known audit-trail gaps",profileList(project.dataLimitations));
     html+=profileEmpty("Creation user, editor identity, individual status changes, verification sign-off and a complete document-change log are not included in this dataset.");
+    html+=profileEmpty("Public complaints, grievance submissions and official response records are not connected to this project dataset.");
     return html;
   }
   function renderProjectProfileSection(project,key){
@@ -4787,7 +4788,7 @@ async function ensureLeaflet(){
     return !!layer&&!layer.hidden;
   }
   function openProjectProfilePopup(trigger){
-    if(trigger)lastProjectProfileTrigger=trigger;
+    lastProjectProfileTrigger=trigger&& !trigger.closest("#sidebar")?trigger:sidebarToggle;
     if(isDataPopupOpen())closeAtlasDataPopup(false);
     if(sidebarIsOpen())setSidebarOpen(false,sidebarToggle,false);
     el("projectProfileLayer").hidden=false;
