@@ -2916,6 +2916,27 @@
     @media(prefers-reduced-motion:reduce){.district-vibe-emoji{animation:none}}
     .district-hover-tooltip{border:1px solid rgba(255,255,255,.95)!important;border-radius:10px!important;background:#fffaf0!important;color:#233c34!important;font-size:11px!important;font-weight:850!important;box-shadow:0 5px 18px rgba(20,40,31,.17)!important}
 
+  
+    /* Tiny looping street scenes: person, joke-related moving prop and a supporting character. */
+    .district-vibe-art{height:146px}
+    .district-vibe-emoji{position:absolute;left:calc(50% - 33px);top:25px;width:66px;height:66px;border-radius:23px;font-size:42px;z-index:2}
+    .district-motion-stage{position:absolute;z-index:3;inset:0;overflow:hidden;pointer-events:none}
+    .district-motion-stage:after{content:"";position:absolute;left:0;right:0;bottom:6px;height:2px;background:rgba(40,71,56,.22);border-radius:50%}
+    .district-motion-sprite{position:absolute;bottom:8px;display:block;font-size:27px;line-height:1;white-space:nowrap;filter:drop-shadow(0 3px 2px rgba(32,48,39,.18));transform-origin:50% 85%}
+    .district-motion-person{left:9px;animation:districtWalk 4.4s ease-in-out infinite}
+    .district-motion-prop{right:16px;bottom:10px;font-size:29px;animation:districtPropTravel 3.5s ease-in-out infinite}
+    .district-motion-sidekick{left:52%;bottom:9px;font-size:23px;animation:districtSidekickHop 2.1s ease-in-out infinite}
+    .district-motion-person:after{content:"";position:absolute;left:-5px;top:8px;width:12px;height:2px;border-radius:3px;background:rgba(255,255,255,.8);box-shadow:-5px 6px 0 rgba(255,255,255,.55);animation:districtMotionLines .8s ease-in-out infinite}
+    .district-vibe-kicker{display:flex;align-items:center;gap:6px}
+    .district-vibe-kicker:before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--district-accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--district-accent) 18%,transparent)}
+    @keyframes districtWalk{0%,100%{transform:translateX(0) translateY(0) rotate(-5deg)}20%{transform:translateX(17px) translateY(-5px) rotate(5deg)}45%{transform:translateX(43px) translateY(0) rotate(-4deg)}70%{transform:translateX(20px) translateY(-4px) rotate(5deg)}}
+    @keyframes districtPropTravel{0%,100%{transform:translateX(0) translateY(0) rotate(0)}35%{transform:translateX(-18px) translateY(-9px) rotate(-12deg)}70%{transform:translateX(-4px) translateY(-2px) rotate(8deg)}}
+    @keyframes districtSidekickHop{0%,100%{transform:translateY(0) rotate(0)}35%{transform:translateY(-11px) rotate(9deg)}68%{transform:translateY(-3px) rotate(-7deg)}}
+    @keyframes districtMotionLines{0%,100%{opacity:.15;transform:translateX(0)}50%{opacity:.9;transform:translateX(-4px)}}
+    @media(prefers-reduced-motion:reduce){
+      .district-vibe-emoji,.district-motion-sprite,.district-motion-person:after{animation:none!important}
+    }
+
   </style>
 </head>
 <body>
@@ -3310,6 +3331,40 @@ async function ensureLeaflet(){
     patuakhali:["🌅","Kuakata offers sunrise and sunset over the sea: nature's two-for-one deal.","#ecc49a","#a46d45","rays"],
     pirojpur:["🌿","Rivers, greenery and rural beauty: your neighbour might be a river.","#b7d7b5","#5d885e","leaves"]
   };
+
+  // The three moving sprites in each scene: a local character, a joke-related prop,
+  // and a supporting character/detail. These are editorial illustrations, not factual claims.
+  const districtMotion={
+    dhaka:["🧑‍💼","🚌","🚦"],faridpur:["🧭","🗺️","🧑‍✈️"],gazipur:["🧑‍🏭","🏭","🐦"],
+    gopalganj:["🧑‍⚖️","🎙️","👨‍👩‍👧‍👦"],kishoreganj:["🧑‍🌾","🛶","🦆"],madaripur:["🧑‍🤝‍🧑","👂","📢"],
+    manikganj:["🚴‍♂️","🚲","☕"],munshiganj:["🧑‍🍳","🥔","🥔"],narayanganj:["🧑‍🏭","🏗️","🦟"],
+    narsingdi:["🧑‍🎨","🧵","👕"],rajbari:["🧑‍🦱","🚂","🚉"],shariatpur:["🧍‍♀️","⛵","🌊"],
+    tangail:["🧑‍🎨","🧣","🍮"],bandarban:["🥾","⛰️","🧑‍🦯"],brahmanbaria:["🗣️","🎤","🧑‍🤝‍🧑"],
+    chandpur:["🧑‍🍳","🐟","⭐"],chattogram:["🧑‍💼","🚢","⚓"],cumilla:["🧑‍🍳","🍮","🥄"],
+    coxsbazar:["🧑‍📸","📱","🏖️"],feni:["😎","📣","🧍‍♂️"],khagrachhari:["🥾","⛰️","🧑‍🌾"],
+    lakshmipur:["🧑‍🏫","📣","📊"],noakhali:["🧑‍💬","💬","🗣️"],rangamati:["🧑‍🦯","🛶","🏞️"],
+    bogura:["🧑‍🍳","🥣","🥄"],joypurhat:["🧑‍🌾","🚜","🌾"],naogaon:["🧑‍🌾","🍚","🌾"],
+    natore:["👑","🍬","🧑‍🍳"],chapainawabganj:["🧑‍🌾","🥭","🧺"],pabna:["🧑‍💻","💻","🔄"],
+    rajshahi:["🧑‍🌾","🥭","🧣"],sirajganj:["🧑‍🌾","🌊","🚣"],bagerhat:["🧑‍🏛️","🕌","📜"],
+    chuadanga:["🧑‍🌾","☀️","🧢"],jashore:["🧑‍🌼","🌼","🌸"],jhenaidah:["🧑‍🎙️","🎤","📻"],
+    khulna:["🧑‍🌳","🐅","🌿"],kushtia:["🧑‍🎤","🎶","☕"],magura:["🧑‍⚽","⚽","🥅"],
+    meherpur:["🧑‍🏫","📜","🏛️"],narail:["🧑‍🏏","🏏","🏆"],satkhira:["🧑‍🍤","🦐","🧺"],
+    sylhet:["🧑‍🍵","🍃","🫖"],habiganj:["🧑‍🌾","🍵","🌱"],moulvibazar:["🧑‍🍵","🫖","🍵"],
+    sunamganj:["🧑‍🌾","🚣","🛶"],dinajpur:["🧑‍🌾","🍒","🧺"],gaibandha:["🧑‍🌾","🌊","🚣"],
+    kurigram:["🧑‍🌾","🏝️","🛶"],lalmonirhat:["🧑‍✈️","🚂","🚉"],nilphamari:["🧑‍✈️","✈️","🚂"],
+    panchagarh:["🧑‍🦯","🏔️","☁️"],rangpur:["🧑‍🏫","🧣","📚"],thakurgaon:["🧑‍🌾","🚲","🌤️"],
+    mymensingh:["🧑‍🍳","🐟","🍮"],jamalpur:["🧑‍🎨","🪡","🧵"],netrokona:["🧑‍🌾","🌾","🛶"],
+    sherpur:["🧑‍🌳","🌲","🛖"],barishal:["🧑‍🚣","🛶","🍃"],barguna:["🧑‍🌊","🚤","🐚"],
+    bhola:["🧑‍🏝️","🚤","🛶"],jhalokati:["🧑‍🌾","🍈","🛶"],patuakhali:["🧑‍🏖️","📷","🌅"],
+    pirojpur:["🧑‍🌿","🛶","🌳"]
+  };
+  function districtMotionFor(record){
+    if(!record)return ["🧍","✨","🌿"];
+    const key=normalise(record.name);
+    const aliases={chittagong:"chattogram",comilla:"cumilla",bogra:"bogura",jessore:"jashore",barisal:"barishal",maulvibazar:"moulvibazar"};
+    return districtMotion[aliases[key]||key]||["🧍","✨","🌿"];
+  }
+
   const districtArtAliases={
     chittagong:"chattogram",comilla:"cumilla",bogra:"bogura",jessore:"jashore",
     barisal:"barishal",maulvibazar:"moulvibazar","coxsbazar":"coxsbazar",
@@ -3331,6 +3386,11 @@ async function ensureLeaflet(){
         '<div class="district-vibe-art motif-'+art[4]+'">'+
           '<span class="district-vibe-stamp">Bangladesh · District postcard</span>'+
           '<span class="district-vibe-emoji" aria-hidden="true">'+art[0]+'</span>'+
+          '<div class="district-motion-stage" aria-hidden="true">'+
+            '<span class="district-motion-sprite district-motion-person">'+districtMotionFor(record)[0]+'</span>'+
+            '<span class="district-motion-sprite district-motion-prop">'+districtMotionFor(record)[1]+'</span>'+
+            '<span class="district-motion-sprite district-motion-sidekick">'+districtMotionFor(record)[2]+'</span>'+
+          '</div>'+
         '</div>'+
         '<div class="district-vibe-content">'+
           '<div class="district-vibe-kicker">A little local character</div>'+
