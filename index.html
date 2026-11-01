@@ -3600,7 +3600,7 @@ async function ensureLeaflet(){
     countryOutline=L.geoJSON(data,{
       pane:"countryPane",renderer:countryRenderer,interactive:false,
       smoothFactor:1.5,
-      style:{color:"#427a54",weight:2.6,opacity:1,fill:true,fillColor:"#dcefc9",fillOpacity:1}
+      style:{color:"#427a54",weight:2.6,opacity:1,fill:false,fillColor:"#dcefc9",fillOpacity:0}
     }).addTo(map);
     const countryBounds=countryOutline.getBounds();
     if(!countryBounds.isValid())throw new Error("The national boundary has invalid map bounds.");
