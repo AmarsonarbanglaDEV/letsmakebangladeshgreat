@@ -3517,7 +3517,7 @@ async function ensureLeaflet(){
             path.openTooltip();
             const base=basePathStyle(path);
             const art=level==="district"?districtArtFor(r):null;
-            path.setStyle({color:art?art[3]:"#d9ed8e",weight:Math.max(3.2,base.weight),fillColor:art?art[2]:base.fillColor,fillOpacity:level==="district"?(outlineMode?.98:.18):.22});
+            path.setStyle({color:art?art[3]:"#d9ed8e",weight:Math.max(3.2,base.weight),fillColor:art?art[2]:base.fillColor,fillOpacity:level==="district" ? (outlineMode ? .98 : .18) : .22});
           });
           path.on("mouseout",()=>{
             if(path._atlasLazyTooltip){
