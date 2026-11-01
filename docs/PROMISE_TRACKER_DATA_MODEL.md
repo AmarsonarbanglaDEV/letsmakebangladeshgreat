@@ -102,3 +102,5 @@ A promise may include an `evidenceAssessment` object:
 - `status: "not_assessed"`: no sufficient source review has been completed.
 
 Include `reviewedSources[]` and `reviewedAt`. These values do not automatically set the promise status. In particular, lack of public disclosure must not be changed to `not_started` without a defensible review and stated evidence scope.
+
+Promise records may also include `independentAssessments[]` with `title`, `issuer`, `date`, `assessmentType`, `conclusion` or `summary`, and an original `url`. Keep these assessments distinct from the government's official response and link the underlying document where possible. Evidence entries display `lastCheckedAt` so visitors can see when a source was last revisited.
