@@ -7526,6 +7526,7 @@ async function ensureLeaflet(){
     html+=promiseKpi("Delayed",counts.delayed,"delayed","Deadline passed; target incomplete");
     html+=promiseKpi("Cancelled / withdrawn",counts.cancelled_withdrawn,"cancelled","Official withdrawal source required");
     html+=promiseKpi("Insufficient evidence",counts.insufficient_evidence,"unknown","Do not treat as zero performance");
+    html+=promiseKpi("Under review",counts.under_review,"","Evidence assessment ongoing");
     html+='</div>';
     html+='<div class="promise-register-note" style="margin-top:10px">Overall measurable progress: '+(rate===null?"Not available":rate+"% mean across "+measured.length+" evidence-backed measurable promise(s)")+'. This descriptive figure is not a government or party score. Under-review records: '+counts.under_review+'.</div></section>';
 
