@@ -2482,6 +2482,66 @@
       .atlas-data-popup-layer,.atlas-data-popup{animation:none!important}
     }
 
+  
+
+    /* Navigation drawer now only chooses a section; all reading happens in the popup. */
+    @media(min-width:761px){
+      .sidebar{
+        display:flex!important;
+        flex-direction:column!important;
+        top:88px;bottom:auto;left:18px;
+        width:min(390px,calc(100vw - 36px));
+        height:auto;max-height:calc(100dvh - 108px);
+        overflow-y:auto;overflow-x:hidden;
+        grid-template-rows:none;
+      }
+      body.sidebar-collapsed .sidebar{width:min(390px,calc(100vw - 36px))}
+      .sidebar-head{flex:none;padding:16px 56px 13px 18px}
+      .selected-area{flex:none;margin:9px 12px}
+      .sidebar-tabs{
+        display:grid!important;flex:none!important;
+        grid-template-columns:1fr;grid-template-rows:auto auto auto;
+        overflow:visible!important;max-height:none!important;
+        padding:0 12px 13px;
+      }
+      .sidebar-nav-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+      .sidebar-foot{display:none}
+    }
+    @media(max-width:760px){
+      .sidebar{
+        display:flex!important;flex-direction:column!important;
+        top:auto;left:7px;right:7px;bottom:7px;
+        width:auto;height:auto;max-height:min(60dvh,500px);
+        overflow-y:auto;overflow-x:hidden;
+        grid-template-rows:none;
+      }
+      body.sidebar-collapsed .sidebar{width:auto}
+      .sidebar-sheet-handle{display:grid;flex:none;height:15px}
+      .sidebar-head{flex:none;padding:9px 48px 8px 15px}
+      .sidebar-head h1{font-size:18px}
+      .sidebar-head p{font-size:9px}
+      .selected-area{flex:none;margin:6px 10px;padding:7px 9px}
+      .sidebar-tabs{
+        display:flex!important;flex-direction:row;align-items:center;
+        flex:none;min-width:0;min-height:0;height:46px;
+        padding:5px 9px 6px;gap:6px;
+        overflow-x:auto!important;overflow-y:hidden!important;
+        border-top:1px solid #e8eee5;background:#f7f9f3;
+        scrollbar-width:none;
+      }
+      .sidebar-nav-kicker{display:none}
+      .sidebar-nav-grid{display:contents!important}
+      .sidebar-tabs .sidebar-tab,.sidebar-nav-grid .sidebar-tab{
+        flex:0 0 auto;width:auto;min-width:max-content;height:34px;min-height:34px;
+        padding:0 9px;gap:6px;font-size:9px;
+      }
+      .sidebar-tabs .national-report-tab{width:auto;min-height:34px;height:34px;padding:0 9px}
+      .national-report-copy{display:block;flex:none}
+      .national-report-copy strong{font-size:9px;white-space:nowrap}
+      .national-report-copy small,.national-report-arrow{display:none}
+      .sidebar-foot{display:none}
+    }
+
   </style>
 </head>
 <body>
@@ -3952,7 +4012,8 @@ async function ensureLeaflet(){
       if(areaBounds.isValid())map.fitBounds(areaBounds,{padding:[70,70],maxZoom:9});
     }
     setStatus("Choose the actual project work site inside the highlighted/source-listed district area. A district-centre click is not a project coordinate.");
-    if(!document.body.classList.contains("sidebar-collapsed"))toggleRecordsPanel();
+    if(isDataPopupOpen())closeAtlasDataPopup(false);
+    else if(!document.body.classList.contains("sidebar-collapsed"))toggleRecordsPanel();
     window.setTimeout(()=>map.invalidateSize({pan:false}),320);
   }
   function openProjectProfile(projectId,focusPoint){
