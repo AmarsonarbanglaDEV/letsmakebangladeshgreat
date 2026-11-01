@@ -55,13 +55,14 @@
           "extractFields": [
             "project code",
             "English project description",
+            "Bangla location text",
             "ADP allocation in lakh taka",
             "PDF page number"
           ],
-          "locationRule": "Add a district-area locator only when an English district alias occurs explicitly in the project description and matches the loaded official district boundary layer.",
-          "unmatchedRule": "Do not invent coordinates or use a district-centre fallback for entries without an explicit district reference; these remain counted as unlocated.",
+          "locationRule": "Match English and Bangla spellings in project descriptions against the loaded official map's division, district, upazila and union boundary names. Prefer the most specific unambiguous boundary. Repeated names require a parent-area clue. A dot is an administrative-area locator, not an exact project-site coordinate.",
+          "unmatchedRule": "No dot is created when the title has no matching map name, when a repeated place name cannot be disambiguated, or when no corresponding boundary feature is available.",
           "statusRule": "The source PDF is an allocation roster and does not provide a project-by-project lifecycle status field. Status remains unverified unless corroborated from another official source.",
-          "storageNote": "Rows are parsed in the browser on demand; a static 1,173-row JSON export has not yet been committed."
+          "storageNote": "Rows are parsed in the browser on demand; the static pilot JSON register contains only separately reviewed project records."
         }
       },
       "mediaEvidencePolicy": "Attach article/video/audio/photo sources to an identified project only with publisher, publication date, source URL, claim summary and corroboration state. Media alone must not establish final project cancellation, completion, expenditure or exact coordinates.",
