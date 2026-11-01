@@ -4690,6 +4690,7 @@ async function ensureLeaflet(){
           iconAnchor:[8,8]
         });
         const marker=L.marker(point,{
+          pane:"projectMarkerPane",
           icon,
           keyboard:true,
           title:project.title+" · "+districtName+" district locator"
