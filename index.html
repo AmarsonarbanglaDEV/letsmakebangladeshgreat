@@ -3346,7 +3346,9 @@
           <div class="place-layer-switches">
             <button class="place-layer-switch river-pill active" id="riverToggle" type="button" aria-pressed="true">〰 Rivers <small>Waterways</small></button>
             <button class="place-layer-switch active" id="landmarkToggle" type="button" aria-pressed="true">★ Landmarks <small>Mapped places</small></button>
+            <button class="place-layer-switch" id="promiseMapToggle" type="button" aria-pressed="false">⚑ Progress <small>Verified promises</small></button>
           </div>
+          <div class="river-layer-status" id="promiseMapStatus">Promise markers appear only when an exact, source-backed site coordinate is available. District associations are never turned into fake map pins.</div>
           <div class="landmark-panel" id="landmarkPanel" aria-live="polite">
             <div class="landmark-panel-head"><strong>Landmarks in this map area</strong><span class="landmark-count" id="landmarkCount">ZOOM IN</span></div>
             <div class="landmark-filters" role="group" aria-label="Filter mapped landmarks">
@@ -4256,6 +4258,7 @@ async function ensureLeaflet(){
   });
   el("riverToggle").addEventListener("click",toggleRivers);
   el("landmarkToggle").addEventListener("click",toggleLandmarks);
+  el("promiseMapToggle").addEventListener("click",togglePromiseMap);
   document.querySelectorAll("[data-landmark-filter]").forEach(button=>{
     button.addEventListener("click",()=>setLandmarkFilter(button.getAttribute("data-landmark-filter")));
   });
@@ -7167,6 +7170,8 @@ async function ensureLeaflet(){
   let promiseFilters={q:"",status:"all",sector:"all",government:"all"};
   let activePromiseId=null;
   let promiseMapLayer=null;
+  let promiseFocusLayer=null;
+  let promiseMapEnabled=false;
 
   function loadPromiseDataset(){
     if(promiseDatasetLoad)return promiseDatasetLoad;
@@ -7183,6 +7188,7 @@ async function ensureLeaflet(){
         promiseDataset=data;
         promiseDatasetState="loaded";
         promiseDatasetError="";
+        if(promiseMapEnabled)drawPromiseMapMarkers();
         if(activePanel==="promises")renderSidePanel("promises");
         return data;
       })
@@ -7355,6 +7361,59 @@ async function ensureLeaflet(){
   function promiseKpi(label,value,style,sub){
     return '<div class="promise-kpi '+style+'"><small>'+escapeHtml(label)+'</small><strong>'+escapeHtml(value)+'</strong><em>'+escapeHtml(sub||"")+'</em></div>';
   }
+
+  function drawPromiseMapMarkers(){
+    if(!map||!promiseDataset)return 0;
+    if(!promiseMapLayer)promiseMapLayer=L.layerGroup();
+    promiseMapLayer.clearLayers();
+    let count=0;
+    (promiseDataset.promises||[]).forEach(record=>{
+      const exact=record.locationPrecision==="site"&&
+        Number.isFinite(Number(record.latitude))&&Number.isFinite(Number(record.longitude));
+      if(!exact)return;
+      const point=L.latLng(Number(record.latitude),Number(record.longitude));
+      if(!bounds.contains(point))return;
+      const evidenceIds=[...(record.evidenceIds||[]),...(record.progress?.evidenceIds||[])];
+      if(!promiseHasVerifiedEvidence(evidenceIds))return;
+      const meta=promiseStatus(record);
+      const marker=L.circleMarker(point,{
+        pane:"projectMarkerPane",radius:7,color:"#fff",weight:2,
+        fillColor:meta.color,fillOpacity:.96
+      });
+      marker.bindTooltip(escapeHtml(record.title)+" · "+escapeHtml(meta.label),{direction:"top"});
+      marker.on("click",()=>{
+        activePromiseId=record.id;
+        renderSidePanel("promises");
+        openAtlasDataPopup(sidebarToggle);
+      });
+      promiseMapLayer.addLayer(marker);
+      count++;
+    });
+    if(promiseMapEnabled&&!map.hasLayer(promiseMapLayer))promiseMapLayer.addTo(map);
+    const status=el("promiseMapStatus");
+    if(status)status.textContent=count
+      ?count+" evidence-backed exact project-site marker(s) are shown. Pin colour follows the recorded promise status."
+      :"No promise records currently have verified evidence and exact site coordinates. District-level geography is not converted into an approximate pin.";
+    return count;
+  }
+  function togglePromiseMap(){
+    promiseMapEnabled=!promiseMapEnabled;
+    const button=el("promiseMapToggle");
+    if(button){
+      button.classList.toggle("active",promiseMapEnabled);
+      button.setAttribute("aria-pressed",String(promiseMapEnabled));
+    }
+    if(promiseMapEnabled){
+      loadPromiseDataset().then(()=>{
+        if(!promiseMapEnabled)return;
+        const count=drawPromiseMapMarkers();
+        if(count)setStatus(count+" evidence-backed promise locations shown on map.");
+      });
+    }else if(promiseMapLayer&&map.hasLayer(promiseMapLayer)){
+      map.removeLayer(promiseMapLayer);
+    }
+  }
+
   function renderPromiseDashboardBody(){
     if(promiseDatasetState==="loading"||promiseDatasetState==="waiting"){
       return '<div class="promise-loading">Loading the commitments and evidence register…</div>';
@@ -7444,10 +7503,10 @@ async function ensureLeaflet(){
   function renderPromisesDashboard(){
     if(activePromiseId&&promiseDataset){
       const record=promiseDataset.promises.find(item=>item.id===activePromiseId);
-      if(record)return renderPromiseDetail(record);
+      if(record)return '<div id="promiseDashboardContent">'+renderPromiseDetail(record)+'</div>';
       activePromiseId=null;
     }
-    return '<div id="promiseDashboardBody">'+renderPromiseDashboardBody()+'</div>';
+    return '<div id="promiseDashboardContent"><div id="promiseDashboardBody">'+renderPromiseDashboardBody()+'</div></div>';
   }
   function exportPromiseRegister(){
     const records=promiseFilteredRecords();
@@ -7477,11 +7536,11 @@ async function ensureLeaflet(){
     if(exact){
       const point=L.latLng(Number(record.latitude),Number(record.longitude));
       if(!bounds.contains(point)){setStatus("The recorded site coordinate is outside the Bangladesh map extent.",true);return;}
-      if(!promiseMapLayer)promiseMapLayer=L.layerGroup().addTo(map);
-      promiseMapLayer.clearLayers();
-      const marker=L.circleMarker(point,{pane:"projectMarkerPane",radius:9,color:"#fff",weight:2,fillColor:"#d63e4f",fillOpacity:1});
+      if(!promiseFocusLayer)promiseFocusLayer=L.layerGroup().addTo(map);
+      promiseFocusLayer.clearLayers();
+      const marker=L.circleMarker(point,{pane:"projectMarkerPane",radius:9,color:"#fff",weight:2,fillColor:promiseStatus(record).color,fillOpacity:1});
       marker.bindPopup("<strong>"+escapeHtml(record.title)+"</strong><br><small>Source-backed exact site location · promise "+escapeHtml(record.id)+"</small>");
-      marker.addTo(promiseMapLayer);
+      marker.addTo(promiseFocusLayer);
       map.setView(point,Math.max(map.getZoom(),14));
       marker.openPopup();
       setStatus("Showing exact site location recorded for "+record.id+".");
@@ -7501,8 +7560,14 @@ async function ensureLeaflet(){
     });
   }
   function refreshPromiseDashboard(){
-    const root=el("promiseDashboardBody");
-    if(root)root.innerHTML=renderPromiseDashboardBody();
+    const root=el("promiseDashboardContent");
+    if(!root)return;
+    if(activePromiseId&&promiseDataset){
+      const record=promiseDataset.promises.find(item=>item.id===activePromiseId);
+      root.innerHTML=record?renderPromiseDetail(record):renderPromiseDashboardBody();
+    }else{
+      root.innerHTML=renderPromiseDashboardBody();
+    }
   }
 
   function renderLiveDataPanel(key){
@@ -7535,10 +7600,17 @@ async function ensureLeaflet(){
           row.style.display=(!q||normalise(row.textContent).includes(q))?"":"none";
         });
       }
-      if(target.matches("[data-promise-search]")){promiseFilters.q=target.value;refreshPromiseDashboard();}
-      if(target.matches("[data-promise-status]")){promiseFilters.status=target.value;refreshPromiseDashboard();}
-      if(target.matches("[data-promise-sector]")){promiseFilters.sector=target.value;refreshPromiseDashboard();}
-      if(target.matches("[data-promise-government]")){promiseFilters.government=target.value;refreshPromiseDashboard();}
+      let promiseFilterAttribute="";
+      if(target.matches("[data-promise-search]")){promiseFilters.q=target.value;promiseFilterAttribute="data-promise-search";}
+      if(target.matches("[data-promise-status]")){promiseFilters.status=target.value;promiseFilterAttribute="data-promise-status";}
+      if(target.matches("[data-promise-sector]")){promiseFilters.sector=target.value;promiseFilterAttribute="data-promise-sector";}
+      if(target.matches("[data-promise-government]")){promiseFilters.government=target.value;promiseFilterAttribute="data-promise-government";}
+      if(promiseFilterAttribute){
+        const start=target.selectionStart,end=target.selectionEnd;
+        refreshPromiseDashboard();
+        const replacement=panel.querySelector("["+promiseFilterAttribute+"]");
+        if(replacement){replacement.focus();if(start!==null&&replacement.setSelectionRange)replacement.setSelectionRange(start,end);}
+      }
     });
     panel.addEventListener("keydown",event=>{
       const promiseCard=event.target.closest(".promise-card[data-promise-open]");
