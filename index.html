@@ -3444,7 +3444,7 @@
   .project-legend-row,.project-location-legend{display:flex;flex-wrap:wrap;align-items:center;gap:7px 11px}
   .project-map-legend .project-location-key{display:inline-flex;align-items:center;gap:5px;white-space:nowrap;color:#536b5c;font-size:8px;font-weight:800}
   .project-map-legend .project-location-key i{display:inline-block;width:10px;height:10px;flex:none;border:2px solid #fff;border-radius:50%;background:#87918b;box-shadow:0 0 0 1px #63756a}
-  .project-map-legend .location-key-exact{background:#238b57!important;box-shadow:0 0 0 2px #238b57!important}
+  .project-map-legend .location-key-exact{background:#78877e!important;box-shadow:0 0 0 2px #78877e!important}
   .project-map-legend .location-key-area{background:#fff!important;border:2px dashed #63756a!important;box-shadow:none!important}
   .project-map-legend .location-key-division{border-radius:2px!important;background:#778994!important;transform:rotate(45deg)}
   .project-map-legend .location-key-district{background:#778994!important;border-style:dashed!important}
@@ -3754,7 +3754,7 @@
         <span class="project-location-key"><i class="location-key-upazila"></i>Upazila match</span>
         <span class="project-location-key"><i class="location-key-union"></i>Union match</span>
       </div>
-      <small>Solid project pins are used only when a source provides an exact site coordinate. Dashed project locators show district association only. ADP shapes show the smallest administrative place name matched in the project text; they are not confirmed construction-site coordinates.</small>
+      <small>Solid pins use the status colour above and appear only when a source provides an exact site coordinate. Dashed project locators show district association only. ADP shapes show the smallest administrative place name matched in the project text; they are area matches, not confirmed construction-site coordinates.</small>
       <button id="adpRosterToggle" class="adp-roster-toggle" type="button" aria-pressed="false">Load FY2026–27 ADP dots</button>
       <button id="adpDirectoryToggle" class="adp-directory-toggle" type="button">Browse all 1,173 projects</button>
       <small id="adpRosterStatus">Waiting for official ADP roster import…</small>
@@ -4475,7 +4475,8 @@ window.AtlasBoot=(function(){
         console.error("Country silhouette update failed:",error);
         setStatus("Country mask could not be drawn safely. Satellite imagery is being disabled. "+error.message,true);
         if(satellite&&map.hasLayer(satellite))map.removeLayer(satellite);
-        outlineMode=true;
+        outlineMode=true;mapTypeMode="illustrated";syncMapTypeButtons();
+        map.getContainer().style.clipPath="";map.getContainer().style.webkitClipPath="";
       }
     });
   }
