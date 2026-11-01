@@ -4623,10 +4623,11 @@ async function ensureLeaflet(){
     const selected=disambiguated.filter(candidate=>{
       // An explicit "X Division" phrase means the division, not the same-named
       // district. Otherwise retain the most specific nested boundary match.
-      if(candidate.level==="district"&&
-         titleContainsPlace(titleNorm,candidate.normalizedName+" division")&&
+      const explicitDivision=titleContainsPlace(titleNorm,candidate.normalizedName+" division");
+      if(candidate.level==="district"&&explicitDivision&&
          disambiguated.some(other=>other.level==="division"&&
            other.normalizedName===candidate.normalizedName))return false;
+      if(candidate.level==="division"&&explicitDivision)return true;
       const hasMoreSpecific=disambiguated.some(other=>{
         if(other.level==="union"&&candidate.level!=="union"){
           return normalisePlaceText(other.parentUpazila)===candidate.normalizedName||
