@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101b19"><meta name="description" content="Bangladesh location intelligence and citizen grievance workspace">
+<title>Geo-Intelligence · Let's Make Bangladesh Great</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+:root{--bg:#101b19;--panel:rgba(17,29,27,.94);--panel2:#172522;--line:rgba(211,238,220,.13);--muted:#9aada4;--text:#eff7f0;--lime:#b8ff45;--red:#ff8277;--shadow:0 20px 70px #0008}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font:14px "DM Sans",system-ui,sans-serif}button,input,textarea,select{font:inherit}button{cursor:pointer}a{color:var(--lime)}#map{position:absolute;inset:0;background:#14211e}.leaflet-control-attribution{font-size:9px!important;background:#101b19d9!important;color:#b8c7bf!important}.leaflet-control-attribution a{color:#caff80!important}
+.top{position:absolute;z-index:800;top:16px;left:16px;right:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;pointer-events:none}.brand,.top-actions{pointer-events:auto;display:flex;align-items:center;gap:10px}.brand{padding:10px 14px;border:1px solid var(--line);border-radius:15px;background:var(--panel);backdrop-filter:blur(18px);box-shadow:var(--shadow)}.brand-mark{width:31px;height:31px;border-radius:10px;background:var(--lime);color:#142016;display:grid;place-items:center;font-weight:900}.brand strong{font-size:12px;letter-spacing:.07em}.brand small{display:block;color:var(--muted);font-size:9px;margin-top:2px}.top-actions button,.map-tools button{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:12px;padding:10px 13px;backdrop-filter:blur(15px)}.top-actions button:hover,.map-tools button:hover{border-color:#b8ff4580;color:var(--lime)}.back{color:var(--text);text-decoration:none;font-size:11px;font-weight:700}
+.map-tools{position:absolute;z-index:700;left:16px;top:92px;display:grid;gap:8px}.map-tools button{min-width:112px;text-align:left;font-size:11px}.map-tools button.active{border-color:var(--lime);color:var(--lime);box-shadow:0 0 18px #b8ff4520}
+.hint{position:absolute;z-index:600;bottom:18px;left:16px;padding:10px 13px;border-radius:12px;background:#101b19d9;border:1px solid var(--line);color:#c7d7cd;font-size:10px;backdrop-filter:blur(12px);max-width:290px}
+.panel{position:absolute;z-index:900;right:16px;top:16px;bottom:16px;width:min(420px,calc(100vw - 32px));display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);backdrop-filter:blur(22px);overflow:hidden}.panel-head{padding:19px 19px 14px;border-bottom:1px solid var(--line)}.eyebrow{font-size:9px;letter-spacing:.16em;font-weight:800;color:var(--lime)}.panel-head h1{font-size:20px;letter-spacing:-.04em;margin:7px 0 3px}.panel-head p{margin:0;color:var(--muted);font-size:10px;line-height:1.6}.panel-body{padding:16px 18px;overflow:auto;flex:1;scrollbar-width:thin;scrollbar-color:#486056 transparent}.empty{min-height:260px;display:grid;place-items:center;text-align:center;color:var(--muted);padding:20px}.empty-icon{width:54px;height:54px;border:1px solid #b8ff4540;border-radius:17px;display:grid;place-items:center;color:var(--lime);font-size:25px;margin:0 auto 14px;background:#b8ff4510}.empty strong{display:block;color:var(--text);font-size:13px;margin-bottom:6px}.empty p{font-size:10px;line-height:1.7;max-width:260px;margin:auto}
+.status{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:10px;margin-bottom:13px}.status i{width:7px;height:7px;border-radius:50%;background:var(--lime);box-shadow:0 0 10px var(--lime)}.status.error i{background:var(--red);box-shadow:0 0 10px var(--red)}
+.loc-title{font-size:17px;font-weight:800;line-height:1.25;margin:0 0 5px}.loc-sub{font-size:10px;color:var(--muted);margin-bottom:14px}.coord{display:grid;grid-template-columns:1fr 1fr;gap:8px}.coord div,.info-card{padding:11px;border:1px solid var(--line);border-radius:12px;background:#ffffff06}.coord small,.info-card small{display:block;color:var(--muted);font-size:9px;margin-bottom:4px}.coord strong{font-size:11px;font-variant-numeric:tabular-nums}.section-label{margin:17px 0 8px;color:var(--lime);font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}.facts{display:grid;gap:7px}.fact{display:flex;justify-content:space-between;gap:14px;padding:8px 0;border-bottom:1px solid #ffffff0b;font-size:10px}.fact span:first-child{color:var(--muted);flex:0 0 105px}.fact span:last-child{text-align:right;overflow-wrap:anywhere}.tag{display:inline-block;border:1px solid #b8ff453d;color:var(--lime);border-radius:99px;padding:3px 7px;font-size:8px;margin:3px 3px 0 0}.authority{padding:11px;border:1px solid var(--line);border-radius:12px;margin:7px 0;background:#ffffff05}.authority strong{font-size:11px}.authority p{font-size:9px;line-height:1.6;color:var(--muted);margin:5px 0}.authority a{font-size:9px;margin-right:10px}.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}.action{padding:11px 10px;border:1px solid var(--line);border-radius:11px;background:#ffffff08;color:var(--text);font-size:10px;font-weight:700}.action.primary{grid-column:1/-1;background:var(--lime);color:#132018;border-color:var(--lime)}.action:hover{border-color:var(--lime)}.disclaimer{font-size:9px;line-height:1.65;color:#9aada4;margin-top:13px;padding:10px;border-radius:10px;background:#ffffff06}
+.modal-wrap{position:absolute;z-index:1200;inset:0;background:#020806b8;display:none;place-items:center;padding:14px}.modal-wrap.open{display:grid}.modal{width:min(620px,100%);max-height:min(92vh,850px);overflow:auto;border:1px solid var(--line);border-radius:20px;background:#14221f;box-shadow:var(--shadow)}.modal-head{padding:17px 19px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}.modal-head h2{margin:0;font-size:16px}.close{border:0;background:transparent;color:var(--text);font-size:23px}.modal-content{padding:18px;display:grid;gap:12px}.field{display:grid;gap:6px}.field label{font-size:10px;color:#c6d5cc;font-weight:700}.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);background:#0e1916;color:var(--text);border-radius:10px;padding:11px;outline:none;font-size:11px}.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--lime)}.field textarea{min-height:105px;resize:vertical}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.help{color:var(--muted);font-size:9px;line-height:1.6}.submit{border:0;border-radius:11px;background:var(--lime);color:#142016;font-weight:900;padding:13px}.submit:disabled{opacity:.5;cursor:not-allowed}.notice{padding:10px;border:1px solid #b8ff4540;border-radius:10px;color:#d9f8b1;background:#b8ff450d;font-size:10px;line-height:1.6}.notice.error{border-color:#ff827755;color:#ffc2bc;background:#ff827710}.hidden{display:none!important}
+@media(max-width:760px){.panel{top:auto;left:8px;right:8px;bottom:8px;width:auto;height:min(57vh,540px);border-radius:18px}.panel-head{padding:13px 15px}.panel-head h1{font-size:17px}.panel-body{padding:12px 15px}.top{top:8px;left:8px;right:8px}.brand{padding:8px 10px}.brand small{display:none}.brand strong{font-size:10px}.top-actions button{padding:9px;font-size:10px}.map-tools{top:61px;left:8px;gap:5px}.map-tools button{min-width:88px;padding:8px;font-size:9px}.hint{bottom:calc(min(57vh,540px) + 18px);left:8px;font-size:9px;max-width:220px}.grid2{grid-template-columns:1fr}.modal-wrap{padding:7px}}
+</style>
+</head>
+<body>
+<div id="map" aria-label="Interactive Bangladesh map"></div>
+<header class="top">
+ <div class="brand"><div class="brand-mark">BD</div><div><strong>GEO INTELLIGENCE</strong><small>LET'S MAKE BANGLADESH GREAT</small></div></div>
+ <div class="top-actions"><a class="back" href="./">← Atlas home</a><button id="shareTop" type="button">↗ Share location</button></div>
+</header>
+<div class="map-tools" aria-label="Map controls">
+ <button class="active" data-layer="satellite">▧ Satellite</button><button data-layer="street">▤ Street</button><button data-layer="terrain">⌁ Terrain</button>
+ <button id="boundaries">◈ Admin boundaries</button><button id="locate">◎ My location</button>
+</div>
+<div class="hint">Click anywhere in Bangladesh to inspect the location. Zoom in for more detailed place information.</div>
+<aside class="panel" aria-label="Selected location details">
+ <div class="panel-head"><div class="eyebrow">BANGLADESH · LOCATION INTELLIGENCE</div><h1>Explore a location</h1><p>Geographic context, administrative jurisdiction and public-service reporting.</p></div>
+ <div class="panel-body" id="details"><div class="empty"><div><div class="empty-icon">⌖</div><strong>Select a point on the map</strong><p>Click the map to retrieve the nearest available place name and administrative context. The selected coordinate is not a property survey.</p></div></div></div>
+</aside>
+<div class="modal-wrap" id="complaintModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+ <section class="modal"><header class="modal-head"><div><div class="eyebrow">CITIZEN REPORTING</div><h2 id="modalTitle">Report an issue</h2></div><button class="close" data-close aria-label="Close">×</button></header>
+ <form id="complaintForm" class="modal-content">
+  <div class="notice">Your report is sent to this independent platform for review. It is not automatically filed with a government office and does not create an official case number.</div>
+  <div class="field"><label for="cTitle">Complaint title *</label><input id="cTitle" name="title" maxlength="140" required placeholder="e.g. Road surface damaged near local market"></div>
+  <div class="grid2"><div class="field"><label for="cCategory">Category *</label><select id="cCategory" name="category" required><option value="">Choose category</option><option>Road damage</option><option>Drainage and waterlogging</option><option>Waste management</option><option>Water supply</option><option>Electricity</option><option>Public infrastructure</option><option>Land and property issues</option><option>Public safety</option><option>Other government service complaints</option></select></div><div class="field"><label>Selected coordinate</label><input id="cCoordinate" readonly></div></div>
+  <div class="field"><label for="cDescription">Detailed description *</label><textarea id="cDescription" name="description" required maxlength="5000" placeholder="Describe what happened, when it started, and how it affects the community. Avoid including sensitive personal information."></textarea></div>
+  <div class="field"><label for="cFiles">Images or documents (up to 3 files, 5 MB each)</label><input id="cFiles" name="attachments" type="file" multiple accept="image/jpeg,image/png,image/webp,application/pdf"><div class="help">Files are stored privately when secure attachment storage is configured. Do not upload identity documents or confidential records.</div></div>
+  <div class="grid2"><div class="field"><label for="cName">Name (optional)</label><input id="cName" name="name" maxlength="100" autocomplete="name"></div><div class="field"><label for="cContact">Email or phone (optional)</label><input id="cContact" name="contact" maxlength="160" autocomplete="email"></div></div>
+  <div class="field hidden" aria-hidden="true"><label for="website">Leave blank</label><input id="website" name="website" tabindex="-1" autocomplete="off"></div>
+  <label class="help"><input type="checkbox" id="consent" name="consent" value="on" required> I understand this is a platform report, not an official government filing, and consent to the information being stored for review.</label>
+  <div id="formNotice" class="notice hidden" role="status"></div><button class="submit" id="submitComplaint" type="submit">Submit report</button>
+ </form></section>
+</div>
+<div class="modal-wrap" id="draftModal" role="dialog" aria-modal="true" aria-labelledby="draftTitle"><section class="modal"><header class="modal-head"><div><div class="eyebrow">DOCUMENT BUILDER</div><h2 id="draftTitle">Prepare a complaint</h2></div><button class="close" data-close aria-label="Close">×</button></header><div class="modal-content"><p class="help">Create a structured letter for the relevant authority. Review all details and submit it through the authority's official channel yourself.</p><div class="field"><label for="draftIssue">Issue summary</label><input id="draftIssue" placeholder="Describe the issue"></div><div class="field"><label for="draftText">Complaint draft</label><textarea id="draftText" style="min-height:260px"></textarea></div><button class="submit" id="copyDraft">Copy complaint draft</button></div></section></div>
+<div class="modal-wrap" id="recordsModal" role="dialog" aria-modal="true" aria-labelledby="recordsTitle"><section class="modal"><header class="modal-head"><div><div class="eyebrow">RIGHT TO INFORMATION</div><h2 id="recordsTitle">Prepare a public information request</h2></div><button class="close" data-close aria-label="Close">×</button></header><div class="modal-content"><p class="help">This prepares a draft request. It does not submit it. Address it to the designated information officer of the relevant public authority and check current RTI procedures before sending.</p><div class="field"><label for="recordSubject">Records requested</label><textarea id="recordSubject" style="min-height:100px" placeholder="e.g. Approved project name, allocation, work order, completion report and inspection record for..."></textarea></div><div class="field"><label for="recordDraft">Request draft</label><textarea id="recordDraft" style="min-height:230px"></textarea></div><button class="submit" id="copyRecords">Copy information request</button></div></section></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+const map=L.map("map",{zoomControl:false,preferCanvas:true,minZoom:5,maxZoom:19,maxBounds:[[20.3,87.8],[26.9,93.0]],maxBoundsViscosity:.85}).setView([23.75,90.35],7);
+L.control.zoom({position:"bottomleft"}).addTo(map);
+const layers={
+ satellite:L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxZoom:19,attribution:"Imagery © Esri, Maxar, Earthstar Geographics"}),
+ street:L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap contributors"}),
+ terrain:L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",{maxZoom:19,attribution:"Map © Esri"})
+};
+layers.satellite.addTo(map);
+document.querySelectorAll("[data-layer]").forEach(b=>b.addEventListener("click",()=>{Object.values(layers).forEach(l=>map.removeLayer(l));layers[b.dataset.layer].addTo(map);document.querySelectorAll("[data-layer]").forEach(x=>x.classList.toggle("active",x===b));}));
+let selected=null,marker=null,connector=null,boundaryLayer=null,boundariesOn=false,reverseTimer=0,geocodeSequence=0,lastGeocodeAt=0;
+function panelAnchor(){const size=map.getSize();return map.containerPointToLatLng(window.innerWidth<=760?[size.x*.5,size.y*.43]:[Math.max(28,size.x-440),size.y*.5]);}
+function updateConnector(){if(selected&&connector)connector.setLatLngs([[selected.lat,selected.lng],panelAnchor()]);}
+map.on("moveend",updateConnector);
+window.addEventListener("resize",()=>setTimeout(updateConnector,120));
+const glow=L.divIcon({className:"",html:'<div style="width:18px;height:18px;border:3px solid #b8ff45;border-radius:50%;background:#b8ff45aa;box-shadow:0 0 0 7px #b8ff4530,0 0 24px #b8ff45"></div>',iconSize:[18,18],iconAnchor:[9,9]});
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function status(msg,error){const n=$("geoStatus");if(n){n.className="status"+(error?" error":"");n.innerHTML="<i></i>"+esc(msg);}}
+function addFact(label,value){return '<div class="fact"><span>'+esc(label)+'</span><span>'+esc(value||"Unavailable")+'</span></div>';}
+function renderLocation(data,admin={}){
+ const a=data.address||{},parts=[a.village||a.hamlet||a.suburb||a.neighbourhood||a.residential||a.town||a.city||a.county||"Selected coordinate"];
+ const locality=a.village||a.hamlet||a.suburb||a.neighbourhood||a.residential||a.town||a.city||"";
+ const union=admin.union?.name||a.union||"",ward=admin.ward?.name||a.ward||"",upazila=admin.upazila?.name||a.upazila||a.city_district||"",district=admin.district?.name||a.state_district||a.county||"",division=admin.division?.name||a.state||"";
+ const name=parts[0],lat=selected.lat.toFixed(6),lon=selected.lng.toFixed(6);
+ const tags='<span class="tag">OSM reverse geocoding</span><span class="tag">Not a land survey</span>';
+ $("details").innerHTML='<div class="status" id="geoStatus"><i></i>Place lookup complete · review source precision</div><h2 class="loc-title">'+esc(name)+'</h2><div class="loc-sub">'+esc([upazila,district,division].filter(Boolean).join(" · ")||"Administrative names not resolved")+'</div><div class="coord"><div><small>LATITUDE</small><strong>'+lat+'</strong></div><div><small>LONGITUDE</small><strong>'+lon+'</strong></div></div><div class="section-label">Administrative location</div><div class="facts">'+addFact("Village / Para",locality)+addFact("Union",union)+addFact("Ward",ward)+addFact("Upazila / Thana",upazila)+addFact("District",district)+addFact("Division",division)+addFact("Postal code",a.postcode)+addFact("Country",a.country)+'</div><div class="section-label">Administrative authorities</div><div class="authority"><strong>Local government</strong><p>'+esc(union?"Potential Union Parishad jurisdiction: "+union:ward?"Ward boundary match: "+ward+". Confirm whether City Corporation or Pourashava is responsible.":"Union Parishad / ward jurisdiction could not be confirmed from the returned address.")+' Office contacts are not inferred from coordinates.</p><a target="_blank" rel="noopener" href="https://bangladesh.gov.bd/">Bangladesh National Portal ↗</a><a target="_blank" rel="noopener" href="https://lgd.gov.bd/">Local Government Division ↗</a></div><div class="authority"><strong>Upazila / district administration</strong><p>'+esc([upazila,district].filter(Boolean).join(" · ")||"Administrative jurisdiction unavailable")+'. Confirm the correct office and designated officer using the official directory.</p><a target="_blank" rel="noopener" href="https://bangladesh.gov.bd/site/view/officer_list/">Government officer directory ↗</a></div><div class="authority"><strong>Location source</strong><p>'+esc(data.display_name||"OpenStreetMap reverse geocoder")+'</p><a target="_blank" rel="noopener" href="https://www.openstreetmap.org/?mlat='+lat+'&mlon='+lon+'#map=17/'+lat+'/'+lon+'">OpenStreetMap source ↗</a></div><div class="section-label">Boundary source checks</div>'+Object.entries(admin).filter(([,v])=>v&&v.name).map(([k,v])=>'<div class="fact"><span>'+esc(k)+'</span><span>'+esc(v.name)+' <small>'+esc(v.source||"Boundary service")+'</small></span></div>').join("")+'<div class="section-label">Data confidence</div>'+tags+'<div class="disclaimer">Reverse geocoding returns the nearest mapped address and administrative labels. Village, union, ward and postal information may be missing or approximate. A coordinate does not prove a building identity, land ownership, cadastral boundary or the responsible government office.</div><div class="actions"><button class="action primary" id="reportBtn">＋ Report an issue</button><button class="action" id="prepareBtn">Prepare complaint</button><button class="action" id="recordsBtn">Request records</button><button class="action" id="copyLocBtn">Copy location link</button></div>';
+ $("reportBtn").onclick=openComplaint;$("prepareBtn").onclick=openDraft;$("recordsBtn").onclick=openRecords;$("copyLocBtn").onclick=copyLocation;
+}
+function boundaryName(feature,level){
+ const p=feature&&feature.properties||{},keys=Object.keys(p);
+ const patterns={
+  division:["ADM1_EN","ADM1_NAME","DIVISION_NAME","DIVISION","NAME_1","NAME"],
+  district:["ADM2_EN","ADM2_NAME","DISTRICT_NAME","DISTRICT","NAME_2","NAME"],
+  upazila:["ADM3_EN","ADM3_NAME","UPAZILA_NAME","UPAZILA","NAME_3","NAME"],
+  union:["ADM4_EN","ADM4_NAME","UNION_NAME","UNION","NAME_4","NAME"],
+  ward:["ADM5_EN","ADM5_NAME","WARD_NAME","WARD","NAME_5","NAME"]
+ };
+ const preferred=patterns[level]||[];
+ for(const wanted of preferred){const key=keys.find(k=>k.toUpperCase()===wanted);if(key&&p[key])return String(p[key]);}
+ const regex={division:/(ADM1.*(EN|NAME)|DIVISION.*NAME|NAME_1)/i,district:/(ADM2.*(EN|NAME)|DISTRICT.*NAME|NAME_2)/i,upazila:/(ADM3.*(EN|NAME)|UPAZILA.*NAME|NAME_3)/i,union:/(ADM4.*(EN|NAME)|UNION.*NAME|NAME_4)/i,ward:/(ADM5.*(EN|NAME)|WARD.*NAME|NAME_5)/i}[level];
+ const key=keys.find(k=>regex.test(k)&&p[k]);return key?String(p[key]):"";
+}
+async function pointBoundary(level,lat,lng){
+ try{
+  const q=new URLSearchParams({level,point:lng+","+lat,limit:"10"});
+  const response=await fetch("/api/map?"+q.toString());
+  if(!response.ok)return null;
+  const data=await response.json(),feature=(data.features||[])[0];
+  const name=boundaryName(feature,level);
+  return name?{name,source:data.sourceLabel||"Administrative boundary service"}:null;
+ }catch{return null;}
+}
+async function lookupAdmin(lat,lng){
+ const levels=["division","district","upazila","union","ward"];
+ const results=await Promise.all(levels.map(async level=>[level,await pointBoundary(level,lat,lng)]));
+ return Object.fromEntries(results.filter(([,value])=>value));
+}
+async function lookup(latlng){
+ const sequence=++geocodeSequence;
+ selected={lat:latlng.lat,lng:latlng.lng};
+ if(marker)map.removeLayer(marker);marker=L.marker(latlng,{icon:glow,zIndexOffset:1000}).addTo(map);
+ if(connector)map.removeLayer(connector);
+ connector=L.polyline([latlng,panelAnchor()],{color:"#b8ff45",weight:1.5,dashArray:"4 7",opacity:.85}).addTo(map);
+ $("details").innerHTML='<div class="empty"><div><div class="empty-icon">⌖</div><strong>Resolving selected location…</strong><p>Looking up the nearest mapped place and administrative labels.</p></div></div>';
+ try{
+  const wait=Math.max(0,1100-(Date.now()-lastGeocodeAt));
+  if(wait)await new Promise(resolve=>setTimeout(resolve,wait));
+  if(sequence!==geocodeSequence)return;
+  lastGeocodeAt=Date.now();
+  const url="https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat="+encodeURIComponent(latlng.lat)+"&lon="+encodeURIComponent(latlng.lng)+"&zoom=18&addressdetails=1";
+  const res=await fetch(url,{headers:{Accept:"application/json"}});
+  if(!res.ok)throw new Error("Place lookup returned HTTP "+res.status);
+  const data=await res.json();
+  const admin=await lookupAdmin(latlng.lat,latlng.lng);
+  if(sequence===geocodeSequence)renderLocation(data,admin);
+ }catch(err){
+  if(sequence!==geocodeSequence)return;
+  $("details").innerHTML='<div class="status error" id="geoStatus"><i></i>Place lookup unavailable</div><h2 class="loc-title">Selected coordinate</h2><div class="coord"><div><small>LATITUDE</small><strong>'+selected.lat.toFixed(6)+'</strong></div><div><small>LONGITUDE</small><strong>'+selected.lng.toFixed(6)+'</strong></div></div><p class="help">Reverse geocoding failed: '+esc(err.message)+'. The coordinate remains selected; administrative details are not available.</p><div class="actions"><button class="action primary" id="reportBtn">＋ Report an issue</button><button class="action" id="copyLocBtn">Copy location link</button></div><div class="disclaimer">A coordinate is not proof of a specific building, land parcel or administrative jurisdiction.</div>';
+  $("reportBtn").onclick=openComplaint;$("copyLocBtn").onclick=copyLocation;
+ }
+ const params=new URLSearchParams(location.search);params.set("lat",selected.lat.toFixed(6));params.set("lon",selected.lng.toFixed(6));history.replaceState(null,"",location.pathname+"?"+params.toString());
+}
+map.on("click",e=>lookup(e.latlng));
+let boundaryRequest=0;
+const boundaryCache=new Map();
+function boundaryLevelsForZoom(){
+ const z=map.getZoom();
+ if(z<8)return ["division","district"];
+ if(z<11)return ["district","upazila"];
+ if(z<14)return ["upazila","union"];
+ return ["union","ward"];
+}
+async function fetchBoundaryLevel(level,bbox){
+ const key=level+":"+bbox.map(v=>v.toFixed(2)).join(",");
+ if(boundaryCache.has(key))return boundaryCache.get(key);
+ const features=[];let offset=0,hasMore=true;
+ while(hasMore&&offset<18000){
+  const q=new URLSearchParams({level,limit:"800",offset:String(offset),bbox:bbox.join(",")});
+  const response=await fetch("/api/map?"+q.toString());
+  const data=await response.json();
+  if(!response.ok)throw new Error(data.error||"Boundary service unavailable for "+level);
+  features.push(...(data.features||[]));
+  hasMore=!!data.hasMore;
+  const next=Number(data.nextOffset);
+  if(!Number.isSafeInteger(next)||next<=offset)break;
+  offset=next;
+ }
+ boundaryCache.set(key,features);
+ if(boundaryCache.size>12)boundaryCache.delete(boundaryCache.keys().next().value);
+ return features;
+}
+async function loadBoundaries(){
+ const requestId=++boundaryRequest;
+ if(boundaryLayer){map.removeLayer(boundaryLayer);boundaryLayer=null;}
+ const b=map.getBounds(),bbox=[
+  Math.max(88,b.getWest()),Math.max(20.5,b.getSouth()),
+  Math.min(92.8,b.getEast()),Math.min(26.8,b.getNorth())
+ ];
+ if(bbox[0]>=bbox[2]||bbox[1]>=bbox[3])return;
+ const levels=boundaryLevelsForZoom();
+ try{
+  const collections=await Promise.all(levels.map(level=>fetchBoundaryLevel(level,bbox)));
+  if(requestId!==boundaryRequest||!boundariesOn)return;
+  const features=collections.flatMap((items,i)=>items.map(f=>({...f,properties:{...(f.properties||{}),_level:levels[i]}})));
+  if(!features.length)throw new Error("No boundary features returned for this view.");
+  boundaryLayer=L.geoJSON({type:"FeatureCollection",features},{style:f=>({color:f.properties._level==="division"?"#b8ff45":f.properties._level==="district"?"#e7f3db":f.properties._level==="upazila"?"#b5d0c1":"#d2e6d8",weight:f.properties._level==="division"?2:f.properties._level==="district"?1.5:1,opacity:.68,fillOpacity:0,dashArray:["union","ward"].includes(f.properties._level)?"2 4":null})});
+  boundaryLayer.addTo(map);
+ }catch(err){if(requestId===boundaryRequest)console.warn("Boundary overlay:",err.message);}
+}
+let boundaryRefreshTimer;
+function scheduleBoundaryRefresh(){if(!boundariesOn)return;clearTimeout(boundaryRefreshTimer);boundaryRefreshTimer=setTimeout(loadBoundaries,350);}
+map.on("moveend zoomend",scheduleBoundaryRefresh);
+$("boundaries").onclick=async()=>{boundariesOn=!boundariesOn;$("boundaries").classList.toggle("active",boundariesOn);if(boundariesOn)await loadBoundaries();else{boundaryRequest++;if(boundaryLayer){map.removeLayer(boundaryLayer);boundaryLayer=null;}}};
+$("locate").onclick=()=>{if(!navigator.geolocation){alert("Location access is not available in this browser.");return;}navigator.geolocation.getCurrentPosition(p=>{const ll=[p.coords.latitude,p.coords.longitude];map.setView(ll,16);lookup(L.latLng(ll[0],ll[1]));},e=>alert("Could not get your location: "+e.message),{enableHighAccuracy:false,timeout:10000});};
+function openModal(id){$(id).classList.add("open");}
+function closeModals(){document.querySelectorAll(".modal-wrap").forEach(x=>x.classList.remove("open"));}
+document.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click",closeModals));
+document.querySelectorAll(".modal-wrap").forEach(w=>w.addEventListener("click",e=>{if(e.target===w)closeModals();}));
+function openComplaint(){$("cCoordinate").value=selected.lat.toFixed(6)+", "+selected.lng.toFixed(6);$("formNotice").classList.add("hidden");openModal("complaintModal");}
+function complaintText(issue){return "To\\nThe Designated Officer / Relevant Public Authority\\nBangladesh\\n\\nSubject: Request for action regarding "+issue+"\\n\\nDear Sir/Madam,\\n\\nI wish to bring to your attention the following public-service issue at the location below.\\n\\nLocation: "+selected.lat.toFixed(6)+", "+selected.lng.toFixed(6)+"\\nMap: "+location.href+"\\nIssue: "+issue+"\\n\\nI request that the matter be inspected, the responsible office be identified, and appropriate action be taken in accordance with applicable procedures. Please acknowledge receipt and advise the relevant reference number if this is accepted through your official channel.\\n\\nSincerely,\\n[Your name]\\n[Your contact details]\\n[Date]\\n\\nNote: This is a draft only and has not been submitted to any authority.";}
+function openDraft(){$("draftIssue").value="";$("draftText").value=complaintText("[describe the issue]");openModal("draftModal");$("draftIssue").focus();}
+$("draftIssue").addEventListener("input",()=>{$("draftText").value=complaintText($("draftIssue").value||"[describe the issue]");});
+function recordsText(subject){return "To\\nThe Designated Information Officer\\n[Relevant public authority]\\nBangladesh\\n\\nSubject: Request for information under the Right to Information Act, 2009\\n\\nDear Sir/Madam,\\n\\nI request access to the following existing public records concerning the location below:\\n\\nLocation: "+selected.lat.toFixed(6)+", "+selected.lng.toFixed(6)+"\\nMap: "+location.href+"\\n\\nRecords requested:\\n"+(subject||"[Describe the specific records, period and project/service]")+"\\n\\nPlease provide the information in the available lawful format and advise me if another public authority holds these records.\\n\\nSincerely,\\n[Your name and contact details]\\n[Date]\\n\\nDraft only — not submitted. Check current RTI forms, fees and designated officer details before filing.";}
+function openRecords(){$("recordSubject").value="";$("recordDraft").value=recordsText("");openModal("recordsModal");}
+$("recordSubject").addEventListener("input",()=>{$("recordDraft").value=recordsText($("recordSubject").value);});
+async function copyText(text){try{await navigator.clipboard.writeText(text);alert("Copied to clipboard.");}catch(e){alert("Clipboard access unavailable. Select and copy the text manually.");}}
+$("copyDraft").onclick=()=>copyText($("draftText").value);$("copyRecords").onclick=()=>copyText($("recordDraft").value);
+function locationLink(){const u=new URL(location.href);u.searchParams.set("lat",selected.lat.toFixed(6));u.searchParams.set("lon",selected.lng.toFixed(6));return u.toString();}
+function copyLocation(){copyText(locationLink());}
+$("shareTop").onclick=()=>selected?copyLocation():alert("Select a location first.");
+$("complaintForm").addEventListener("submit",async e=>{
+ e.preventDefault();if(!$("consent").checked||!selected)return;
+ const form=$("complaintForm"),button=$("submitComplaint"),notice=$("formNotice"),files=$("cFiles").files;
+ const payload=new FormData(form);payload.set("latitude",String(selected.lat));payload.set("longitude",String(selected.lng));payload.set("location_url",locationLink());payload.set("place_label",$(".loc-title")?.textContent||"Selected coordinate");
+ notice.classList.remove("hidden","error");notice.textContent="Submitting securely…";button.disabled=true;
+ try{
+  if(files.length>3)throw new Error("Please attach no more than three files.");
+  for(const f of files)if(f.size>5*1024*1024)throw new Error("Each attachment must be 5 MB or smaller.");
+  const response=await fetch("/api/grievances",{method:"POST",body:payload,headers:{Accept:"application/json"}});
+  const result=await response.json();
+  if(!response.ok)throw new Error(result.error||"Submission failed.");
+  notice.textContent="Report received by the platform. Reference: "+result.reference+". This is not an official government case number.";
+  form.reset();$("cCoordinate").value=selected.lat.toFixed(6)+", "+selected.lng.toFixed(6);
+ }catch(err){notice.classList.add("error");notice.textContent=err.message;}
+ finally{button.disabled=false;}
+});
+const params=new URLSearchParams(location.search),lat=Number(params.get("lat")),lon=Number(params.get("lon"));
+if(Number.isFinite(lat)&&Number.isFinite(lon)&&lat>=20.5&&lat<=26.8&&lon>=88&&lon<=92.8){map.setView([lat,lon],15);lookup(L.latLng(lat,lon));}
+})();
+</script>
+</body></html>

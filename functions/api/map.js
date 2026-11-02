@@ -108,7 +108,7 @@ async function fetchGeoBoundariesFallback(adm) {
   return geojson;
 }
 
-async function fetchArcGisPage(config, offset, requestedLimit) {
+async function fetchArcGisPage(config, offset, requestedLimit, bboxText, pointText) {
   const metadataUrl = config.url + "?f=pjson";
   const metadataResponse = await fetchWithTimeout(metadataUrl, {
     headers: { Accept: "application/json" },
@@ -129,6 +129,30 @@ async function fetchArcGisPage(config, offset, requestedLimit) {
     resultRecordCount: String(pageSize)
   });
   if (oid) params.set("orderByFields", oid + " ASC");
+
+  if (bboxText) {
+    const values = bboxText.split(",").map(Number);
+    if (values.length !== 4 || values.some(value => !Number.isFinite(value)) ||
+        values[0] < 88 || values[2] > 92.8 || values[1] < 20.5 ||
+        values[3] > 26.8 || values[0] >= values[2] || values[1] >= values[3]) {
+      throw new Error("Invalid Bangladesh map viewport bounds.");
+    }
+    params.set("geometry", values.join(","));
+    params.set("geometryType", "esriGeometryEnvelope");
+    params.set("inSR", "4326");
+    params.set("spatialRel", "esriSpatialRelIntersects");
+  }
+  if (pointText) {
+    const point = pointText.split(",").map(Number);
+    if (point.length !== 2 || point.some(value => !Number.isFinite(value)) ||
+        point[0] < 88 || point[0] > 92.8 || point[1] < 20.5 || point[1] > 26.8) {
+      throw new Error("Invalid Bangladesh map point.");
+    }
+    params.set("geometry", point.join(","));
+    params.set("geometryType", "esriGeometryPoint");
+    params.set("inSR", "4326");
+    params.set("spatialRel", "esriSpatialRelIntersects");
+  }
 
   const queryUrl = config.url + "/query?" + params.toString();
   const queryResponse = await fetchWithTimeout(queryUrl, {
@@ -178,13 +202,16 @@ export async function onRequestGet(context) {
   }
 
   try {
-    const page = await fetchArcGisPage(config, offsetValue, limitValue);
+    const bbox = requestUrl.searchParams.get("bbox");
+  const point = requestUrl.searchParams.get("point");
+  if (bbox && point) return jsonResponse({ error: "Use either bbox or point, not both." }, 400);
+  const page = await fetchArcGisPage(config, offsetValue, limitValue, bbox, point);
     return jsonResponse(page);
   } catch (primaryError) {
     // Use the open gbOpen boundary only for national / division / district
     // layers. Fine-scale layers remain explicitly unavailable when their
     // documented source is down; never substitute a different admin level.
-    if (config.adm <= 2 && offsetValue === 0) {
+    if (config.adm <= 2 && offsetValue === 0 && !requestUrl.searchParams.get("point")) {
       try {
         const fallback = await fetchGeoBoundariesFallback(config.adm);
         return jsonResponse({
