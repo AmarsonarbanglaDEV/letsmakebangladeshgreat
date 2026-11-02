@@ -1837,29 +1837,108 @@ td,th{border:1px solid var(--ink)!important}
 .leaflet-control-attribution{background:var(--card)!important;font-family:var(--mono);font-size:9px}
 .maplibregl-popup-content{border:var(--bd)!important;border-radius:0!important;box-shadow:5px 5px 0 var(--ink)!important;background:var(--card)!important}
 .maplibregl-ctrl-group{border:var(--bd)!important;border-radius:0!important;box-shadow:3px 3px 0 var(--ink)!important}
-/* ---- boot screen ---- */
-.atlas-boot-screen{background:var(--paper)!important;background-image:linear-gradient(#0c1a1310 1px,transparent 1px),linear-gradient(90deg,#0c1a1310 1px,transparent 1px)!important;background-size:32px 32px!important}
-.atlas-boot-card{background:var(--card)!important;border:2px solid var(--ink)!important;box-shadow:8px 8px 0 var(--ink)!important;color:var(--ink)!important}
-.atlas-boot-card h1{font-family:var(--serif)!important;font-weight:400!important;font-size:40px!important;line-height:1}
-.atlas-boot-card h1::after{content:"";display:block;width:90px;height:10px;margin-top:10px;background:var(--hl);border:var(--bd)}
-.atlas-boot-symbol{background:var(--hl)!important;color:var(--ink)!important;border:var(--bd)}
-.atlas-boot-brand-name{font-family:var(--mono)!important;font-weight:800}
-.atlas-boot-progress-track{border:var(--bd)!important;background:var(--card)!important;height:16px!important}
-.atlas-boot-progress-track i{background:repeating-linear-gradient(135deg,var(--green) 0 8px,var(--green-d) 8px 16px)!important}
-.atlas-boot-task{border:1px solid var(--ink)!important;background:var(--card)!important}
-.atlas-boot-task-mark{font-family:var(--mono)}
-.atlas-boot-actions button,#atlasBootContinue{background:var(--ink)!important;color:#fff!important;border:var(--bd)!important;font-family:var(--mono)!important;text-transform:uppercase;font-weight:800;box-shadow:4px 4px 0 var(--hl)}
-.atlas-boot-retry,#atlasBootRetry{background:var(--card)!important;color:var(--ink)!important;box-shadow:4px 4px 0 var(--red)!important}
+/* ---- boot screen: progress bar only ---- */
+.atlas-boot-screen{background:var(--paper)!important;background-image:none!important}
+.atlas-boot-card{background:none!important;border:0!important;box-shadow:none!important;padding:0!important;width:min(420px,78vw)!important;display:flex;flex-direction:column;gap:18px;align-items:stretch}
+.atlas-boot-card>*:not(.atlas-boot-progress-track):not(.atlas-boot-actions){display:none!important}
+.atlas-boot-progress-track{display:block!important;width:100%;height:18px!important;border:var(--bd)!important;background:var(--card)!important;box-shadow:4px 4px 0 var(--ink);overflow:hidden}
+.atlas-boot-progress-track i{display:block;height:100%;background:repeating-linear-gradient(135deg,var(--green) 0 8px,var(--green-d) 8px 16px)!important}
+.atlas-boot-actions button{background:var(--ink)!important;color:#fff!important;border:var(--bd)!important;font-family:var(--mono)!important;text-transform:uppercase;font-weight:800;box-shadow:3px 3px 0 var(--hl)}
+.atlas-boot-actions .atlas-boot-retry{background:var(--card)!important;color:var(--ink)!important;box-shadow:3px 3px 0 var(--red)}
 /* ---- catch-all: borders & numbers in panels ---- */
 [class*="-card"],[class*="-panel"]:not(.map-layers-panel):not(.landmark-panel),[class*="-box"],[class*="-tile"],[class*="-item"]{border-color:var(--ink)!important}
-[class*="-card"]{background:var(--card)!important}
-[class*="-card"]:hover{box-shadow:4px 4px 0 var(--ink)}
 [class*="badge"],[class*="chip"],[class*="pill"]:not(.river-pill),[class*="tag"]{border:1.5px solid var(--ink)!important;font-family:var(--mono)!important;text-transform:uppercase;font-size:10px;font-weight:700}
 [class*="amount"],[class*="value"],[class*="stat"] strong,[class*="kpi"]{font-family:var(--mono)}
 ::selection{background:var(--hl);color:var(--ink)}
 ::-webkit-scrollbar{width:12px;height:12px}::-webkit-scrollbar-track{background:var(--paper);border-left:1.5px solid var(--ink)}
 ::-webkit-scrollbar-thumb{background:var(--ink);border:2px solid var(--paper)}::-webkit-scrollbar-thumb:hover{background:var(--green)}
 
+/* ---- contrast fixes: active / dark-origin elements ---- */
+.national-report-tab,.national-report-tab.active,.national-report-tab *{color:var(--ink)!important}
+.national-report-tab .national-report-icon{background:var(--ink)!important;color:var(--hl)!important}
+.adp-roster-toggle.is-on,.map-pill.active,.level-btn.active,.landmark-filter.active,.place-layer-switch.active,.map-layer-tab.active,.environment-layer.active,.river-pill.active,.top-nav-button.nav-active,.map-control.map3d-btn[aria-pressed="true"],.promise-jump-nav a:hover{background:var(--ink)!important;color:var(--hl)!important;border:var(--bd)!important}
+.adp-roster-toggle.is-on small,.place-layer-switch.active small,.place-layer-switch[aria-pressed=true] small,.environment-layer.active small,.environment-layer[aria-pressed=true] small,.map-pill.active small{color:#fff!important}
+.map-pill,.level-btn,.top-nav-button,.map-control{border:var(--bd)!important;background:var(--card);color:var(--ink);font-family:var(--mono)!important;font-weight:700!important;text-transform:uppercase;box-shadow:none!important}
+.map-pill:hover,.level-btn:hover,.top-nav-button:hover,.map-control:hover{background:var(--hl)!important;color:var(--ink)!important}
+.map-pill#mapLayersToggle{background:var(--ink)!important;color:var(--hl)!important}
+.atlas-choose-spot,.atlas-time-play,.pin3d-btn.primary,.pin-report-btn,.proj3d-hud button,.tb-report,.rp-go,.promise-action.primary{background:var(--green)!important;color:#fff!important;border:var(--bd)!important;box-shadow:3px 3px 0 var(--ink)}
+.rp-go:disabled{background:#cfcbbb!important;color:var(--muted)!important;box-shadow:none}
+.atlas-report-cover{background:var(--hl)!important;color:var(--ink)!important;border:var(--bd)!important;box-shadow:4px 4px 0 var(--ink)!important}
+.atlas-report-cover>strong,.atlas-report-cover>p,.atlas-report-cover>small{color:var(--ink)!important}
+.atlas-report-cover:after{color:#0c1a1318!important}
+.promise-hero{background:var(--green-d)!important;border:var(--bd);box-shadow:4px 4px 0 var(--red)!important;color:#fff}
+.promise-hero *{color:#fff}.promise-hero .promise-action.primary{color:#fff}
+.promise-hero-seal,.promise-hero-meta span{background:#ffffff1f!important;border-color:#ffffff55!important}
+/* ---- start screen + tutorial (was dark glass, now ledger paper) ---- */
+.st-layer{background:var(--paper)!important;background-image:linear-gradient(#0c1a1310 1px,transparent 1px),linear-gradient(90deg,#0c1a1310 1px,transparent 1px)!important;background-size:32px 32px!important;color:var(--ink)!important}
+.st-bg{display:none!important}
+.st-card{background:var(--card)!important;border:2px solid var(--ink)!important;box-shadow:8px 8px 0 var(--ink)!important;backdrop-filter:none!important}
+.st-card h1,.st-step h2{color:var(--ink)!important;font-family:var(--serif)!important;font-weight:400!important;letter-spacing:-.01em!important}
+.st-card h1{font-size:clamp(34px,6vw,50px)!important;line-height:1}
+.st-card .st-lead,.st-step p,.st-note,.st-facts,.st-link,.st-brand small,.st-act small{color:var(--muted)!important;font-family:var(--mono)}
+.st-step p b,.st-facts b,.st-brand b,.st-tut-top{color:var(--green-d)!important;font-family:var(--mono)}
+.st-link:hover{color:var(--ink)!important}
+.st-facts{border-top:var(--bd)!important}
+.st-act,.st-btn{background:var(--card)!important;color:var(--ink)!important;border:var(--bd)!important;font-family:var(--mono)!important;box-shadow:3px 3px 0 var(--ink);transform:none!important}
+.st-act:hover,.st-act:focus-visible,.st-btn:hover{background:var(--hl)!important;border-color:var(--ink)!important}
+.st-act .st-ico{background:var(--ink)!important;color:var(--hl)!important}
+.st-act .st-go{color:var(--ink)!important}
+.st-act.primary,.st-btn.primary{background:var(--hl)!important;color:var(--ink)!important;border-color:var(--ink)!important}
+.st-act.primary small,.st-act.primary .st-go,.st-act.primary .st-ico{color:var(--ink)!important}
+.st-act.primary .st-ico{background:#0c1a1318!important}
+.st-act.report{border-color:var(--red)!important;box-shadow:3px 3px 0 var(--red)}
+.st-act.report .st-ico{background:var(--red)!important;color:#fff!important}
+.st-step-ico{background:var(--hl)!important;border:var(--bd)!important;color:var(--ink)!important}
+.st-dots i{background:#0c1a1333!important}.st-dots i.on{background:var(--ink)!important}
+/* ---- hover/underline fixes ---- */
+.icon-btn:hover,.icon-btn:hover *,.sidebar-menu-toggle:hover,.sidebar-menu-toggle:hover *{color:var(--ink)!important}
+.sidebar-menu-toggle:hover{background:var(--hl)!important}
+.brand,.brand *,a.brand,.top-nav-button,.sidebar-tab,a.map-pill,a.icon-btn{text-decoration:none!important}
+.top-nav-button{color:var(--ink)!important;opacity:1!important}
+
 </style>
+<script id="contrast-guard">
+/* contrast guard: keeps text readable in panels rendered after load */
+(function(){
+  var INK='#0c1a13',queue=new Set(),timer=null;
+  function lum(c){var a=c.map(function(v){v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)});return .2126*a[0]+.7152*a[1]+.0722*a[2]}
+  function parse(s){var m=s&&s.match(/rgba?\(([^)]+)\)/);if(!m)return null;var p=m[1].split(',').map(parseFloat);return{r:p[0],g:p[1],b:p[2],a:p.length>3?p[3]:1}}
+  function backdrop(el){
+    for(var e=el;e&&e.nodeType===1;e=e.parentElement){
+      var cs=getComputedStyle(e),bi=cs.backgroundImage;
+      if(e.classList&&(e.classList.contains('leaflet-container')||e.classList.contains('maplibregl-map')))return null;
+      if(bi&&bi!=='none'){
+        if(/url\(/.test(bi))return null;
+        var cols=bi.match(/rgba?\([^)]+\)/g);
+        if(cols){var pc=parse(cols[cols.length-1]);if(pc&&pc.a>.5)return[pc.r,pc.g,pc.b]}
+      }
+      var c=parse(cs.backgroundColor);if(c&&c.a>.5)return[c.r,c.g,c.b];
+    }
+    return[244,241,230];
+  }
+  function check(el){
+    if(!el||el.nodeType!==1||el.dataset.cfix)return;
+    var hasText=false;for(var n=el.firstChild;n;n=n.nextSibling){if(n.nodeType===3&&n.nodeValue.trim()){hasText=true;break}}
+    if(!hasText)return;
+    var cs=getComputedStyle(el);if(cs.display==='none'||cs.visibility==='hidden')return;
+    var f=parse(cs.color);if(!f)return;
+    var b=backdrop(el);if(!b)return;
+    var l1=lum([f.r,f.g,f.b]),l2=lum(b),cr=(Math.max(l1,l2)+.05)/(Math.min(l1,l2)+.05);
+    if(cr<3){el.style.setProperty('color',l2>.35?INK:'#ffffff','important');el.dataset.cfix='1'}
+  }
+  function walk(root){
+    if(root.nodeType!==1)return;check(root);
+    var all=root.querySelectorAll('*'),n=Math.min(all.length,2500);
+    for(var i=0;i<n;i++)check(all[i]);
+  }
+  function flush(){timer=null;var items=Array.from(queue);queue.clear();items.forEach(function(el){if(el.isConnected)walk(el)})}
+  function schedule(){if(!timer)timer=setTimeout(flush,150)}
+  new MutationObserver(function(ms){ms.forEach(function(m){m.addedNodes.forEach(function(n){if(n.nodeType===1)queue.add(n)});if(m.type==='attributes'&&m.target.nodeType===1)queue.add(m.target)});schedule()})
+    .observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class','hidden','aria-pressed','aria-selected']});
+  document.addEventListener('click',function(){queue.add(document.body);schedule()},true);
+  window.addEventListener('load',function(){queue.add(document.body);schedule()});
+})();
+
+</script>
 </body>
 </html>
